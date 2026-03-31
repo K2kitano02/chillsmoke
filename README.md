@@ -242,9 +242,9 @@ chillsmoke は、禁煙を強制せず、減らせた本数をお金として可
 ### 10-1. 使用予定の技術
 
 - Ruby：3.3.6
-- Ruby on Rails：7.2.1
+- Rails：7.2.1
 - DB：PostgreSQL 17
-- フロントエンド：Tailwind CSS
+- スタイル：Tailwind CSS
 - 認証：Devise / bcrypt
 - カレンダー：simple_calendar
 - 画像アップロード：Active Storage
