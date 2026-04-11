@@ -264,3 +264,6 @@ chillsmoke は、禁煙を強制せず、減らせた本数をお金として可
 
 ### 画面遷移図URL
 https://www.figma.com/design/LdbfrIAJA9XoFHgL8fqUfX/chillsmoke?t=OnZQc4d7HuZICl5c-0
+
+### ER図
+[(https://i.gyazo.com/ee1f2c9cb1accc52ba15e740c881d4e6.png)](https://gyazo.com/ee1f2c9cb1accc52ba15e740c881d4e6)
