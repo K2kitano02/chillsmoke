@@ -1,0 +1,196 @@
+---
+description: ChillSmoke 実装時の最低限ルール（認証・ログ・snapshot・競合など）
+globs:
+  - app/**/*.rb
+  - config/routes.rb
+  - db/**/*.rb
+  - spec/**/*.rb
+  - test/**/*.rb
+alwaysApply: false
+---
+
+# ChillSmoke 実装ルール
+
+このファイルは、ChillSmoke 実装時の**致命的な仕様逸脱・不整合・競合バグ**を防ぐための最低限ルールを定義する。  
+思想・詳細仕様は `Plan.md`、DB構造は `ER.md`、実装順は `TODO.md` を正本とする。  
+このルールはそれらを補完する**事故防止ルール**のみを扱う。
+
+## 参照優先順位
+1. `.cursor/rules/Plan.md`
+2. `.cursor/rules/ER.md`
+3. `.cursor/rules/TODO.md`
+
+曖昧な場合は、必ず上記を確認し、それと矛盾する実装をしないこと。
+
+---
+
+## 1. 認証・スコープ
+
+- 認証が必要なデータ操作は `current_user` スコープ前提で実装する
+- 他人のデータを `find(params[:id])` で直接取得しない
+- 取得は必ず本人配下から行う
+
+### 例
+- `current_user.user_wishlists.find(params[:id])`
+- `current_user.user_smoking_logs.find_by!(...)`
+
+### 禁止
+- `UserWishlist.find(params[:id])`
+- `UserSmokingLog.find(params[:id])`
+
+---
+
+## 2. user_smoking_logs の基本ルール
+
+- `user_smoking_logs` は **1日1レコード**
+- `(user_id, smoked_on)` の一意性を前提に扱う
+- 表示だけではログを作成しない
+- ログ作成は保存操作時のみ行う
+
+### 保存操作に含むもの
+- `+1` 記録
+- スケジュール反映
+- カレンダー編集保存
+- 過去日手動入力保存
+
+### 禁止
+- ダッシュボード表示時に `find_or_create_by` する
+- 詳細表示(GET)だけでログを create する
+
+---
+
+## 3. snapshot の扱い
+
+- snapshot は**新規ログ作成時のみ**コピーする
+- コピー元は **保存時点の `current_user.user_setting`**
+- 当時設定の再現はしない
+- 既存ログの snapshot は更新しない
+
+### 対象 snapshot
+- `target_daily_cigarette_count_snapshot`
+- `baseline_daily_cigarette_count_snapshot`
+- `pack_price_snapshot`
+- `cigarettes_per_pack_snapshot`
+- `is_oni_mode_snapshot`
+
+### 禁止
+- 既存ログ更新時に snapshot を上書きする
+- 過去日の snapshot を current setting で再計算し直す
+
+---
+
+## 4. +1 記録の競合対策
+
+- `+1` 記録は atomic update で行う
+- read-modify-write のみで実装しない
+- 当日ログ作成競合も考慮する
+
+### 推奨
+- 当日ログを transaction 内で取得/作成
+- 必要なら `with_lock`
+- `increment!` もしくは DBレベル加算を使用
+- `(user_id, smoked_on)` の unique 競合時は再取得して続行
+
+### 禁止
+- `smoking_count += 1` → `save!` だけで済ませる実装
+
+---
+
+## 5. 継続日数のルール
+
+- 当日は継続日数に含めない
+- 昨日から1日ずつ遡る
+- ログなしで終了
+- 未達で終了
+- 達成時のみ加算して前日に進む
+
+### 禁止
+- ログがある日だけ飛び飛びで集計する
+- 未記録日をスキップして連続扱いする
+
+---
+
+## 6. 節約額・残高のルール
+
+- 累計節約額は **昨日までの確定分のみ**
+- 当日の節約額は **見込みとして別枠表示**
+- 使用可能金額（残高）には当日の見込みを含めない
+
+### 禁止
+- 今日の節約見込みを累計に含める
+- 表示だけで当日ログを作って累計を増やす
+
+---
+
+## 7. 鬼モードの計算
+
+- 鬼モード判定は `is_oni_mode_snapshot` を使う
+- `smoking_count > target_daily_cigarette_count_snapshot` の日は `saved_cigs = 0`
+
+### 禁止
+- 現在の `user_setting.is_oni_mode` を過去ログ計算に使う
+
+---
+
+## 8. スケジュール反映のルール
+
+- スケジュール反映は **方式Bのみ**
+- `user_schedule_reflections` を必ず使う
+- `(user_schedule_id, reflected_on)` の一意性を前提にする
+- 反映処理は transaction 内で行う
+- 当日ログへの加算と reflection 作成は同一トランザクションで行う
+
+### 必須
+- `UserSchedule has_many :user_schedule_reflections, dependent: :destroy`
+- `UserScheduleReflection belongs_to :user_schedule`
+
+### 禁止
+- reflection を使わない二重加算防止
+- transaction 外で加算と reflection 作成を分離する
+
+---
+
+## 9. 購入処理のルール
+
+- 購入対象は必ず `current_user.user_wishlists.find(params[:id])` で取得する
+- 購入履歴は `user_purchase_histories` に保存する
+- `user_purchase_histories` は `user_id` を持たず、`user_wishlist_id` で紐づく
+- 購入履歴は必ず wishlist 経由で作成する
+- 購入処理は transaction 内で行う
+- 残高再計算前に user 行を lock する
+
+### 例
+- `wishlist.create_user_purchase_history!(amount: wishlist.price, purchased_at: Time.current)`
+
+### 禁止
+- `UserPurchaseHistory.create!` を単体で呼ぶ
+- user を lock せずに残高確認して購入する
+
+---
+
+## 10. 未記録日の表示ルール
+
+- 未記録日は「未記録」として扱う
+- 詳細ページは日付ベースで開く
+- 未記録日の目標・節約は `—` 表示
+- current の `UserSetting` で補完しない
+
+### 禁止
+- 未記録日なのに current setting を表示して過去の事実のように見せる
+
+---
+
+## 11. 画像機能
+
+- MVPでは wishlist 画像機能は実装しない
+- `image` カラム前提で進めない
+
+---
+
+## 12. 実装時の基本姿勢
+
+- 仕様に迷ったら `Plan.md` を優先する
+- DB構造に迷ったら `ER.md` を優先する
+- 実装順・完了条件は `TODO.md` に従う
+- 仕様を勝手に簡略化・拡張しない
+- 曖昧な場合は、まず既存ルールとの整合を確認する
