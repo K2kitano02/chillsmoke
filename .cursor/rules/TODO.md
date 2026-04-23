@@ -9,16 +9,20 @@
 
 ## やること(コードレベル)
 - **変更点（ファイル）**: `Gemfile` / `config/*` / `app/views/layouts/application.html.erb` / `app/assets/stylesheets/*`
+<!-- 実装クリア: ISSUE-00
 - [ ] `rails new`（DB=postgres）
 - [ ] **`config/application.rb` に `config.time_zone = "Tokyo"`** を設定する
 　（`Time.zone.today` を基準とした **`user_smoking_logs.smoked_on`** やスケジュール反映の `reflected_on` など、アプリ内の日付境界の基準）
 - [ ] Tailwind導入（`tailwindcss-rails` 等、採用方針に合わせる）
 - [ ] ルート（`root`）を仮ページへ（例: `HomeController#index`）(ISSUE-02参照)
 - [ ] `application` レイアウトに最低限のコンテナ/ヘッダー枠を作る
+-->
 
 ## ゴール
+<!-- 実装クリア: ISSUE-00
 - [ ] `rails s` でトップページが表示され、Tailwindのクラスが効いている
 - [ ] **タイムゾーンが Tokyo で明示されている**（上記 `config.time_zone`）
+-->
 
 ---
 
@@ -31,13 +35,17 @@
 
 ## やること(コードレベル)
 - **変更点（ファイル）**: `Dockerfile` / `compose.yaml(or docker-compose.yml)` / `config/database.yml`
+<!-- 実装クリア: ISSUE-01
 - [ ] webコンテナ、dbコンテナ（PostgreSQL）を定義
 - [ ] DB接続情報を環境変数化
 - [ ] ボリューム（db永続化）設定
+-->
 - [ ] 初回手順をREADMEに追記（必要なら）
 
 ## ゴール
+<!-- 実装クリア: ISSUE-01
 - [ ] `docker compose up` でWeb+DBが起動し、`rails db:create db:migrate` が成功する
+-->
 
 ---
 
@@ -51,12 +59,16 @@
 
 ## やること(コードレベル)
 - **変更点（ファイル）**: `config/routes.rb` / `app/controllers/home_controller.rb` / `app/views/home/index.html.erb`
+<!-- 実装クリア: ISSUE-02
 - [ ] **`HomeController`（または同等）**を追加し **`index`** を定義する
 - [ ] **`app/views/home/index.html.erb`** に仮の見出し・文言を置き、**Tailwind のクラスが効く**ことを確認できるようにする
 - [ ] **`config/routes.rb` の `root`** が **`home#index`**（上記コントローラ）を指すよう **ISSUE-00 で置いた `root` の方針と一致**させる
+-->
 
 ## ゴール
+<!-- 実装クリア: ISSUE-02
 - [ ] `rails s` 起動後、**`/`（root）** にアクセスすると仮ページが表示され、ISSUE-00 の「トップが表示される」と整合する
+-->
 
 ---
 
