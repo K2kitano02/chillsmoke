@@ -101,30 +101,40 @@
 
 ## やること(コードレベル)
 - **変更点（ファイル）**: `Gemfile` / `config/routes.rb` / `app/models/user.rb` / `db/migrate/*` / `config/initializers/devise.rb`
+<!-- 実装クリア: ISSUE-10
 - [ ] `devise` を追加し、`rails g devise:install`
 - [ ] `rails g devise User`（`email`, `encrypted_password`, `reset_password_*`, `remember_created_at` など）
 - [ ] `User` に `name` を追加（migration）し、登録フォームへ反映
 - [ ] `config.action_mailer.default_url_options` を開発用に設定
+-->
 
 ## ゴール
+<!-- 実装クリア: ISSUE-10
 - [ ] 新規登録→ログイン→ログアウトがUIで確認できる
+-->
 
 ---
 
-# ISSUE-11 ログイン必須化（未ログインは認証画面へ）
+# ISSUE-11 保護ページのログイン必須化
 ## なぜ必要か
-- 「ログインユーザーのデータだけを扱う」前提を全画面に適用し、以降の実装を簡単にするため
+- 「ログインユーザーのデータだけを扱う」前提を保護ページに適用し、以降の実装を簡単にするため
+- ただし `root("/")` はアプリ説明画面・オンボーディングとして未ログインでも閲覧可能とする
 
 ## 必要なこと(簡易的に)
 - ISSUE-10完了
 
 ## やること(コードレベル)
 - **変更点（ファイル）**: `app/controllers/application_controller.rb` / 各controller
-- [ ] `before_action :authenticate_user!` を適用（必要な例外は除外）
+<!-- 実装クリア: ISSUE-11
+- [ ] `before_action :authenticate_user!` を適用（`root("/")` の説明画面など、意図した公開ページは除外）
 - [ ] ログイン後の遷移先（`after_sign_in_path_for`）を決める（ダッシュボード等）
+-->
 
 ## ゴール
+<!-- 実装クリア: ISSUE-11
 - [ ] 未ログインで保護ページへアクセスするとログインへリダイレクトされる
+- [ ] `root("/")` は未ログインでも閲覧できる説明画面として扱う
+-->
 
 ---
 
