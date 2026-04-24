@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
   <head>
-    <title><%= content_for(:title) || "Myapp" %></title>
+    <title><%= content_for(:title) || "ChillSmoke" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <%= csrf_meta_tags %>
@@ -19,7 +19,25 @@
   </head>
 
   <body>
-    <main class="container mx-auto mt-28 px-5 flex">
+    <header class="border-b border-slate-200 bg-white/80 px-5 py-3">
+      <nav class="container mx-auto flex flex-wrap items-center justify-end gap-3 text-sm">
+        <% if user_signed_in? %>
+          <span class="text-slate-600"><%= current_user.name %></span>
+          <%= button_to "ログアウト", destroy_user_session_path, method: :delete,
+                class: "rounded bg-slate-800 px-3 py-1.5 text-white hover:bg-slate-700" %>
+        <% else %>
+          <%= link_to "ログイン", new_user_session_path, class: "text-emerald-700 hover:underline" %>
+          <%= link_to "新規登録", new_user_registration_path, class: "text-emerald-700 hover:underline" %>
+        <% end %>
+      </nav>
+    </header>
+    <main class="container mx-auto mt-8 px-5 flex flex-col">
+      <% if notice %>
+        <p class="notice mb-2 text-slate-700" role="status"><%= notice %></p>
+      <% end %>
+      <% if alert %>
+        <p class="alert mb-2 text-red-700" role="alert"><%= alert %></p>
+      <% end %>
       <%= yield %>
     </main>
   </body>

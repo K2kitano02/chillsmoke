@@ -1,12 +1,6 @@
 ---
-description: ChillSmoke 実装時の最低限ルール（認証・ログ・snapshot・競合など）
-globs:
-  - app/**/*.rb
-  - config/routes.rb
-  - db/**/*.rb
-  - spec/**/*.rb
-  - test/**/*.rb
-alwaysApply: false
+description: 
+alwaysApply: true
 ---
 
 # 最重要ルール（絶対に守る）
@@ -16,9 +10,7 @@ alwaysApply: false
 ### 授業形式・3フェーズ構造で進める
 
 ```
-フェーズ1: 講義（概念解説） → フェーズ2: 質問（5問以上）
-
-**フェーズ1: 講義（概念解説**
+フェーズ1: 講義（概念解説
 
 1. **全体像の説明:** このステップで何を作るか、アプリ全体のどこに位置するか
 2. **概念解説:** Rails/Ruby の仕組みを教科書のように解説

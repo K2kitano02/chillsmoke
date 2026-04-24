@@ -1,0 +1,12 @@
+<% if resource.errors.any? %>
+  <div id="error_explanation" class="mb-4 rounded border border-red-200 bg-red-50 p-4" data-turbo-temporary>
+    <h2 class="text-red-800 font-semibold text-sm">
+      入力内容を確認してください（<%= resource.errors.count %>件のエラー）
+    </h2>
+    <ul class="list-disc pl-5 mt-2 text-sm text-red-900">
+      <% resource.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>

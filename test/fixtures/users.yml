@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+# Devise: email unique, encrypted_password (bcrypt), name NOT NULL（ER.md 整合）
+# テストで「password123」でログイン可能
+#
+one:
+  email: user_one@example.test
+  name: Fixture One
+  encrypted_password: <%= Devise::Encryptor.digest(User, "password123") %>
+
+two:
+  email: user_two@example.test
+  name: Fixture Two
+  encrypted_password: <%= Devise::Encryptor.digest(User, "password123") %>
