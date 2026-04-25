@@ -8,12 +8,12 @@ class ApplicationController < ActionController::Base
   before_action :ensure_user_setting_exists, unless: :devise_controller?
   allow_browser versions: :modern
 
-  # ログイン成功後: 設定未作成なら初期設定へ。設定済みは stored_location または root（ダッシュボードは後続 ISSUE）
+  # ログイン成功後: 設定未作成なら初期設定へ。設定済みは stored_location または dashboard（root はオンボ用。変更時は TODO.md ISSUE-21「導線の固定方針」と Plan.md を併せて見直す）
   def after_sign_in_path_for(resource)
     if resource.is_a?(User) && resource.user_setting.blank?
       new_user_setting_path
     else
-      stored_location_for(resource) || root_path
+      stored_location_for(resource) || dashboard_path
     end
   end
 

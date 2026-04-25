@@ -11,7 +11,7 @@ class UserSettingsController < ApplicationController
   def create
     @user_setting = current_user.build_user_setting(user_setting_params)
     if @user_setting.save
-      redirect_to root_path, notice: "初期設定を保存しました。"
+      redirect_to dashboard_path, notice: "初期設定を保存しました。"
     else
       render :new, status: :unprocessable_entity
     end
@@ -22,7 +22,7 @@ class UserSettingsController < ApplicationController
   def redirect_if_user_setting_exists
     return if current_user.user_setting.blank?
 
-    redirect_to root_path, alert: "初期設定はすでに登録されています。"
+    redirect_to dashboard_path, alert: "初期設定はすでに登録されています。"
   end
 
   def user_setting_params
