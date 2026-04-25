@@ -171,12 +171,16 @@
 
 ## やること(コードレベル)
 - **変更点（ファイル）**: `app/controllers/application_controller.rb` / `config/routes.rb`
-- [ ] `current_user.user_setting.present?` をチェックする `before_action`
-- [ ] 初期設定作成ページのみはリダイレクト対象外にする
-- [ ] ルート/遷移（ダッシュボード→設定へ、など）を確定
+<!-- 実装クリア: ISSUE-21
+- [x] `current_user.user_setting.present?` をチェックする `before_action`
+- [x] 初期設定作成ページのみはリダイレクト対象外にする
+- [x] ルート/遷移（ダッシュボード→設定へ、など）を確定
+-->
 
 ## ゴール
-- [ ] 新規登録直後に初期設定画面へ誘導される
+<!-- 実装クリア: ISSUE-21
+- [x] 新規登録直後に初期設定画面へ誘導される
+-->
 
 ---
 
