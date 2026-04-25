@@ -218,6 +218,7 @@
 
 ---
 
+<!--
 # ISSUE-23 設定「編集」画面（UserSetting update）
 ## なぜ必要か
 - 目標や価格は運用中に変わるため、編集導線がないと継続利用できないため
@@ -227,11 +228,12 @@
 
 ## やること(コードレベル)
 - **変更点（ファイル）**: `app/controllers/user_settings_controller.rb` / `app/views/user_settings/edit.html.erb`
-- [ ] `edit/update` 実装（本人の設定のみ）
-- [ ] is_oni_mode のON/OFF入力（checkbox等）
+- [x] `edit/update` 実装（本人の設定のみ）
+- [x] is_oni_mode のON/OFF入力（checkbox等）
 
 ## ゴール
-- [ ] 変更が保存され、以降の表示/計算に反映される
+- [x] 変更が保存され、以降の表示/計算に反映される
+-->
 
 ---
 
