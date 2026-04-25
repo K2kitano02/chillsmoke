@@ -18,4 +18,3 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to new_user_setting_url
   end
 end
-
