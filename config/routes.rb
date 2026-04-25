@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   devise_for :users
-  # ISSUE-21/22: 1ユーザー1設定。初期設定は new/create のみ先に載せる（edit は ISSUE-23）
-  resource :user_setting, only: %i[new create]
+  # ISSUE-21/22/23: 1ユーザー1設定。初期設定 new/create、編集 edit/update
+  resource :user_setting, only: %i[new create edit update]
   # Plan.md: ログイン後の本画面。表示の中身は ISSUE-53 以降で拡張
   get "dashboard", to: "dashboard#index", as: :dashboard
   root "home#index"

@@ -1,7 +1,7 @@
 class UserSettingsController < ApplicationController
   # 未設定ユーザーが new/create に届くため、ここだけは ensure をかけない（ループ防止）
   skip_before_action :ensure_user_setting_exists, only: %i[new create]
-  # 既に設定があるユーザーは 2 件目作成フローに入れない（URL 直叩き対策）。編集は ISSUE-23 の edit へ寄せる想定
+  # 既に設定があるユーザーは 2 件目作成フローに入れない（URL 直叩き対策）→ 編集へ
   before_action :redirect_if_user_setting_exists, only: %i[new create]
 
   def new
@@ -17,12 +17,25 @@ class UserSettingsController < ApplicationController
     end
   end
 
+  def edit
+    @user_setting = current_user.user_setting
+  end
+
+  def update
+    @user_setting = current_user.user_setting
+    if @user_setting.update(user_setting_params)
+      redirect_to edit_user_setting_path, notice: "設定を保存しました。"
+    else
+      render :edit, status: :unprocessable_entity
+    end
+  end
+
   private
 
   def redirect_if_user_setting_exists
     return if current_user.user_setting.blank?
 
-    redirect_to dashboard_path, alert: "初期設定はすでに登録されています。"
+    redirect_to edit_user_setting_path, alert: "初期設定はすでに登録されています。設定の編集はこちらから行えます。"
   end
 
   def user_setting_params
