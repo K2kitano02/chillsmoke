@@ -11,3 +11,9 @@ two:
   email: user_two@example.test
   name: Fixture Two
   encrypted_password: <%= Devise::Encryptor.digest(User, "password123") %>
+
+# UserSetting なし（ISSUE-21 初回導線テスト用）
+three:
+  email: user_three_no_setting@example.test
+  name: Fixture Three No Setting
+  encrypted_password: <%= Devise::Encryptor.digest(User, "password123") %>
