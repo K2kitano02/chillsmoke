@@ -10,9 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_04_23_123032) do
+ActiveRecord::Schema[7.2].define(version: 2026_04_24_135007) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "user_settings", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.integer "target_daily_cigarette_count", null: false
+    t.integer "baseline_daily_cigarette_count", null: false
+    t.integer "pack_price", null: false
+    t.integer "cigarettes_per_pack", default: 20, null: false
+    t.boolean "is_oni_mode", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_user_settings_on_user_id", unique: true
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
@@ -26,4 +38,6 @@ ActiveRecord::Schema[7.2].define(version: 2026_04_23_123032) do
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
+
+  add_foreign_key "user_settings", "users"
 end

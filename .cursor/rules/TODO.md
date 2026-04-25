@@ -147,14 +147,18 @@
 
 ## やること(コードレベル)
 - **変更点（ファイル）**: `db/migrate/*` / `app/models/user_setting.rb` / `app/models/user.rb`
-- [ ] migration作成（`user:references{unique}`, `baseline_daily_cigarette_count`, `target_daily_cigarette_count`, `pack_price`, `cigarettes_per_pack default:20`, `is_oni_mode default:false`）
-- [ ] `User has_one :user_setting, dependent: :destroy`
-- [ ] `UserSetting belongs_to :user`
-- [ ] バリデーション（数値・`baseline >= target`）
-- [ ] DB制約（unique index on `user_id`）
+<!-- 実装クリア: ISSUE-20
+- [x] migration作成（`user:references{unique}`, `baseline_daily_cigarette_count`, `target_daily_cigarette_count`, `pack_price`, `cigarettes_per_pack default:20`, `is_oni_mode default:false`）
+- [x] `User has_one :user_setting, dependent: :destroy`
+- [x] `UserSetting belongs_to :user`
+- [x] バリデーション（数値・`baseline >= target`）
+- [x] DB制約（unique index on `user_id`）
+-->
 
 ## ゴール
-- [ ] consoleで作成でき、同一userに2件目が作れない（DB/validationのいずれかで防止）
+<!-- 実装クリア: ISSUE-20
+- [x] consoleで作成でき、同一userに2件目が作れない（DB/validationのいずれかで防止）
+-->
 
 ---
 

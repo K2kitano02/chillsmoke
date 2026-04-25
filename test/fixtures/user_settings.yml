@@ -1,0 +1,18 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+# users.yml の one / two と 1:1。baseline >= target（UserSetting バリデーション整合）
+#
+one:
+  user: one
+  target_daily_cigarette_count: 5
+  baseline_daily_cigarette_count: 20
+  pack_price: 500
+  cigarettes_per_pack: 20
+  is_oni_mode: false
+
+two:
+  user: two
+  target_daily_cigarette_count: 8
+  baseline_daily_cigarette_count: 25
+  pack_price: 600
+  cigarettes_per_pack: 20
+  is_oni_mode: false
