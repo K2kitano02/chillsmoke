@@ -2,6 +2,8 @@ Rails.application.routes.draw do
   devise_for :users
   # ISSUE-21/22: 1ユーザー1設定。初期設定は new/create のみ先に載せる（edit は ISSUE-23）
   resource :user_setting, only: %i[new create]
+  # Plan.md: ログイン後の本画面。表示の中身は ISSUE-53 以降で拡張
+  get "dashboard", to: "dashboard#index", as: :dashboard
   root "home#index"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

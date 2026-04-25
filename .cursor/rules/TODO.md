@@ -180,7 +180,15 @@
 ## ゴール
 <!-- 実装クリア: ISSUE-21
 - [x] 新規登録直後に初期設定画面へ誘導される
+- [x] ログイン成功後: **未設定**は `new_user_setting_path`、**設定済み**は `stored_location` 若しくは `dashboard_path`（`ApplicationController#after_sign_in_path_for`）
+- [x] 保護ページ: `UserSetting` なしのときは `ensure_user_setting_exists` で `new_user_setting_path` へ（`user_settings#new` / `#create` だけ `skip` してループ防止）
 -->
+
+## 導線の固定方針（Plan.md 整合・再発防止）
+- **`root`（`/`）**: 未ログイン向けオンボーディング（`Plan.md`）。ログイン後の「ホーム」**ではない**。
+- **未設定ユーザー**: サインイン直後・保護ルート遷移ともに、まず**初期設定**（`user_settings#new`）へ。`root` に逃がさない。
+- **設定済みユーザー**: サインイン直後のデフォルトは **`dashboard_path`**。初期設定**保存直後**も同じ（ISSUE-22 ゴールと一致）。
+- 上記を変更する場合は **`Plan.md` の画面定義**と、`after_sign_in_path_for` ・ `ensure_user_setting_exists` ・ `UserSettingsController#create` の `redirect_to` を**一括で**見直すこと。
 
 ---
 
@@ -192,14 +200,21 @@
 - ISSUE-20/21完了
 
 ## やること(コードレベル)
-- **変更点（ファイル）**: `config/routes.rb` / `app/controllers/user_settings_controller.rb` / `app/views/user_settings/new.html.erb`
-- [ ] `resource :user_setting, only: [:new, :create, :edit, :update]` を定義
-- [ ] `new/create` を実装（`current_user.build_user_setting`）
-- [ ] strong params
-- [ ] バリデーションエラー表示（フォーム）
+- **変更点（ファイル）**: `config/routes.rb` / `app/controllers/user_settings_controller.rb` / `app/views/user_settings/new.html.erb` / `app/controllers/dashboard_controller.rb`（遷移先のスケルトン・Plan.md 整合）
+- `app/controllers/application_controller.rb`（`after_sign_in_path_for` を `dashboard_path` に）
+<!-- 実装クリア: ISSUE-22
+- [x] `resource :user_setting, only: [:new, :create]` を定義（`edit`/`update` は ISSUE-23）
+- [x] `get dashboard` + `DashboardController#index`（表示の本実装は ISSUE-53）
+- [x] `new/create` を実装（`current_user.build_user_setting`）
+- [x] strong params（`user_setting_params`）
+- [x] バリデーションエラー表示（`new` 再表示 + `status: :unprocessable_entity`）
+- [x] 既存設定者の new/create 直打ちは `redirect_if_user_setting_exists`（ISSUE-21 の `skip`/`ensure` と整合）
+-->
 
 ## ゴール
-- [ ] 初期設定を保存すると次の画面（ダッシュボード等）へ遷移する
+<!-- 実装クリア: ISSUE-22
+- [x] 初期設定を保存すると `dashboard_path`（Plan.md のダッシュボード。スケルトンは本 Issue、中身は ISSUE-53 以降）へ遷移する
+-->
 
 ---
 
@@ -486,6 +501,9 @@
 # ISSUE-53 ダッシュボード表示（今日/残り/節約/残高/継続）
 ## なぜ必要か
 - ユーザーが毎日開いて「記録→確認」できる中心画面が必要なため
+
+## メモ
+- ルーティング・空の `index` ビューは **ISSUE-22**（Plan.md の画面分離：初期設定保存後＝`dashboard`）で先行。本 Issue は指標・+1 等の**中身**を実装する。
 
 ## 必要なこと(簡易的に)
 - ISSUE-31/32（今日ログ）

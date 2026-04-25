@@ -6,16 +6,16 @@ class UserSettingsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to new_user_session_path
   end
 
-  test "既存設定ユーザーの GET /user_setting/new が root_path にリダイレクトされること" do
+  test "既存設定ユーザーの GET /user_setting/new が dashboard にリダイレクトされること" do
     sign_in users(:one)
     assert users(:one).user_setting.present?
 
     get new_user_setting_url
-    assert_redirected_to root_url
+    assert_redirected_to dashboard_url
     assert_match(/すでに登録/, flash[:alert].to_s)
   end
 
-  test "既存設定ユーザーの POST /user_setting でも新規作成されず root_path にリダイレクトされること" do
+  test "既存設定ユーザーの POST /user_setting でも新規作成されず dashboard にリダイレクトされること" do
     sign_in users(:one)
     assert_no_difference -> { UserSetting.count } do
       post user_setting_url, params: {
@@ -27,7 +27,7 @@ class UserSettingsControllerTest < ActionDispatch::IntegrationTest
         }
       }
     end
-    assert_redirected_to root_url
+    assert_redirected_to dashboard_url
     assert_match(/すでに登録/, flash[:alert].to_s)
     # 既存設定は書き換わらない
     s = users(:one).reload.user_setting
@@ -54,7 +54,7 @@ class UserSettingsControllerTest < ActionDispatch::IntegrationTest
         }
       }
     end
-    assert_redirected_to root_url
+    assert_redirected_to dashboard_url
     follow_redirect!
     assert_match(/初期設定を保存/, flash[:notice].to_s)
 
