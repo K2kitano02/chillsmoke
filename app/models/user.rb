@@ -7,4 +7,5 @@ class User < ApplicationRecord
   validates :name, presence: true
 
   has_one :user_setting, dependent: :destroy
+  has_many :user_smoking_logs, dependent: :destroy
 end

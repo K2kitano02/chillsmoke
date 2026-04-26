@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_04_24_135007) do
+ActiveRecord::Schema[7.2].define(version: 2026_04_26_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -24,6 +24,20 @@ ActiveRecord::Schema[7.2].define(version: 2026_04_24_135007) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_user_settings_on_user_id", unique: true
+  end
+
+  create_table "user_smoking_logs", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.date "smoked_on", null: false
+    t.integer "smoking_count", default: 0, null: false
+    t.integer "target_daily_cigarette_count_snapshot", null: false
+    t.integer "baseline_daily_cigarette_count_snapshot", null: false
+    t.integer "pack_price_snapshot", null: false
+    t.integer "cigarettes_per_pack_snapshot", null: false
+    t.boolean "is_oni_mode_snapshot", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id", "smoked_on"], name: "index_user_smoking_logs_on_user_id_and_smoked_on", unique: true
   end
 
   create_table "users", force: :cascade do |t|
@@ -40,4 +54,5 @@ ActiveRecord::Schema[7.2].define(version: 2026_04_24_135007) do
   end
 
   add_foreign_key "user_settings", "users"
+  add_foreign_key "user_smoking_logs", "users"
 end
