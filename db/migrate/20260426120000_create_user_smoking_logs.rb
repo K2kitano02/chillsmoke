@@ -15,6 +15,6 @@ class CreateUserSmokingLogs < ActiveRecord::Migration[7.2]
       t.timestamps
     end
 
-    add_index :user_smoking_logs, [:user_id, :smoked_on], unique: true
+    add_index :user_smoking_logs, [ :user_id, :smoked_on ], unique: true
   end
 end
