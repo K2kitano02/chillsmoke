@@ -63,4 +63,63 @@ class UserSmokingLogTest < ActiveSupport::TestCase
       @user.destroy
     end
   end
+
+  test "find_or_create_for_user_by_date! creates log with snapshots from user_setting" do
+    @user.create_user_setting!(
+      target_daily_cigarette_count: 5,
+      baseline_daily_cigarette_count: 20,
+      pack_price: 500,
+      cigarettes_per_pack: 20,
+      is_oni_mode: false
+    )
+    day = Date.current
+
+    assert_difference -> { UserSmokingLog.count }, 1 do
+      log = UserSmokingLog.find_or_create_for_user_by_date!(@user, smoked_on: day)
+      assert log.persisted?
+      assert_equal day, log.smoked_on
+      assert_equal 5, log.target_daily_cigarette_count_snapshot
+      assert_equal 500, log.pack_price_snapshot
+    end
+  end
+
+  test "find_or_create_for_user_by_date! returns existing without changing snapshot" do
+    @user.create_user_setting!(
+      target_daily_cigarette_count: 5,
+      baseline_daily_cigarette_count: 20,
+      pack_price: 500,
+      cigarettes_per_pack: 20,
+      is_oni_mode: false
+    )
+    day = Date.current
+    first = UserSmokingLog.find_or_create_for_user_by_date!(@user, smoked_on: day)
+    @user.user_setting.update!(target_daily_cigarette_count: 8)
+
+    assert_no_difference -> { UserSmokingLog.count } do
+      second = UserSmokingLog.find_or_create_for_user_by_date!(@user, smoked_on: day)
+      assert_equal first.id, second.id
+      assert_equal 5, second.target_daily_cigarette_count_snapshot
+    end
+  end
+
+  test "create_persisted_for_user_by_date! re-fetches on smoked_on uniqueness after concurrent insert" do
+    @user.create_user_setting!(
+      target_daily_cigarette_count: 5,
+      baseline_daily_cigarette_count: 20,
+      pack_price: 500,
+      cigarettes_per_pack: 20,
+      is_oni_mode: false
+    )
+    day = Date.current
+    first = @user.user_smoking_logs.create!(
+      smoked_on: day,
+      smoking_count: 0,
+      **UserSmokingLogTest::SNAPSHOTS
+    )
+
+    assert_no_difference -> { UserSmokingLog.count } do
+      got = UserSmokingLog.send(:create_persisted_for_user_by_date!, @user, day)
+      assert_equal first.id, got.id
+    end
+  end
 end
