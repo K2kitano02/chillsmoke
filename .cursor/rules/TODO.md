@@ -352,15 +352,15 @@
 ## やること(コードレベル)
 
 - **変更点（ファイル）**: `app/models/user_smoking_log.rb` / `app/models/user.rb` / `app/services/*`（例: `SmokingLog::Today`）など
-- [ ] `smoked_on = Time.zone.today` で **持久化済みレコードを find** するAPIと、**未保存の仮想（0本相当）**を返すAPI（または1メソッドで `:persisted?` で分岐）を用意する
-- [ ] **create 用**（上記保存操作からのみ呼ぶ）: 当日行が無いときに限り `create` し、`*_snapshot` に `user_setting` の値をコピー（**5項目すべて**）
-- [ ] 既存行の snapshot は上書きしない（当日行も過去日も、作成時点で固定）
-- [ ] **過去日ログを後から新規作成する場合**の snapshot ルールは **ISSUE-33** と同一（保存時点の現在設定・既存行の snapshot は更新しない）
+- [x] `smoked_on = Time.zone.today` で **持久化済みレコードを find** するAPIと、**未保存の仮想（0本相当）**を返すAPI（または1メソッドで `:persisted?` で分岐）を用意する
+- [x] **create 用**（上記保存操作からのみ呼ぶ）: 当日行が無いときに限り `create` し、`*_snapshot` に `user_setting` の値をコピー（**5項目すべて**）
+- [x] 既存行の snapshot は上書きしない（当日行も過去日も、作成時点で固定）
+- [x] **過去日ログを後から新規作成する場合**の snapshot ルールは **ISSUE-33** と同一（保存時点の現在設定・既存行の snapshot は更新しない）
 
 ## ゴール
 
-- [ ] **表示のみ**で当日の `user_smoking_logs` 行が増えない（DBに勝手にレコードができない）
-- [ ] **+1・反映・保存**などの操作時に当日行が作られ、snapshot が期待どおり入る
+- [x] **表示のみ**で当日の `user_smoking_logs` 行が増えない（DBに勝手にレコードができない）
+- [x] **+1・反映・保存**などの操作時に当日行が作られ、snapshot が期待どおり入る
 
 ---
 
