@@ -1,0 +1,32 @@
+<div class="mx-auto max-w-md rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+  <%= form_with model: @log, url: (@log.persisted? ? user_smoking_log_path(@log) : user_smoking_logs_path), method: (@log.persisted? ? :patch : :post), class: "space-y-4" do |f| %>
+
+    <% if @log.errors[:base].any? %>
+      <p class="text-sm text-red-700"><%= @log.errors[:base].to_sentence %></p>
+    <% end %>
+
+    <div>
+      <span class="block text-sm font-medium text-slate-700">日付</span>
+      <% if @log.persisted? %>
+        <p class="mt-1 text-slate-900 tabular-nums"><%= @log.smoked_on.strftime("%Y年%m月%d日") %></p>
+      <% else %>
+        <%= f.date_field :smoked_on, class: "mt-1 block w-full rounded border border-slate-300 px-3 py-2 text-slate-900" %>
+        <% if @log.errors[:smoked_on].any? %>
+          <p class="mt-1 text-sm text-red-600"><%= @log.errors.full_messages_for(:smoked_on).to_sentence %></p>
+        <% end %>
+      <% end %>
+    </div>
+
+    <div>
+      <%= f.label :smoking_count, "本数", class: "block text-sm font-medium text-slate-700" %>
+      <%= f.number_field :smoking_count, min: 0, step: 1, class: "mt-1 block w-full rounded border border-slate-300 px-3 py-2 text-slate-900" %>
+      <% if @log.errors[:smoking_count].any? %>
+        <p class="mt-1 text-sm text-red-600"><%= @log.errors.full_messages_for(:smoking_count).to_sentence %></p>
+      <% end %>
+    </div>
+
+    <div class="pt-2">
+      <%= f.submit "保存", class: "inline-flex cursor-pointer rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800" %>
+    </div>
+  <% end %>
+</div>

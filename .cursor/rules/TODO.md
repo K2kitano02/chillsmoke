@@ -423,10 +423,21 @@
 - **当時の設定の再現は行わない**（`UserSetting` の変更履歴は持たない前提と同義）
 - **既存ログ**の `*_snapshot` は **変更しない**（`smoking_count` 等、本数まわりのみ更新する）
 
+## 当日扱い・日付境界（確定）
+
+- ISSUE-33 の本数フォームは、**過去日および当日**を対象にできる
+- 当日の通常記録は ISSUE-32 の「+1で記録」を主導線とするが、記録ミスやスケジュール反映後のズレを補正するため、当日もフォームから `smoking_count` を直接保存できる
+- **未来日（`smoked_on > Time.zone.today`）は保存不可**とする
+- 日付判定は必ず `Time.zone.today` を基準にする
+- 詳細表示などの GET だけでは、当日・過去日とも `user_smoking_logs` を作成しない
+- 未記録日にフォームから保存した場合は新規作成として扱い、保存時点の `current_user.user_setting` から snapshot 5項目をコピーする
+- 既存ログの更新では `smoking_count` のみ更新し、snapshot は変更しない
+
 ## やること(コードレベル)
 
 - **変更点（ファイル）**: `config/routes.rb` / `app/controllers/user_smoking_logs_controller.rb` / `app/views/user_smoking_logs/new.html.erb` / `app/views/user_smoking_logs/edit.html.erb`（new/edit は共通化してもよい）
 - [ ] 日付指定で **upsert 導線**を用意（例: `GET/POST ...?smoked_on=YYYY-MM-DD` または member で日付、`find_or_initialize_by(user:, smoked_on:)` で新規/既存を統一）
+- [ ] `smoked_on > Time.zone.today` の未来日は保存せず、フォームにエラーを表示する
 - [ ] **未記録日**は新規作成、**既存ログ**は更新（同一フォームでも可）
 - [ ] **上記「仕様（確定）」どおり**に snapshot（5項目・ISSUE-30どおりのカラム名）を扱う
   - [ ] **新規作成時**（過去日の新規作成を含む）: 保存時点の `current_user.user_setting` を `*_snapshot` にコピー

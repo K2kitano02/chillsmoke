@@ -51,6 +51,13 @@ class UserSmokingLogTest < ActiveSupport::TestCase
     assert_not log.save
   end
 
+  test "rejects blank smoking_count" do
+    log = build_log
+    log.smoking_count = nil
+    assert_not log.save
+    assert log.errors.key?(:smoking_count)
+  end
+
   test "belongs_to user" do
     log = build_log
     log.save!
