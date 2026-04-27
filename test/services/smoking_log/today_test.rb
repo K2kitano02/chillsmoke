@@ -90,6 +90,37 @@ class SmokingLog::TodayTest < ActiveSupport::TestCase
     assert_equal 0, @user.user_smoking_logs.count
   end
 
+  test "increment_persisted! creates today row and sets smoking_count to 1" do
+    assert_difference -> { UserSmokingLog.count }, 1 do
+      log = SmokingLog::Today.increment_persisted!(@user)
+      assert log.persisted?
+      assert_equal 1, log.smoking_count
+      assert_equal 5, log.target_daily_cigarette_count_snapshot
+    end
+  end
+
+  test "increment_persisted! adds to existing row without changing snapshots" do
+    existing = @user.user_smoking_logs.create!(
+      smoked_on: Time.zone.today,
+      smoking_count: 2,
+      **snapshot_attrs(5, 20, 500, 20, false)
+    )
+    @user.user_setting.update!(target_daily_cigarette_count: 8)
+
+    assert_no_difference -> { UserSmokingLog.count } do
+      log = SmokingLog::Today.increment_persisted!(@user)
+      assert_equal existing.id, log.id
+      assert_equal 3, log.smoking_count
+      assert_equal 5, log.target_daily_cigarette_count_snapshot
+    end
+  end
+
+  test "sequential increment_persisted! accumulates count" do
+    4.times { SmokingLog::Today.increment_persisted!(@user) }
+    log = @user.user_smoking_logs.find_by!(smoked_on: Time.zone.today)
+    assert_equal 4, log.smoking_count
+  end
+
   private
 
   def snapshot_attrs(target, baseline, pack, per_pack, oni)

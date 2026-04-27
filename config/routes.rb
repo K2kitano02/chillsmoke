@@ -4,6 +4,8 @@ Rails.application.routes.draw do
   resource :user_setting, only: %i[new create edit update]
   # Plan.md: ログイン後の本画面。表示の中身は ISSUE-53 以降で拡張
   get "dashboard", to: "dashboard#index", as: :dashboard
+  # ISSUE-32: 今日の喫煙本数 +1（当日行の create はこの保存操作でのみ）
+  post "today_smoking_log/increment", to: "user_smoking_logs#increment_today", as: :increment_today_smoking_log
   root "home#index"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

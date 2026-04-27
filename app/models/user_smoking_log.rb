@@ -22,6 +22,9 @@ class UserSmokingLog < ApplicationRecord
     user.user_smoking_logs.find_by(smoked_on: smoked_on) || create_persisted_for_user_by_date!(user, smoked_on)
   end
 
+  # INSERT のユニーク競合をセーブポイント内に閉じる（requires_new: true）。
+  # 外側トランザクション（例: SmokingLog::Today.increment_persisted!）内で rescue だけすると
+  # PostgreSQL はトランザクションが aborted のままになり再検索も失敗するため。
   def self.create_persisted_for_user_by_date!(user, smoked_on)
     setting = user.user_setting
     raise ActiveRecord::RecordNotFound, "user_setting is required" if setting.nil?
@@ -29,13 +32,17 @@ class UserSmokingLog < ApplicationRecord
     attrs = { smoked_on: smoked_on, smoking_count: 0 }.merge(
       snapshot_attributes_from_user_setting(setting)
     )
-    user.user_smoking_logs.create!(attrs)
-  rescue ActiveRecord::RecordNotUnique
-    re_find_smoking_log_after_race!(user, smoked_on)
-  rescue ActiveRecord::RecordInvalid => e
-    raise e unless e.record.errors.of_kind?(:smoked_on, :taken)
+    begin
+      UserSmokingLog.transaction(requires_new: true) do
+        user.user_smoking_logs.create!(attrs)
+      end
+    rescue ActiveRecord::RecordNotUnique
+      re_find_smoking_log_after_race!(user, smoked_on)
+    rescue ActiveRecord::RecordInvalid => e
+      raise e unless e.record.errors.of_kind?(:smoked_on, :taken)
 
-    re_find_smoking_log_after_race!(user, smoked_on)
+      re_find_smoking_log_after_race!(user, smoked_on)
+    end
   end
 
   def self.re_find_smoking_log_after_race!(user, smoked_on)

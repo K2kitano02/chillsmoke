@@ -1,4 +1,21 @@
 <div class="mx-auto max-w-2xl">
   <h1 class="text-2xl font-semibold text-gray-900">ダッシュボード</h1>
-  <p class="mt-2 text-sm text-gray-600">本数・節約・継続日数などの表示は後続の Issue で追加します。</p>
+
+  <section class="mt-6 rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+    <h2 class="text-sm font-medium text-gray-700">今日の喫煙（本数）</h2>
+    <p class="mt-2 text-3xl font-semibold tabular-nums text-gray-900"><%= @today_smoking_log.smoking_count %></p>
+    <p class="mt-1 text-xs text-gray-500">
+      <% if @today_smoking_log.persisted? %>
+        本日分を記録済みです。
+      <% else %>
+        まだ本日分の記録がありません（表示のみ・DB には未保存）。
+      <% end %>
+    </p>
+    <div class="mt-4">
+      <%= button_to "＋1で記録", increment_today_smoking_log_path, method: :post,
+            class: "inline-flex items-center rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800" %>
+    </div>
+  </section>
+
+  <p class="mt-6 text-sm text-gray-600">節約・継続日数などの表示は後続の Issue で追加します。</p>
 </div>
