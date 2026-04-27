@@ -15,6 +15,18 @@ class SmokingLog::Today
     def find_or_create_persisted!(user)
       UserSmokingLog.find_or_create_for_user_by_date!(user, smoked_on: Time.zone.today)
     end
+
+    # ISSUE-32: 当日行が無ければ snapshot 付きで create し、smoking_count を原子性のある加算で +1 する。
+    # find_or_create と with_lock を同一トランザクションにまとめ、連打・並行リクエストでも加算漏れを防ぐ。
+    def increment_persisted!(user)
+      UserSmokingLog.transaction do
+        log = find_or_create_persisted!(user)
+        log.with_lock do
+          log.increment!(:smoking_count)
+        end
+        log
+      end
+    end
   end
 
   class << self

@@ -352,15 +352,19 @@
 ## やること(コードレベル)
 
 - **変更点（ファイル）**: `app/models/user_smoking_log.rb` / `app/models/user.rb` / `app/services/*`（例: `SmokingLog::Today`）など
+<!-- 実装クリア: ISSUE-31
 - [x] `smoked_on = Time.zone.today` で **持久化済みレコードを find** するAPIと、**未保存の仮想（0本相当）**を返すAPI（または1メソッドで `:persisted?` で分岐）を用意する
 - [x] **create 用**（上記保存操作からのみ呼ぶ）: 当日行が無いときに限り `create` し、`*_snapshot` に `user_setting` の値をコピー（**5項目すべて**）
 - [x] 既存行の snapshot は上書きしない（当日行も過去日も、作成時点で固定）
 - [x] **過去日ログを後から新規作成する場合**の snapshot ルールは **ISSUE-33** と同一（保存時点の現在設定・既存行の snapshot は更新しない）
+      -->
 
 ## ゴール
 
+<!-- 実装クリア: ISSUE-31
 - [x] **表示のみ**で当日の `user_smoking_logs` 行が増えない（DBに勝手にレコードができない）
 - [x] **+1・反映・保存**などの操作時に当日行が作られ、snapshot が期待どおり入る
+-->
 
 ---
 
@@ -386,15 +390,19 @@
 ## やること(コードレベル)
 
 - **変更点（ファイル）**: `config/routes.rb` / `app/controllers/user_smoking_logs_controller.rb` / `app/views/dashboard/*`
-- [ ] `POST /today_smoking_log/increment` のような専用ルート（名前は任意）
-- [ ] controller で **このリクエストが保存操作**であることを前提に、当日行が無ければ **ISSUE-31 の create 経路**で新規行（snapshot 埋め）する
-- [ ] **上記「加算の原子性」どおり**、+1 を **atomic update** で行う（**`with_lock` 推奨**。`increment!` や `smoking_count = smoking_count + 1` 系 SQL でも可）
-- [ ] 連打・**同一ユーザーからの同時リクエスト**でも加算が欠落しないことを確認する（必要ならモデル／結合テスト）
+<!-- 実装クリア: ISSUE-32
+- [x] `POST /today_smoking_log/increment` のような専用ルート（名前は任意）
+- [x] controller で **このリクエストが保存操作**であることを前提に、当日行が無ければ **ISSUE-31 の create 経路**で新規行（snapshot 埋め）する
+- [x] **上記「加算の原子性」どおり**、+1 を **atomic update** で行う（**`with_lock` 推奨**。`increment!` や `smoking_count = smoking_count + 1` 系 SQL でも可）
+- [x] 連打・**同一ユーザーからの同時リクエスト**でも加算が欠落しないことを確認する（必要ならモデル／結合テスト）
+      -->
 
 ## ゴール
 
-- [ ] 連打でカウントが増える、リロード後も保持される
-- [ ] **同時リクエストでも加算漏れが発生しない**
+<!-- 実装クリア: ISSUE-32
+- [x] 連打でカウントが増える、リロード後も保持される
+- [x] **同時リクエストでも加算漏れが発生しない**
+-->
 
 ---
 
@@ -632,7 +640,7 @@
 - [ ] **節約表示**は ISSUE-50 どおり **二系統**に分ける:**累計節約（昨日までの確定）** と **今日の節約見込み**（ラベルで見込みと明示）
 - [ ] **残高**は ISSUE-51 どおり、**確定累計 − 使用累計**（今日の見込みは残高に含めない）
 - [ ] 継続日数（ISSUE-52・当日除外）とあわせて表示
-- [ ] 「+1で記録」ボタンを配置（ISSUE-32と接続）
+- [x] 「+1で記録」ボタンを配置（ISSUE-32と接続）
 
 ## ゴール
 

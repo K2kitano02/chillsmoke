@@ -19,5 +19,7 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
     get dashboard_url
     assert_response :success
     assert_select "h1", text: "ダッシュボード"
+    assert_match(/＋1で記録/, response.body)
+    assert_select "form[action=?]", increment_today_smoking_log_path
   end
 end
