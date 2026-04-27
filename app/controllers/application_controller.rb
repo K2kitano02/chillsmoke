@@ -6,6 +6,7 @@ class ApplicationController < ActionController::Base
   before_action :authenticate_user!, unless: :devise_controller?
   # ISSUE-21: ログイン済みで UserSetting が無いときは初期設定へ（Devise 画面では動かさない）
   before_action :ensure_user_setting_exists, unless: :devise_controller?
+  rescue_from ActiveRecord::RecordNotFound, with: :not_found
   allow_browser versions: :modern
 
   # ログイン成功後: 設定未作成なら初期設定へ。設定済みは stored_location または dashboard（root はオンボ用。変更時は TODO.md ISSUE-21「導線の固定方針」と Plan.md を併せて見直す）
@@ -35,5 +36,9 @@ class ApplicationController < ActionController::Base
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:sign_up, keys: [ :name ])
     devise_parameter_sanitizer.permit(:account_update, keys: [ :name ])
+  end
+
+  def not_found
+    head :not_found
   end
 end

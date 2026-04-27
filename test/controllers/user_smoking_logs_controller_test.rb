@@ -3,8 +3,22 @@
 require "test_helper"
 
 class UserSmokingLogsControllerTest < ActionDispatch::IntegrationTest
+  def log_attrs
+    {
+      target_daily_cigarette_count_snapshot: 5,
+      baseline_daily_cigarette_count_snapshot: 20,
+      pack_price_snapshot: 500,
+      cigarettes_per_pack_snapshot: 20,
+      is_oni_mode_snapshot: false
+    }
+  end
   test "未ログインはサインインへリダイレクトされる" do
     post increment_today_smoking_log_url
+    assert_redirected_to new_user_session_url
+  end
+
+  test "本数フォーム (new) も未ログインはサインインへ" do
+    get new_user_smoking_log_url
     assert_redirected_to new_user_session_url
   end
 
@@ -47,5 +61,148 @@ class UserSmokingLogsControllerTest < ActionDispatch::IntegrationTest
     3.times { post increment_today_smoking_log_url }
     log = users(:one).user_smoking_logs.find_by!(smoked_on: Time.zone.today)
     assert_equal 3, log.smoking_count
+  end
+
+  # --- ISSUE-33: 日付指定の本数登録 ---
+
+  test "new は GET ではログ行を作らない" do
+    sign_in users(:one)
+    day = Time.zone.today - 5.days
+    assert_no_difference -> { UserSmokingLog.count } do
+      get new_user_smoking_log_url(smoked_on: day.to_s)
+    end
+    assert_response :success
+  end
+
+  test "new は未来日クエリで 422 かつ本文にエラー" do
+    sign_in users(:one)
+    get new_user_smoking_log_url(smoked_on: (Time.zone.today + 1.day).to_s)
+    assert_response :unprocessable_entity
+    assert_match(/未来/, response.body)
+  end
+
+  test "new は該当日に既存ログがあれば edit へリダイレクト" do
+    sign_in users(:one)
+    day = Time.zone.today - 1.day
+    existing = users(:one).user_smoking_logs.create!(log_attrs.merge(smoked_on: day, smoking_count: 1))
+
+    get new_user_smoking_log_url(smoked_on: day.to_s)
+    assert_redirected_to edit_user_smoking_log_url(existing)
+  end
+
+  test "create は未記録の過去日に snapshot 付きで行を作る" do
+    sign_in users(:one)
+    day = Time.zone.today - 7.days
+    assert_difference -> { UserSmokingLog.count }, 1 do
+      post user_smoking_logs_url, params: {
+        user_smoking_log: { smoked_on: day.to_s, smoking_count: "4" }
+      }
+    end
+    assert_redirected_to edit_user_smoking_log_url(UserSmokingLog.order(:id).last)
+    log = users(:one).user_smoking_logs.find_by!(smoked_on: day)
+    assert_equal 4, log.smoking_count
+    assert_equal users(:one).user_setting.target_daily_cigarette_count, log.target_daily_cigarette_count_snapshot
+    assert_equal users(:one).user_setting.pack_price, log.pack_price_snapshot
+  end
+
+  test "create は未来日を保存せずエラー表示" do
+    sign_in users(:one)
+    assert_no_difference -> { UserSmokingLog.count } do
+      post user_smoking_logs_url, params: {
+        user_smoking_log: { smoked_on: (Time.zone.today + 1.day).to_s, smoking_count: 1 }
+      }
+    end
+    assert_response :unprocessable_entity
+  end
+
+  test "create は既存行の場合は本数のみ更新し snapshot は変えない" do
+    sign_in users(:one)
+    day = Time.zone.today - 2.days
+    log = users(:one).user_smoking_logs.create!(log_attrs.merge(smoked_on: day, smoking_count: 2))
+
+    assert_no_difference -> { UserSmokingLog.count } do
+      post user_smoking_logs_url, params: {
+        user_smoking_log: { smoked_on: day.to_s, smoking_count: "9" }
+      }
+    end
+    assert_redirected_to edit_user_smoking_log_url(log)
+    log.reload
+    assert_equal 9, log.smoking_count
+    assert_equal 5, log.target_daily_cigarette_count_snapshot
+  end
+
+  test "update は smoking_count のみ変え snapshot は不変" do
+    sign_in users(:one)
+    day = Time.zone.today - 3.days
+    log = users(:one).user_smoking_logs.create!(log_attrs.merge(smoked_on: day, smoking_count: 1))
+
+    patch user_smoking_log_url(log), params: { user_smoking_log: { smoking_count: 8 } }
+    assert_redirected_to edit_user_smoking_log_url(log)
+    log.reload
+    assert_equal 8, log.smoking_count
+    assert_equal 5, log.target_daily_cigarette_count_snapshot
+  end
+
+  test "他人のログ id の edit は 404" do
+    sign_in users(:one)
+    other_log = users(:two).user_smoking_logs.create!(log_attrs.merge(smoked_on: Time.zone.today - 1.day, smoking_count: 1))
+    get edit_user_smoking_log_url(other_log)
+    assert_response :not_found
+  end
+
+  test "create は本数が非数値のとき保存せず 422" do
+    sign_in users(:one)
+    day = Time.zone.today - 10.days
+    assert_no_difference -> { UserSmokingLog.count } do
+      post user_smoking_logs_url, params: {
+        user_smoking_log: { smoked_on: day.to_s, smoking_count: "abc" }
+      }
+    end
+    assert_response :unprocessable_entity
+  end
+
+  test "create は本数が非数値のとき既存行の本数を変えない" do
+    sign_in users(:one)
+    day = Time.zone.today - 11.days
+    log = users(:one).user_smoking_logs.create!(log_attrs.merge(smoked_on: day, smoking_count: 3))
+
+    assert_no_difference -> { UserSmokingLog.count } do
+      post user_smoking_logs_url, params: {
+        user_smoking_log: { smoked_on: day.to_s, smoking_count: "xyz" }
+      }
+    end
+    assert_response :unprocessable_entity
+    assert_equal 3, log.reload.smoking_count
+  end
+
+  test "create は本数が空欄のとき 422 かつ新規行を作らない" do
+    sign_in users(:one)
+    day = Time.zone.today - 12.days
+    assert_no_difference -> { UserSmokingLog.count } do
+      post user_smoking_logs_url, params: {
+        user_smoking_log: { smoked_on: day.to_s, smoking_count: "" }
+      }
+    end
+    assert_response :unprocessable_entity
+  end
+
+  test "update は本数が非数値のとき 422 かつ本数不変" do
+    sign_in users(:one)
+    day = Time.zone.today - 4.days
+    log = users(:one).user_smoking_logs.create!(log_attrs.merge(smoked_on: day, smoking_count: 6))
+    before = log.reload.smoking_count
+    patch user_smoking_log_url(log), params: { user_smoking_log: { smoking_count: "nope" } }
+    assert_response :unprocessable_entity
+    assert_equal before, log.reload.smoking_count
+  end
+
+  test "update は本数が空欄のとき 422 かつ本数不変" do
+    sign_in users(:one)
+    day = Time.zone.today - 5.days
+    log = users(:one).user_smoking_logs.create!(log_attrs.merge(smoked_on: day, smoking_count: 7))
+    before = log.reload.smoking_count
+    patch user_smoking_log_url(log), params: { user_smoking_log: { smoking_count: "" } }
+    assert_response :unprocessable_entity
+    assert_equal before, log.reload.smoking_count
   end
 end

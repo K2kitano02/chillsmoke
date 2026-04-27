@@ -6,6 +6,8 @@ Rails.application.routes.draw do
   get "dashboard", to: "dashboard#index", as: :dashboard
   # ISSUE-32: 今日の喫煙本数 +1（当日行の create はこの保存操作でのみ）
   post "today_smoking_log/increment", to: "user_smoking_logs#increment_today", as: :increment_today_smoking_log
+  # ISSUE-33: 日付指定の本数登録（当日・過去日）。new/edit の GET では行を作らない
+  resources :user_smoking_logs, only: %i[new create edit update]
   root "home#index"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
