@@ -4,10 +4,17 @@ Rails.application.routes.draw do
   resource :user_setting, only: %i[new create edit update]
   # Plan.md: ログイン後の本画面。表示の中身は ISSUE-53 以降で拡張
   get "dashboard", to: "dashboard#index", as: :dashboard
+  # ISSUE-40: 喫煙ログの月カレンダー閲覧
+  get "calendar", to: "calendar#index", as: :calendar
   # ISSUE-32: 今日の喫煙本数 +1（当日行の create はこの保存操作でのみ）
   post "today_smoking_log/increment", to: "user_smoking_logs#increment_today", as: :increment_today_smoking_log
   # ISSUE-33: 日付指定の本数登録（当日・過去日）。new/edit の GET では行を作らない
-  resources :user_smoking_logs, only: %i[new create edit update]
+  # ISSUE-42（一部）: 日付ベース詳細（カレンダーからのみ ID への遷移を避けるため collection に定義）
+  resources :user_smoking_logs, only: %i[new create edit update] do
+    collection do
+      get :by_date
+    end
+  end
   root "home#index"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

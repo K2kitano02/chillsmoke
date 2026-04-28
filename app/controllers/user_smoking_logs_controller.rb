@@ -94,6 +94,28 @@ class UserSmokingLogsController < ApplicationController
     end
   end
 
+  # ISSUE-42 に沿うたたき台: GET のみ。表示でログを create しない。未記録日は目標・節約は ― とする。
+  def by_date
+    raw = params[:date].presence
+    unless raw
+      redirect_to calendar_path, alert: "日付が指定されていません。"
+      return
+    end
+
+    @date = parse_date_param(raw)
+    unless @date
+      redirect_to calendar_path, alert: "日付の形式が正しくありません。"
+      return
+    end
+
+    if @date > Time.zone.today
+      redirect_to calendar_path, alert: "未来の日付は開けません。"
+      return
+    end
+
+    @log = current_user.user_smoking_logs.find_by(smoked_on: @date)
+  end
+
   private
 
   def prepare_log_after_invalid_count!

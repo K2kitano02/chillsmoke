@@ -205,4 +205,50 @@ class UserSmokingLogsControllerTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
     assert_equal before, log.reload.smoking_count
   end
+
+  # --- ISSUE-42 / カレンダー連携: 日付詳細 ---
+
+  test "by_date は GET でログ行を増やさない" do
+    sign_in users(:one)
+    day = Time.zone.today - 2.days
+    assert_no_difference -> { UserSmokingLog.count } do
+      get by_date_user_smoking_logs_url(date: day.strftime("%Y-%m-%d"))
+    end
+    assert_response :success
+  end
+
+  test "by_date はログがある日・未記録日の両方で 200" do
+    sign_in users(:one)
+    with_log = Time.zone.today - 1.day
+    users(:one).user_smoking_logs.create!(
+      log_attrs.merge(smoked_on: with_log, smoking_count: 3)
+    )
+    get by_date_user_smoking_logs_url(date: with_log.strftime("%Y-%m-%d"))
+    assert_response :success
+    assert_match(/3/, response.body)
+
+    blank_day = Time.zone.today - 9.days
+    get by_date_user_smoking_logs_url(date: blank_day.strftime("%Y-%m-%d"))
+    assert_response :success
+    assert_match(/未記録/, response.body)
+  end
+
+  test "by_date は他人のログは表示しない（その日は未記録扱い）" do
+    sign_in users(:one)
+    day = Time.zone.today - 3.days
+    users(:two).user_smoking_logs.create!(
+      log_attrs.merge(smoked_on: day, smoking_count: 99)
+    )
+    get by_date_user_smoking_logs_url(date: day.strftime("%Y-%m-%d"))
+    assert_response :success
+    assert_match(/未記録/, response.body)
+    assert_no_match(/99\s*本/, response.body)
+  end
+
+  test "by_date は未来日をカレンダーへリダイレクト" do
+    sign_in users(:one)
+    future = Time.zone.today + 1.day
+    get by_date_user_smoking_logs_url(date: future.strftime("%Y-%m-%d"))
+    assert_redirected_to calendar_path
+  end
 end

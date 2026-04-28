@@ -1,0 +1,25 @@
+<div class="mx-auto max-w-4xl">
+  <h1 class="text-2xl font-semibold text-gray-900">喫煙記録カレンダー</h1>
+  <p class="mt-1 text-sm text-gray-600">各日の本数を表示します。日付を開くと詳細・本数の登録・修正へ進めます。</p>
+
+  <%# simple_calendar: events を日付（smoked_on）でセルに振り分け。前後月ナビは params[:start_date] を付与 %>
+  <%= month_calendar(events: @logs, attribute: :smoked_on, start_date: @start_date) do |date, logs| %>
+    <div class="flex min-h-[4.5rem] flex-col gap-0.5 p-1">
+      <% if date <= Time.zone.today %>
+        <%= link_to by_date_user_smoking_logs_path(date: date.strftime("%Y-%m-%d")),
+              class: "block rounded-md p-1 text-left text-sm font-medium text-gray-900 outline-none ring-emerald-600 hover:bg-emerald-50 focus-visible:ring-2" do %>
+          <span class="tabular-nums"><%= date.day %></span>
+          <% if logs.any? %>
+            <span class="mt-0.5 block text-xs font-normal tabular-nums text-gray-700"><%= logs.first.smoking_count %> 本</span>
+          <% end %>
+        <% end %>
+      <% else %>
+        <div class="p-1 text-sm text-gray-400 tabular-nums"><%= date.day %></div>
+      <% end %>
+    </div>
+  <% end %>
+
+  <p class="mt-4 text-sm text-gray-500">
+    <%= link_to "ダッシュボードへ戻る", dashboard_path, class: "text-emerald-800 underline" %>
+  </p>
+</div>

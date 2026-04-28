@@ -470,14 +470,18 @@
 ## やること(コードレベル)
 
 - **変更点（ファイル）**: `Gemfile` / `config/routes.rb` / `app/controllers/calendar_controller.rb` / `app/views/calendar/index.html.erb`
-- [ ] `simple_calendar` 導入
-- [ ] `@logs = current_user.user_smoking_logs.where(smoked_on: range)` 取得
-- [ ] 日セルに `smoking_count` を表示（未記録は空）
-- [ ] **日付クリック**の遷移先は **ISSUE-42 の日付ベース詳細ルート**のみとする（ログIDの `show` へは向けない）
+<!-- 実装クリア: ISSUE-40
+- [x] `simple_calendar` 導入
+- [x] `@logs = current_user.user_smoking_logs.where(smoked_on: range)` 取得
+- [x] 日セルに `smoking_count` を表示（未記録は空）
+- [x] **日付クリック**の遷移先は **ISSUE-42 の日付ベース詳細ルート**のみとする（ログIDの `show` へは向けない）
+-->
 
 ## ゴール
 
-- [ ] 月移動しても正しい月のログが見える
+<!-- 実装クリア: ISSUE-40
+- [x] 月移動しても正しい月のログが見える
+-->
 
 ---
 
