@@ -114,7 +114,7 @@ class UserSmokingLogsController < ApplicationController
       return redirect_to edit_user_smoking_log_path(@log), notice: "本数を保存しました。"
     end
 
-    return render @log.new_record? ? :new : :edit, status: :unprocessable_entity
+    render @log.new_record? ? :new : :edit, status: :unprocessable_entity
   end
 
   def redirect_after_save!

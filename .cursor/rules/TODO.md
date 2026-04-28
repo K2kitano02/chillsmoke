@@ -436,19 +436,23 @@
 ## やること(コードレベル)
 
 - **変更点（ファイル）**: `config/routes.rb` / `app/controllers/user_smoking_logs_controller.rb` / `app/views/user_smoking_logs/new.html.erb` / `app/views/user_smoking_logs/edit.html.erb`（new/edit は共通化してもよい）
-- [ ] 日付指定で **upsert 導線**を用意（例: `GET/POST ...?smoked_on=YYYY-MM-DD` または member で日付、`find_or_initialize_by(user:, smoked_on:)` で新規/既存を統一）
-- [ ] `smoked_on > Time.zone.today` の未来日は保存せず、フォームにエラーを表示する
-- [ ] **未記録日**は新規作成、**既存ログ**は更新（同一フォームでも可）
-- [ ] **上記「仕様（確定）」どおり**に snapshot（5項目・ISSUE-30どおりのカラム名）を扱う
-  - [ ] **新規作成時**（過去日の新規作成を含む）: 保存時点の `current_user.user_setting` を `*_snapshot` にコピー
-  - [ ] **既存ログの更新**（`edit`/`update`）: `smoking_count` 等のみ更新し、`*_snapshot` は変更しない
-- [ ] `resources :user_smoking_logs, only: [:new, :create, :edit, :update]` 等、ルートは上記に合わせて定義（本人の範囲のみ）
-- [ ] 不正アクセス防止（他ユーザーの日付・ログは404等）
+<!-- 実装クリア: ISSUE-33
+- [x] 日付指定で **upsert 導線**を用意（例: `GET/POST ...?smoked_on=YYYY-MM-DD` または member で日付、`find_or_initialize_by(user:, smoked_on:)` で新規/既存を統一）
+- [x] `smoked_on > Time.zone.today` の未来日は保存せず、フォームにエラーを表示する
+- [x] **未記録日**は新規作成、**既存ログ**は更新（同一フォームでも可）
+- [x] **上記「仕様（確定）」どおり**に snapshot（5項目・ISSUE-30どおりのカラム名）を扱う
+  - [x] **新規作成時**（過去日の新規作成を含む）: 保存時点の `current_user.user_setting` を `*_snapshot` にコピー
+  - [x] **既存ログの更新**（`edit`/`update`）: `smoking_count` 等のみ更新し、`*_snapshot` は変更しない
+- [x] `resources :user_smoking_logs, only: [:new, :create, :edit, :update]` 等、ルートは上記に合わせて定義（本人の範囲のみ）
+- [x] 不正アクセス防止（他ユーザーの日付・ログは404等）
+      -->
 
 ## ゴール
 
-- [ ] **未記録の過去日**でも本数を登録でき、カレンダー/詳細が更新される
-- [ ] 既存の過去日ログも編集でき、集計に反映される
+<!-- 実装クリア: ISSUE-33
+- [x] **未記録の過去日**でも本数を登録でき、カレンダー/詳細が更新される
+- [x] 既存の過去日ログも編集でき、集計に反映される
+-->
 
 ---
 
