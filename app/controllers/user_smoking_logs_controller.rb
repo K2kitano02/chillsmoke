@@ -111,10 +111,10 @@ class UserSmokingLogsController < ApplicationController
 
   def try_save_upsert_from_create!
     if @log.save
-      return redirect_to edit_user_smoking_log_path(@log), notice: "本数を保存しました。"
+      redirect_to edit_user_smoking_log_path(@log), notice: "本数を保存しました。"
+    else
+      render @log.new_record? ? :new : :edit, status: :unprocessable_entity
     end
-
-    render @log.new_record? ? :new : :edit, status: :unprocessable_entity
   end
 
   def redirect_after_save!
