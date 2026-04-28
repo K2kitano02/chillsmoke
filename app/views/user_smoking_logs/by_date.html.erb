@@ -1,0 +1,43 @@
+<div class="mx-auto max-w-2xl">
+  <h1 class="text-2xl font-semibold text-gray-900">
+    <%= @date.year %>年<%= @date.month %>月<%= @date.day %>日
+  </h1>
+
+  <section class="mt-6 space-y-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+    <div>
+      <h2 class="text-sm font-medium text-gray-700">本数</h2>
+      <% if @log %>
+        <p class="mt-1 text-2xl font-semibold tabular-nums text-gray-900"><%= @log.smoking_count %></p>
+      <% else %>
+        <p class="mt-1 text-lg text-gray-600">未記録（0 本として表示）</p>
+      <% end %>
+    </div>
+
+    <div>
+      <h2 class="text-sm font-medium text-gray-700">目標（当日のスナップショット）</h2>
+      <p class="mt-1 tabular-nums text-gray-900">
+        <%= @log ? @log.target_daily_cigarette_count_snapshot : "―" %>
+      </p>
+    </div>
+
+    <div>
+      <h2 class="text-sm font-medium text-gray-700">節約額</h2>
+      <p class="mt-1 text-gray-600">―</p>
+      <p class="mt-1 text-xs text-gray-500">日次の金額表示は ISSUE-50 で実装予定です。</p>
+    </div>
+
+    <div class="pt-2">
+      <% if @log %>
+        <%= link_to "本数を修正", edit_user_smoking_log_path(@log),
+              class: "inline-flex rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800" %>
+      <% else %>
+        <%= link_to "本数を登録", new_user_smoking_log_path(smoked_on: @date),
+              class: "inline-flex rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800" %>
+      <% end %>
+    </div>
+  </section>
+
+  <p class="mt-6 text-sm text-gray-600">
+    <%= link_to "カレンダーへ戻る", calendar_path, class: "text-emerald-800 underline" %>
+  </p>
+</div>

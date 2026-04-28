@@ -1,0 +1,40 @@
+<div class="simple-calendar mt-6 overflow-x-auto rounded-lg border border-gray-200 bg-white shadow-sm">
+  <div class="calendar-heading flex flex-col gap-3 border-b border-gray-200 bg-gray-50 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+    <time datetime="<%= start_date.strftime('%Y-%m') %>" class="calendar-title text-lg font-semibold text-gray-900">
+      <%= start_date.year %>年<%= start_date.month %>月
+    </time>
+
+    <nav class="flex flex-wrap items-center gap-2 text-sm">
+      <%= link_to t("simple_calendar.previous", default: "前月"), calendar.url_for_previous_view,
+            class: "rounded border border-gray-300 bg-white px-3 py-1.5 text-gray-800 hover:bg-gray-100" %>
+      <%= link_to t("simple_calendar.today", default: "今月"), calendar.url_for_today_view,
+            class: "rounded border border-gray-300 bg-white px-3 py-1.5 text-gray-800 hover:bg-gray-100" %>
+      <%= link_to t("simple_calendar.next", default: "翌月"), calendar.url_for_next_view,
+            class: "rounded border border-gray-300 bg-white px-3 py-1.5 text-gray-800 hover:bg-gray-100" %>
+    </nav>
+  </div>
+
+  <table class="w-full table-fixed border-collapse text-sm">
+    <thead>
+      <tr>
+        <% date_range.slice(0, 7).each do |day| %>
+          <th scope="col" class="border-b border-gray-200 bg-gray-50 py-2 text-center font-medium text-gray-600">
+            <%= %w[日 月 火 水 木 金 土][day.wday] %>
+          </th>
+        <% end %>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% date_range.each_slice(7) do |week| %>
+        <tr class="calendar-week border-b border-gray-100 last:border-b-0">
+          <% week.each do |day| %>
+            <%= content_tag :td, class: "#{calendar.td_classes_for(day)} align-top" do %>
+              <% instance_exec(day, calendar.sorted_events_for(day), &passed_block) %>
+            <% end %>
+          <% end %>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
