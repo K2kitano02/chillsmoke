@@ -64,6 +64,15 @@ class UserSmokingLogTest < ActiveSupport::TestCase
     assert_equal @user, log.user
   end
 
+  test "met_daily_target? は本数がスナップショット目標以下なら true" do
+    assert build_log(smoking_count: 0).met_daily_target?
+    assert build_log(smoking_count: 5).met_daily_target?
+  end
+
+  test "met_daily_target? は本数がスナップショット目標を超えると false" do
+    assert_not build_log(smoking_count: 6).met_daily_target?
+  end
+
   test "user destroy destroys dependent logs" do
     build_log.save!
     assert_difference -> { UserSmokingLog.count }, -1 do

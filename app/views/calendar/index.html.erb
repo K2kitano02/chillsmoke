@@ -6,11 +6,13 @@
   <%= month_calendar(events: @logs, attribute: :smoked_on, start_date: @start_date) do |date, logs| %>
     <div class="flex min-h-[4.5rem] flex-col gap-0.5 p-1">
       <% if date <= Time.zone.today %>
+        <% log = logs.first %>
         <%= link_to by_date_user_smoking_logs_path(date: date.strftime("%Y-%m-%d")),
-              class: "block rounded-md p-1 text-left text-sm font-medium text-gray-900 outline-none ring-emerald-600 hover:bg-emerald-50 focus-visible:ring-2" do %>
+              class: calendar_day_link_classes(log) do %>
           <span class="tabular-nums"><%= date.day %></span>
-          <% if logs.any? %>
-            <span class="mt-0.5 block text-xs font-normal tabular-nums text-gray-700"><%= logs.first.smoking_count %> 本</span>
+          <% if log %>
+            <% count_cls = log.met_daily_target? ? "text-emerald-800" : "text-red-800" %>
+            <span class="mt-0.5 block text-xs font-normal tabular-nums <%= count_cls %>"><%= log.smoking_count %> 本</span>
           <% end %>
         <% end %>
       <% else %>
