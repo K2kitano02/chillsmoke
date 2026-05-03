@@ -22,8 +22,11 @@
 
     <div>
       <h2 class="text-sm font-medium text-gray-700">節約額</h2>
-      <p class="mt-1 text-gray-600">―</p>
-      <p class="mt-1 text-xs text-gray-500">日次の金額表示は ISSUE-50 で実装予定です。</p>
+      <% if @log %>
+        <p class="mt-1 tabular-nums text-gray-900"><%= number_to_currency(@log.saved_yen, unit: "¥", precision: 0) %></p>
+      <% else %>
+        <p class="mt-1 text-gray-600">―</p>
+      <% end %>
     </div>
 
     <div class="pt-2">

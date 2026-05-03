@@ -63,6 +63,18 @@ class UserSmokingLog < ApplicationRecord
     smoking_count <= target_daily_cigarette_count_snapshot
   end
 
+  # 日次の節約本数。snapshot を基準に算出する（鬼モード時は目標超過で 0）
+  def saved_cigs
+    return 0 if is_oni_mode_snapshot && smoking_count > target_daily_cigarette_count_snapshot
+
+    [ 0, baseline_daily_cigarette_count_snapshot - smoking_count ].max
+  end
+
+  # 日次の節約金額（円）。floor で端数切り捨て
+  def saved_yen
+    (saved_cigs * pack_price_snapshot / cigarettes_per_pack_snapshot).floor
+  end
+
   private
 
   def smoked_on_not_in_future

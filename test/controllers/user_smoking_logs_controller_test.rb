@@ -251,4 +251,25 @@ class UserSmokingLogsControllerTest < ActionDispatch::IntegrationTest
     get by_date_user_smoking_logs_url(date: future.strftime("%Y-%m-%d"))
     assert_redirected_to calendar_path
   end
+
+  test "by_date は記録済み日に snapshot 由来の節約額を表示" do
+    sign_in users(:one)
+    day = Time.zone.today - 4.days
+    # baseline=20, smoking_count=3, pack_price=500, pack=20 → saved_yen=425
+    users(:one).user_smoking_logs.create!(
+      log_attrs.merge(smoked_on: day, smoking_count: 3)
+    )
+    get by_date_user_smoking_logs_url(date: day.strftime("%Y-%m-%d"))
+    assert_response :success
+    assert_match(/425/, response.body)
+  end
+
+  test "by_date は未記録日には節約額を ― で表示する" do
+    sign_in users(:one)
+    blank_day = Time.zone.today - 14.days
+    get by_date_user_smoking_logs_url(date: blank_day.strftime("%Y-%m-%d"))
+    assert_response :success
+    # 未記録日は本数・目標・節約すべて ― あるいは未記録扱い。金額のような数値が出てはいけない
+    assert_no_match(/¥\s*\d/, response.body)
+  end
 end

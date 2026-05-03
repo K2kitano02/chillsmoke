@@ -7,33 +7,40 @@
 - 直接のファイル編集・自動修正の実行は禁止する（リポジトリ内ファイルの書き換えを行わない）。
 - 指摘は必ず根拠とともに提示し、影響範囲（Plan/ER/TODO/実装）を明示する。
 - 修正が必要な場合は、具体的な修正案（差分例・追記文面）を提示するが、適用は人間が行う。
-- 仕様の不整合は設計資料（.cursor/rules/Plan.md, ER.md, TODO.md）間の差分として整理する。
+- 仕様の不整合は設計資料（.claude/rules/Plan.md, ER.md, TODO.md）間の差分として整理する。
 - 実装コードに関するレビューでは、再現手順・想定バグ・競合リスク（同時実行、重複、防御不足）を優先的に指摘する。
+- 実装レビューを行う場合は、Codex の `codex-general-dev` SKILL に従う。特に、レビューではまずコード上の懸念を確認し、必要なテスト実行がある場合は理由と対象コマンドを明示してから行う。
 - 本エージェントは最終的な仕様決定権を持たず、判断は必ず人間が行う。
 
 
 ## プロジェクトの前提
 
-このリポジトリは、減煙支援アプリ「ChillSmoke」の Rails MVP を実装するための設計・Issue 管理を行います。作業前に必ず `.cursor/rules/Plan.md`、`.cursor/rules/ER.md`、`.cursor/rules/TODO.md` を確認し、仕様・DB・Issue の整合性を崩さないでください。レビュー用途では、実装コードを直接変更せず、指摘は設計資料や Issue の不整合として整理します。
+このリポジトリは、減煙支援アプリ「ChillSmoke」の Rails MVP を実装するための設計・Issue 管理を行います。作業前に必ず `.claude/rules/Plan.md`、`.claude/rules/ER.md`、`.claude/rules/TODO.md` を確認し、仕様・DB・Issue の整合性を崩さないでください。レビュー用途では、実装コードを直接変更せず、指摘は設計資料や Issue の不整合として整理します。
 
 ## 構成
 
 - `README.md`: サービス概要、想定ユーザー、MVP範囲。
-- `.cursor/rules/Plan.md`: MVP仕様、画面、ルーティング、実装順。
-- `.cursor/rules/ER.md`: 正とするDB設計。
-- `.cursor/rules/TODO.md`: Issue 単位の実装手順。
+- `.claude/rules/Plan.md`: MVP仕様、画面、ルーティング、実装順。
+- `.claude/rules/ER.md`: 正とするDB設計。
+- `.claude/rules/TODO.md`: Issue 単位の実装手順。
 - `.github/ISSUE_TEMPLATE/`: GitHub Issue テンプレート。`.github/` は Git 管理対象です。
 
 Rails 生成後は標準構成の `app/`、`config/`、`db/migrate/`、`test/` または `spec/` を使います。
 
 ## 開発コマンド
 
-Rails アプリ本体は未生成です。生成後は以下を想定します。
+このプロジェクトは Docker 環境で開発・検証します。Rails、テスト、lint、DB 操作などのコマンドは原則としてホスト直実行ではなく Docker 経由で実行してください。
 
-- `rails s`: ローカルサーバー起動。
-- `rails db:create db:migrate`: PostgreSQL 作成・マイグレーション。
 - `docker compose up`: Docker の web/db 起動。
-- `rails test` または `bundle exec rspec`: テスト実行。
+- `docker compose run --rm web bin/rails db:create db:migrate`: PostgreSQL 作成・マイグレーション。
+- `docker compose run --rm web bin/rails test`: テスト実行。
+- `docker compose run --rm web bundle exec rubocop`: RuboCop 実行。
+- `docker compose run --rm web bin/brakeman --no-pager`: Brakeman 実行。
+
+## デプロイ・動作確認
+
+- 本番URL: https://chillsmoke.onrender.com/
+- MCP/Playwright などでデプロイ後の挙動確認が必要な場合は、この本番URLを参照する。
 
 ## 実装上の重要ルール
 
@@ -66,4 +73,4 @@ Rails 標準に従います。Model は `UserSmokingLog` のような単数 Pasc
 
 ## セキュリティ・管理
 
-secret、credential、ローカル環境ファイルはコミットしません。`.cursor/` と `.github/` は設計・運用上の共有対象なので ignore しないでください。
+secret、credential、ローカル環境ファイルはコミットしません。`.claude/` と `.github/` は設計・運用上の共有対象なので ignore しないでください。

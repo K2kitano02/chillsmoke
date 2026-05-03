@@ -73,6 +73,30 @@ class UserSmokingLogTest < ActiveSupport::TestCase
     assert_not build_log(smoking_count: 6).met_daily_target?
   end
 
+  test "saved_cigs は baseline と smoking_count の差を返す" do
+    assert_equal 17, build_log(smoking_count: 3).saved_cigs
+    assert_equal 0,  build_log(smoking_count: 25).saved_cigs
+  end
+
+  test "saved_yen は floor(saved_cigs * pack_price / pack) を返す" do
+    # 17 * 500 / 20 = 425
+    assert_equal 425, build_log(smoking_count: 3).saved_yen
+    assert_equal 0,   build_log(smoking_count: 25).saved_yen
+  end
+
+  test "鬼モード ON で目標超過なら saved_cigs/saved_yen は 0" do
+    log = build_log(smoking_count: 6, is_oni_mode_snapshot: true)
+    assert_equal 0, log.saved_cigs
+    assert_equal 0, log.saved_yen
+  end
+
+  test "鬼モード ON でも目標以下なら通常通り計算する" do
+    log = build_log(smoking_count: 5, is_oni_mode_snapshot: true)
+    # 20 - 5 = 15, 15 * 500 / 20 = 375
+    assert_equal 15,  log.saved_cigs
+    assert_equal 375, log.saved_yen
+  end
+
   test "user destroy destroys dependent logs" do
     build_log.save!
     assert_difference -> { UserSmokingLog.count }, -1 do
