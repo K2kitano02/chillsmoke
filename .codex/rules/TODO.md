@@ -675,16 +675,20 @@
 ## やること(コードレベル)
 
 - **変更点（ファイル）**: `config/routes.rb` / `app/controllers/dashboard_controller.rb` / `app/views/dashboard/index.html.erb`
-- [ ] **当日**は ISSUE-31 に従い、DB のログ行 **または** `smoking_count = 0` の仮想状態を表示する（**`index` 表示だけではログ行を create しない**）
-- [ ] **節約表示**は ISSUE-50 どおり **二系統**に分ける:**累計節約（昨日までの確定）** と **今日の節約見込み**（ラベルで見込みと明示）
-- [ ] **残高**は ISSUE-51 どおり、**確定累計 − 使用累計**（今日の見込みは残高に含めない）
-- [ ] 継続日数（ISSUE-52・当日除外）とあわせて表示
+<!-- 実装クリア: ISSUE-53
+- [x] **当日**は ISSUE-31 に従い、DB のログ行 **または** `smoking_count = 0` の仮想状態を表示する（**`index` 表示だけではログ行を create しない**）
+- [x] **節約表示**は ISSUE-50 どおり **二系統**に分ける:**累計節約（昨日までの確定）** と **今日の節約見込み**（ラベルで見込みと明示）
+- [x] **残高**は ISSUE-51 どおり、**確定累計 − 使用累計**（今日の見込みは残高に含めない）
+- [x] 継続日数（ISSUE-52・当日除外）とあわせて表示
+-->
 - [x] 「+1で記録」ボタンを配置（ISSUE-32と接続）
 
 ## ゴール
 
-- [ ] ログイン後にダッシュボードが表示され、指標が更新される
-- [ ] 当日の途中でも **累計・残高が過大**にならない（見込みは別枠）
+<!-- 実装クリア: ISSUE-53
+- [x] ログイン後にダッシュボードが表示され、指標が更新される
+- [x] 当日の途中でも **累計・残高が過大**にならない（見込みは別枠）
+-->
 
 ---
 
@@ -1215,6 +1219,7 @@
 
 - **変更点（ファイル）**: `spec/*` or `test/*` / `README.md` / Render設定
 - [ ] 主要フォームのエラー表示統一（設定、ログ編集、wishlist）
+- [ ] Playwright 確認時のブラウザ warning 解消: `app/views/layouts/application.html.erb` に `<meta name="mobile-web-app-capable" content="yes">` を追加し、既存の `<meta name="apple-mobile-web-app-capable" content="yes"> is deprecated` warning を消す
 - [ ] 最低限テスト
   - [ ] model: UserSetting validation、SavingsCalculator（鬼モード含む）
   - [ ] system: 登録→設定→+1記録→wishlist購入 のハッピーパス
