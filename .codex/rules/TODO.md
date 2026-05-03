@@ -606,13 +606,17 @@
 ## やること(コードレベル)
 
 - **変更点（ファイル）**: `app/services/*`（例: `Money::BalanceQuery`）
-- [ ] **残高の分子**は ISSUE-50 の **累計節約（確定・昨日まで）**のみを使う（**節約見込みは残高に含めない**）
-- [ ] `cumulative_spent_yen = current_user.user_purchase_histories.sum(:amount)`（関連実装後に）
-- [ ] 一旦purchaseが未実装でも0扱いで表示できるようにする
+<!-- 実装クリア: ISSUE-51
+- [x] **残高の分子**は ISSUE-50 の **累計節約（確定・昨日まで）**のみを使う（**節約見込みは残高に含めない**）
+- [x] `cumulative_spent_yen = current_user.user_purchase_histories.sum(:amount)`（関連実装後に）
+- [x] 一旦purchaseが未実装でも0扱いで表示できるようにする
+-->
 
 ## ゴール
 
-- [ ] 節約額と組み合わせて残高が表示できる（見込みで使える金額が水増しされない）
+<!-- 実装クリア: ISSUE-51
+- [x] 節約額と組み合わせて残高が表示できる（見込みで使える金額が水増しされない）
+-->
 
 ---
 
