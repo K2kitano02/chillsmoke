@@ -54,7 +54,7 @@
 ## ゴール
 
 <!-- 実装クリア: ISSUE-01
-- [ ] `docker compose up` でWeb+DBが起動し、`rails db:create db:migrate` が成功する
+- [ ] `docker compose up` でWeb+DBが起動し、`docker compose run --rm web bin/rails db:create db:migrate` が成功する
 -->
 
 ---
@@ -576,15 +576,19 @@
 ## やること(コードレベル)
 
 - **変更点（ファイル）**: `app/services/*`（例: `Money::SavingsCalculator`）/ `app/models/user_smoking_log.rb`
-- [ ] 1日分: `saved_cigs = [0, baseline_snapshot - smoking_count].max`、鬼モードは ISSUE-61 どおり
-- [ ] `saved_yen = (saved_cigs * pack_price_snapshot / cigarettes_per_pack_snapshot).floor`
-- [ ] **累計（確定）**: `smoked_on < Time.zone.today` の行のみ集計
-- [ ] **今日の見込み**: `smoked_on == Time.zone.today` の行があればそれを、なければ仮想0相当で別算出（累計ロジックと分離）
+<!-- 実装クリア: ISSUE-50
+- [x] 1日分: `saved_cigs = [0, baseline_snapshot - smoking_count].max`、鬼モードは ISSUE-61 どおり
+- [x] `saved_yen = (saved_cigs * pack_price_snapshot / cigarettes_per_pack_snapshot).floor`
+- [x] **累計（確定）**: `smoked_on < Time.zone.today` の行のみ集計
+- [x] **今日の見込み**: `smoked_on == Time.zone.today` の行があればそれを、なければ仮想0相当で別算出（累計ロジックと分離）
+-->
 
 ## ゴール
 
-- [ ] 当日の途中状態でも **累計が過大表示**されない（累計に当日が混入しない）
-- [ ] 今日の金額が **見込み**として **別枠**で表示でき、**累計（昨日まで確定）**と混同されない
+<!-- 実装クリア: ISSUE-50
+- [x] 当日の途中状態でも **累計が過大表示**されない（累計に当日が混入しない）
+- [x] 今日の金額が **見込み**として **別枠**で表示でき、**累計（昨日まで確定）**と混同されない
+-->
 
 ---
 
@@ -867,7 +871,7 @@
 ## 仕様（確定・スケジュール反映方式）
 
 - MVPでは **方式Bのみ**を採用する。**方式A・方式Cは採用しない**
-- **方式B**: **`user_schedule_reflections`** により **スケジュールID × 日付（`reflected_on`）**ごとに「その日そのスケジュールは反映済み」を管理する。ER（`@.claude/rules/ER.md`）どおり **`(user_schedule_id, reflected_on)` ユニーク**
+- **方式B**: **`user_schedule_reflections`** により **スケジュールID × 日付（`reflected_on`）**ごとに「その日そのスケジュールは反映済み」を管理する。ER（`@.codex/rules/ER.md`）どおり **`(user_schedule_id, reflected_on)` ユニーク**
 - **方式A（採用しない）**: 反映済みを **件数差分だけ**で表す（同日のスケジュール入れ替えで漏れが出る）
 - **方式C（採用しない）**: **`user_schedule_reflections` を使わない**二重加算防止（別テーブル・別キー、ログ行への直接紐づけのみ等、ERと一致しない設計）
 
@@ -1092,7 +1096,7 @@
 
 ## 履歴の紐づけ（確定）
 
-- **`user_purchase_histories` は `user_id` を持たず**、**`user_wishlist_id` のみ**で対応する wishlist に紐づく（ER `@.claude/rules/ER.md` と一致）
+- **`user_purchase_histories` は `user_id` を持たず**、**`user_wishlist_id` のみ**で対応する wishlist に紐づく（ER `@.codex/rules/ER.md` と一致）
 - 購入履歴は **`UserPurchaseHistory.create!` を単体で呼ばない**。**取得済みの `wishlist` 経由**で作成し、`user_wishlist_id` の未設定・取り違えを防ぐ
 - **実装例**：`wishlist.create_user_purchase_history!(amount: wishlist.price, purchased_at: Time.current)`
 
