@@ -68,7 +68,7 @@ ChillSmoke は、禁煙ではなく減煙を段階的に支援する習慣化ア
   - 反映後にズレた場合は、カレンダー編集で修正する
 
 ## 5. データ設計（ERの読み替えメモ）
-ER図は `@.claude/rules/ER.md` を正とする。MVPの実装上のポイントだけここに残す。
+ER図は `@.codex/rules/ER.md` を正とする。MVPの実装上のポイントだけここに残す。
 
 ### users（Devise）
 - `password_digest` ではなく **Deviseのカラム**（例: `encrypted_password` 等）を使用する想定
@@ -82,7 +82,7 @@ ER図は `@.claude/rules/ER.md` を正とする。MVPの実装上のポイント
 ### user_smoking_logs（1日1レコード）
 - `[user_id, smoked_on]` unique
 - `smoking_count` を当日加算していく
-- snapshot（後から設定が変わっても、当日の計算が再現できるように保持）— **5項目**（`@.claude/rules/ER.md` の `user_smoking_logs` と一致）
+- snapshot（後から設定が変わっても、当日の計算が再現できるように保持）— **5項目**（`@.codex/rules/ER.md` の `user_smoking_logs` と一致）
   - `target_daily_cigarette_count_snapshot`
   - `baseline_daily_cigarette_count_snapshot`
   - `pack_price_snapshot`
@@ -159,7 +159,7 @@ ER図は `@.claude/rules/ER.md` を正とする。MVPの実装上のポイント
 ### ロジック
 - 1スケジュール = 1本
 - スケジュールは実際に喫煙記録へ反映する（当日に加算）
-- **反映済みの管理は ER の `user_schedule_reflections` に従う**: `user_schedule_id` と **`reflected_on`（反映した日付）**の組で1件ずつ記録し、**`(user_schedule_id, reflected_on)`ユニーク**とする（`@.claude/rules/ER.md`）。**件数差分のみ**での管理は同日の入れ替えで漏れるため**行わない**（TODO ISSUE-76 の方式Bに相当）
+- **反映済みの管理は ER の `user_schedule_reflections` に従う**: `user_schedule_id` と **`reflected_on`（反映した日付）**の組で1件ずつ記録し、**`(user_schedule_id, reflected_on)`ユニーク**とする（`@.codex/rules/ER.md`）。**件数差分のみ**での管理は同日の入れ替えで漏れるため**行わない**（TODO ISSUE-76 の方式Bに相当）
 - **反映処理の安全性（ISSUE-76）**: **`transaction` 1回**で、今日ログの **取得または新規作成（そのとき `user_setting` から snapshot 5項目を ISSUE-31 と同一にコピー）** → 当日行の **`with_lock`** → 未反映スケジュール取得 → **各スケジュールごとに `user_schedule_reflections` の INSERT 成功後にのみ** `smoking_count` を加算、までを **同一トランザクション内・最後に1回コミット**（途中でコミットしない）。**ユニーク制約違反**は二重反映として **加算しない**（**冪等**・並行実行でも水増ししない）。`UserSchedule` に **`has_many :user_schedule_reflections, dependent: :destroy`**、`UserScheduleReflection` に **`belongs_to :user_schedule`** を定義し、スケジュール削除時に **連鎖削除**して孤立データを残さない
 - 実態とズレた場合は、カレンダー編集で修正する
 
@@ -197,5 +197,5 @@ ER図は `@.claude/rules/ER.md` を正とする。MVPの実装上のポイント
 ---
 
 更新メモ:
-- ERは `@.claude/rules/ER.md` を参照（Devise採用のため users 定義はER側もDeviseカラムに合わせて更新する）
+- ERは `@.codex/rules/ER.md` を参照（Devise採用のため users 定義はER側もDeviseカラムに合わせて更新する）
 - 本数の日付指定フォーム（当日・過去日・未来日不可・GETでは行を作らない等）は **TODO ISSUE-33** の「当日扱い・日付境界（確定）」と揃えている
