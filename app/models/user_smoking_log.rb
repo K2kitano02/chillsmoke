@@ -58,6 +58,11 @@ class UserSmokingLog < ApplicationRecord
     assign_attributes(self.class.snapshot_attributes_from_user_setting(user_setting))
   end
 
+  # カレンダー等: 当日の目標は snapshot を正とする（未記録日は呼ばない）
+  def met_daily_target?
+    smoking_count <= target_daily_cigarette_count_snapshot
+  end
+
   private
 
   def smoked_on_not_in_future

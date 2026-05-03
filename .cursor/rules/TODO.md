@@ -499,12 +499,16 @@
 ## やること(コードレベル)
 
 - **変更点（ファイル）**: `app/views/calendar/index.html.erb` / helper（必要なら）
-- [ ] 判定メソッド（model or helper）を用意
-- [ ] Tailwindで背景/バッジなどを色分け
+<!-- 実装クリア: ISSUE-41
+- [x] 判定メソッド（model or helper）を用意（`UserSmokingLog#met_daily_target?` / `ApplicationHelper#calendar_day_link_classes`）
+- [x] Tailwindで背景/バッジなどを色分け
+-->
 
 ## ゴール
 
-- [ ] 目標達成日/未達日が一目で分かる
+<!-- 実装クリア: ISSUE-41
+- [x] 目標達成日/未達日が一目で分かる
+-->
 
 ---
 
