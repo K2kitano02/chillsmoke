@@ -250,6 +250,7 @@ chillsmoke は、禁煙を強制せず、減らせた本数をお金として可
 - 画像アップロード：Active Storage
 - 開発環境：Docker
 - デプロイ先：Render
+- 本番URL：https://chillsmoke.onrender.com/
 
 ---
 

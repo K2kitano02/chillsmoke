@@ -500,7 +500,7 @@
 
 - **変更点（ファイル）**: `app/views/calendar/index.html.erb` / helper（必要なら）
 <!-- 実装クリア: ISSUE-41
-- [x] 判定メソッド（model or helper）を用意（`UserSmokingLog#met_daily_target?` / `ApplicationHelper#calendar_day_link_classes`）
+- [x] 判定メソッド（model or helper）を用意
 - [x] Tailwindで背景/バッジなどを色分け
 -->
 
@@ -538,15 +538,19 @@
 ## やること(コードレベル)
 
 - **変更点（ファイル）**: `config/routes.rb` / `app/controllers/user_smoking_logs_controller.rb` / `app/views/user_smoking_logs/show.html.erb`（または `by_date` 用テンプレートを `show` と共通化）
-- [ ] 上記「仕様（確定）」どおり **日付ベース**のルートを定義する（**カレンダー導線で `GET /user_smoking_logs/:id` 型を使わない**）
-- [ ] 指定日のログがあればその本数・snapshot ベースの目標・節約を表示。**無い場合**は未記録として本数0等を示し、**目標・節約は「―」**（**`UserSetting` で補完しない**）
-- [ ] **本数修正**へのリンクを置く（ISSUE-33 の **new（日付指定）/ edit** のどちらでも同じフォームに着地できるようにする）
+<!-- 実装クリア: ISSUE-42
+- [x] 上記「仕様（確定）」どおり **日付ベース**のルートを定義する（**カレンダー導線で `GET /user_smoking_logs/:id` 型を使わない**）
+- [x] 指定日のログがあればその本数・snapshot ベースの目標・節約を表示。**無い場合**は未記録として本数0等を示し、**目標・節約は「―」**（**`UserSetting` で補完しない**）
+- [x] **本数修正**へのリンクを置く（ISSUE-33 の **new（日付指定）/ edit** のどちらでも同じフォームに着地できるようにする）
+-->
 
 ## ゴール
 
-- [ ] **未記録日**でも日付URLから詳細が開ける
-- [ ] **未記録日**の目標・節約が **「―」で一貫**し、**`UserSetting` フォールバックが無い**
-- [ ] カレンダー→詳細→（未記録を含む）本数修正の導線が機能する
+<!-- 実装クリア: ISSUE-42
+- [x] **未記録日**でも日付URLから詳細が開ける
+- [x] **未記録日**の目標・節約が **「―」で一貫**し、**`UserSetting` フォールバックが無い**
+- [x] カレンダー→詳細→（未記録を含む）本数修正の導線が機能する
+-->
 
 ---
 
@@ -863,7 +867,7 @@
 ## 仕様（確定・スケジュール反映方式）
 
 - MVPでは **方式Bのみ**を採用する。**方式A・方式Cは採用しない**
-- **方式B**: **`user_schedule_reflections`** により **スケジュールID × 日付（`reflected_on`）**ごとに「その日そのスケジュールは反映済み」を管理する。ER（`@.cursor/rules/ER.md`）どおり **`(user_schedule_id, reflected_on)` ユニーク**
+- **方式B**: **`user_schedule_reflections`** により **スケジュールID × 日付（`reflected_on`）**ごとに「その日そのスケジュールは反映済み」を管理する。ER（`@.claude/rules/ER.md`）どおり **`(user_schedule_id, reflected_on)` ユニーク**
 - **方式A（採用しない）**: 反映済みを **件数差分だけ**で表す（同日のスケジュール入れ替えで漏れが出る）
 - **方式C（採用しない）**: **`user_schedule_reflections` を使わない**二重加算防止（別テーブル・別キー、ログ行への直接紐づけのみ等、ERと一致しない設計）
 
@@ -1088,7 +1092,7 @@
 
 ## 履歴の紐づけ（確定）
 
-- **`user_purchase_histories` は `user_id` を持たず**、**`user_wishlist_id` のみ**で対応する wishlist に紐づく（ER `@.cursor/rules/ER.md` と一致）
+- **`user_purchase_histories` は `user_id` を持たず**、**`user_wishlist_id` のみ**で対応する wishlist に紐づく（ER `@.claude/rules/ER.md` と一致）
 - 購入履歴は **`UserPurchaseHistory.create!` を単体で呼ばない**。**取得済みの `wishlist` 経由**で作成し、`user_wishlist_id` の未設定・取り違えを防ぐ
 - **実装例**：`wishlist.create_user_purchase_history!(amount: wishlist.price, purchased_at: Time.current)`
 

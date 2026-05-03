@@ -28,9 +28,9 @@ alwaysApply: true
 このルールはそれらを補完する**事故防止ルール**のみを扱う。
 
 ## 参照優先順位
-1. `.cursor/rules/Plan.md`
-2. `.cursor/rules/ER.md`
-3. `.cursor/rules/TODO.md`
+1. `.claude/rules/Plan.md`
+2. `.claude/rules/ER.md`
+3. `.claude/rules/TODO.md`
 
 曖昧な場合は、必ず上記を確認し、それと矛盾する実装をしないこと。
 
