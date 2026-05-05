@@ -744,6 +744,58 @@
 
 ---
 
+# ISSUE-62 View partial化（重複UIの整理）
+
+## なぜ必要か
+
+- 設定フォームやダッシュボード指標など、同じ見た目・同じ構造のERBが増えてきたため
+- 後続のスケジュール、wishlist、購入画面を追加する前に、変更しやすいView構成に整えるため
+- UI文言やclass変更時に複数ファイルを手作業で揃える負担を減らすため
+
+## 必要なこと(簡易的に)
+
+- ISSUE-53完了（ダッシュボード指標表示）
+- ISSUE-60完了（設定編集画面の鬼モードUI）
+- 既存テストが通っていること
+
+## 方針
+
+- 見た目やフォーム構造の重複だけをpartial化する
+- controller、model、service の責務や挙動は変えない
+- 既存の表示文言、リンク先、フォーム送信先、HTTP method、validation表示を変えない
+- partial化によってテストの期待値を弱めない
+
+## やること(コードレベル)
+
+- **変更点（ファイル）**: `app/views/user_settings/*` / `app/views/dashboard/*` / 必要に応じて `app/views/shared/*`
+<!-- 実装クリア: ISSUE-62
+- [x] `app/views/user_settings/_form.html.erb` を作り、`new.html.erb` と `edit.html.erb` の設定フォーム重複をまとめる
+  - [x] 目標本数、基準本数、1箱価格、1箱本数、鬼モード、エラー表示、保存ボタンを共通化する
+  - [x] `new` は `url: user_setting_path`、`edit` は既存どおり `model: @user_setting` で保存できるようにする
+  - [x] edit固有の「ダッシュボードへ戻る」リンクはpartialに混ぜず、edit側に残す
+- [x] `app/views/dashboard/_metric_card.html.erb` を作り、累計節約・今日の節約見込み・使用可能金額・継続日数のカード表示をまとめる
+  - [x] 補足文があるカード、ないカードの両方を扱えるようにする
+- [x] `app/views/dashboard/_today_stat.html.erb` を作り、今日の本数・目標・残りの表示ブロックをまとめる
+- [x] 必要なら `app/views/shared/_form_errors.html.erb` を作り、`errors.full_messages` の表示を共通化する
+-->
+
+## 対象外
+
+- Devise 画面のフォーム整理は対象外（後でまとめて調整する）
+- `user_smoking_logs/_form.html.erb` は既にpartial化済みなので、今回の主対象にはしない
+- デザインの大幅変更、文言変更、導線変更はしない
+
+## ゴール
+
+<!-- 実装クリア: ISSUE-62
+- [x] 既存の画面表示とフォーム保存挙動を変えずに、Viewの重複が減っている
+- [x] `docker compose run --rm web bin/rails test` が通る
+- [x] `docker compose run --rm web bundle exec rubocop` が通る
+- [x] UI表示に影響するため、必要に応じてPlaywrightでダッシュボードと設定編集画面を確認する
+-->
+
+---
+
 # ISSUE-70 UserScheduleテーブル/モデル作成
 
 ## なぜ必要か
