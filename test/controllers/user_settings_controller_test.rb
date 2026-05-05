@@ -101,6 +101,8 @@ class UserSettingsControllerTest < ActionDispatch::IntegrationTest
     get edit_user_setting_url
     assert_response :success
     assert_select "h1", text: "設定の編集"
+    assert_select "input[type=checkbox][name=?]", "user_setting[is_oni_mode]"
+    assert_match(/目標本数を超えた日の節約額は増えません/, response.body)
 
     patch user_setting_url, params: {
       user_setting: {
@@ -120,6 +122,25 @@ class UserSettingsControllerTest < ActionDispatch::IntegrationTest
     assert_equal 15, s.baseline_daily_cigarette_count
     assert_equal 550, s.pack_price
     assert s.is_oni_mode
+  end
+
+  test "設定編集で鬼モードをOFFに保存できる" do
+    user = users(:one)
+    sign_in user
+    user.user_setting.update!(is_oni_mode: true)
+
+    patch user_setting_url, params: {
+      user_setting: {
+        target_daily_cigarette_count: user.user_setting.target_daily_cigarette_count,
+        baseline_daily_cigarette_count: user.user_setting.baseline_daily_cigarette_count,
+        pack_price: user.user_setting.pack_price,
+        cigarettes_per_pack: user.user_setting.cigarettes_per_pack,
+        is_oni_mode: "0"
+      }
+    }
+
+    assert_redirected_to edit_user_setting_url
+    assert_not user.reload.user_setting.is_oni_mode
   end
 
   test "update がバリデーションエラーなら 422 で edit を再表示" do
