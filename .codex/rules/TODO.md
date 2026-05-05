@@ -731,12 +731,16 @@
 ## やること(コードレベル)
 
 - **変更点（ファイル）**: `app/services/*`（節約計算）
-- [ ] `if is_oni_mode_snapshot && smoking_count > target_daily_cigarette_count_snapshot then saved_cigs = 0 end`
-- [ ] 表示側（詳細/ダッシュボード）で反映後の値を使う
+<!-- 実装クリア: ISSUE-61
+- [x] `if is_oni_mode_snapshot && smoking_count > target_daily_cigarette_count_snapshot then saved_cigs = 0 end`
+- [x] 表示側（詳細/ダッシュボード）で反映後の値を使う
+-->
 
 ## ゴール
 
-- [ ] 同一ログでも鬼モードONで節約額が0になるケースが再現できる
+<!-- 実装クリア: ISSUE-61
+- [x] 同一ログでも鬼モードONで節約額が0になるケースが再現できる
+-->
 
 ---
 
