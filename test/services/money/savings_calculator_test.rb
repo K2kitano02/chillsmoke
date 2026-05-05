@@ -45,12 +45,37 @@ class Money::SavingsCalculatorTest < ActiveSupport::TestCase
     assert_equal 550, summary.cumulative_saved_yen
   end
 
+  test "累計節約は鬼モード ON の目標超過日を 0 円として合算する" do
+    create_log(smoked_on: Time.zone.today - 2.days, smoking_count: 10)
+    create_log(
+      smoked_on: Time.zone.today - 1.day,
+      smoking_count: 6,
+      is_oni_mode_snapshot: true
+    )
+
+    summary = Money::SavingsCalculator.call(@user)
+
+    assert_equal 250, summary.cumulative_saved_yen
+  end
+
   test "今日の節約見込みは当日ログがある場合そのログから算出する" do
     create_log(smoked_on: Time.zone.today, smoking_count: 8)
 
     summary = Money::SavingsCalculator.call(@user)
 
     assert_equal 300, summary.today_estimated_saved_yen
+  end
+
+  test "今日の節約見込みは鬼モード ON の目標超過なら 0 円になる" do
+    create_log(
+      smoked_on: Time.zone.today,
+      smoking_count: 6,
+      is_oni_mode_snapshot: true
+    )
+
+    summary = Money::SavingsCalculator.call(@user)
+
+    assert_equal 0, summary.today_estimated_saved_yen
   end
 
   test "今日の節約見込みは当日ログがない場合仮想0本から算出しログを作らない" do

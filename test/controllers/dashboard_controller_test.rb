@@ -86,6 +86,29 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
     assert_match(/今日の節約見込みは含めていません/, response.body)
   end
 
+  test "鬼モード ON の目標超過日は節約と今日の見込みを 0 円で表示する" do
+    sign_in users(:one)
+    users(:one).user_smoking_logs.create!(
+      log_attrs(
+        smoked_on: Time.zone.today - 1.day,
+        smoking_count: 6
+      ).merge(is_oni_mode_snapshot: true)
+    )
+    users(:one).user_smoking_logs.create!(
+      log_attrs(
+        smoked_on: Time.zone.today,
+        smoking_count: 6
+      ).merge(is_oni_mode_snapshot: true)
+    )
+
+    get dashboard_url
+
+    assert_response :success
+    assert_match(/累計節約（昨日まで）.*?0円/m, response.body)
+    assert_match(/今日の節約見込み.*?0円/m, response.body)
+    assert_match(/使用可能金額.*?0円/m, response.body)
+  end
+
   test "継続日数は当日を含めず昨日までを表示する" do
     sign_in users(:one)
     users(:one).user_smoking_logs.create!(
