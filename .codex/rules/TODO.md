@@ -839,12 +839,16 @@
 ## やること(コードレベル)
 
 - **変更点（ファイル）**: `config/routes.rb` / `app/controllers/user_schedules_controller.rb` / `app/views/user_schedules/index.html.erb`
-- [ ] `resources :user_schedules` を追加（名前は任意）
-- [ ] `index` で `current_user.user_schedules` を表示
+<!-- 実装クリア: ISSUE-71
+- [x] `resources :user_schedules` を追加（名前は任意）
+- [x] `index` で `current_user.user_schedules` を表示
+-->
 
 ## ゴール
 
-- [ ] ログインユーザーのスケジュールだけが表示される
+<!-- 実装クリア: ISSUE-71
+- [x] ログインユーザーのスケジュールだけが表示される
+-->
 
 ---
 

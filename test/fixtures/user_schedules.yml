@@ -1,11 +1,13 @@
+# time 型fixtureは読み込み時にアプリのタイムゾーン表示へ変換される。
+# 23:00 は画面上で 08:00、12:30 は画面上で 21:30 として確認する。
 morning:
   user: one
-  scheduled_smoking_time: "08:00:00"
+  scheduled_smoking_time: "23:00:00"
   label: 朝
   is_active: true
 
 inactive:
   user: two
-  scheduled_smoking_time: "21:30:00"
+  scheduled_smoking_time: "12:30:00"
   label: 夜
   is_active: false
