@@ -809,14 +809,20 @@
 ## やること(コードレベル)
 
 - **変更点（ファイル）**: `db/migrate/*` / `app/models/user_schedule.rb` / `app/models/user.rb`
-- [ ] migration作成（`user:references`, `scheduled_smoking_time:time`, `label`, `is_active default:true`）
-- [ ] `User has_many :user_schedules, dependent: :destroy`
+<!-- 実装クリア: ISSUE-70
+- [x] migration作成（`user:references`, `scheduled_smoking_time:time`, `label`, `is_active default:true`）
+- [x] `User has_many :user_schedules, dependent: :destroy`
+-->
 - [ ] **`UserSchedule has_many :user_schedule_reflections, dependent: :destroy`**（**`UserScheduleReflection` モデル・テーブル追加後**／ISSUE-76 と同時でよい）
-- [ ] バリデーション（time presence 等）
+<!-- 実装クリア: ISSUE-70
+- [x] バリデーション（time presence 等）
+-->
 
 ## ゴール
 
-- [ ] consoleでCRUDできる
+<!-- 実装クリア: ISSUE-70
+- [x] consoleでCRUDできる
+-->
 
 ---
 

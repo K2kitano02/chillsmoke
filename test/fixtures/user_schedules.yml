@@ -1,0 +1,11 @@
+morning:
+  user: one
+  scheduled_smoking_time: "08:00:00"
+  label: 朝
+  is_active: true
+
+inactive:
+  user: two
+  scheduled_smoking_time: "21:30:00"
+  label: 夜
+  is_active: false
