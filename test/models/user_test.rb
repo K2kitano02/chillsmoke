@@ -25,4 +25,24 @@ class UserTest < ActiveSupport::TestCase
       u.destroy
     end
   end
+
+  test "has_many user_schedules" do
+    u = users(:one)
+
+    assert_includes u.user_schedules, user_schedules(:morning)
+  end
+
+  test "destroying user destroys dependent user_schedules" do
+    u = User.create!(
+      email: "user_destroy_schedule_#{SecureRandom.hex(4)}@example.test",
+      name: "Schedule Owner",
+      password: "password123",
+      password_confirmation: "password123"
+    )
+    u.user_schedules.create!(scheduled_smoking_time: "08:00", label: "朝")
+
+    assert_difference "UserSchedule.count", -1 do
+      u.destroy
+    end
+  end
 end
