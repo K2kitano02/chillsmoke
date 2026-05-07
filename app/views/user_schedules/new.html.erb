@@ -1,0 +1,33 @@
+<div class="mx-auto max-w-lg px-4 py-8">
+  <h1 class="text-2xl font-semibold text-gray-900">スケジュール登録</h1>
+  <p class="mt-2 text-sm text-gray-600">固定で喫煙しやすい時間とラベルを登録できます。</p>
+
+  <%= form_with model: @user_schedule, class: "mt-6 space-y-4" do |f| %>
+    <%= render "shared/form_errors", record: @user_schedule %>
+
+    <div>
+      <%= f.label :scheduled_smoking_time, "時刻", class: "block text-sm font-medium text-gray-700" %>
+      <%= f.time_field :scheduled_smoking_time, class: "mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm" %>
+    </div>
+
+    <div>
+      <%= f.label :label, "ラベル", class: "block text-sm font-medium text-gray-700" %>
+      <%= f.text_field :label, placeholder: "例: 朝、昼休み、仕事終わり", class: "mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm" %>
+    </div>
+
+    <div class="rounded-md border border-gray-200 bg-white p-4">
+      <div class="flex items-start gap-3">
+        <%= f.check_box :is_active, class: "mt-1 rounded border-gray-300" %>
+        <div>
+          <%= f.label :is_active, "有効にする", class: "text-sm font-medium text-gray-800" %>
+          <p class="mt-1 text-sm text-gray-600">ONのスケジュールは、後続の反映機能で当日の記録対象になります。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-3">
+      <%= f.submit "登録する", class: "inline-flex justify-center rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800" %>
+      <%= link_to "一覧へ戻る", user_schedules_path, class: "text-sm text-emerald-800 underline" %>
+    </div>
+  <% end %>
+</div>
