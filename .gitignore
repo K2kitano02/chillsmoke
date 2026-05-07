@@ -41,3 +41,8 @@
 
 .DS_Store
 /vendor/bundle
+
+# Local agent instructions and Codex working notes.
+/AGENTS.md
+/AGENT.md
+/.codex/
