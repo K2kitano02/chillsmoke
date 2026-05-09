@@ -99,4 +99,89 @@ class UserSchedulesControllerTest < ActionDispatch::IntegrationTest
     assert_select "h1", text: "スケジュール登録"
     assert_select ".bg-red-50"
   end
+
+  test "一覧から編集画面へ進める" do
+    sign_in users(:one)
+    schedule = user_schedules(:morning)
+
+    get user_schedules_url
+
+    assert_response :success
+    assert_select "a[href=?]", edit_user_schedule_path(schedule), text: "編集"
+  end
+
+  test "edit はログインユーザーのスケジュール編集フォームを表示する" do
+    sign_in users(:one)
+    schedule = user_schedules(:morning)
+
+    get edit_user_schedule_url(schedule)
+
+    assert_response :success
+    assert_select "h1", text: "スケジュール編集"
+    assert_select "form[action=?]", user_schedule_path(schedule)
+    assert_select "input[name=?]", "user_schedule[scheduled_smoking_time]"
+  end
+
+  test "edit は他ユーザーのスケジュールなら 404 を返す" do
+    sign_in users(:one)
+
+    get edit_user_schedule_url(user_schedules(:inactive))
+
+    assert_response :not_found
+  end
+
+  test "update はログインユーザーのスケジュールを更新して一覧へ戻る" do
+    sign_in users(:one)
+    schedule = user_schedules(:morning)
+
+    patch user_schedule_url(schedule), params: {
+      user_schedule: {
+        scheduled_smoking_time: "09:15",
+        label: "午前休憩",
+        is_active: "0",
+        user_id: users(:two).id
+      }
+    }
+
+    assert_redirected_to user_schedules_url
+    schedule.reload
+    assert_equal "午前休憩", schedule.label
+    assert_not schedule.is_active
+    assert_equal users(:one), schedule.user
+  end
+
+  test "update は他ユーザーのスケジュールなら 404 を返して更新しない" do
+    sign_in users(:one)
+    schedule = user_schedules(:inactive)
+
+    patch user_schedule_url(schedule), params: {
+      user_schedule: {
+        scheduled_smoking_time: "10:00",
+        label: "変更不可",
+        is_active: "1"
+      }
+    }
+
+    assert_response :not_found
+    schedule.reload
+    assert_equal "夜", schedule.label
+    assert_not schedule.is_active
+  end
+
+  test "update はバリデーションエラーなら 422 で edit を再表示する" do
+    sign_in users(:one)
+    schedule = user_schedules(:morning)
+
+    patch user_schedule_url(schedule), params: {
+      user_schedule: {
+        scheduled_smoking_time: "",
+        label: "時間なし",
+        is_active: "1"
+      }
+    }
+
+    assert_response :unprocessable_entity
+    assert_select "h1", text: "スケジュール編集"
+    assert_select ".bg-red-50"
+  end
 end

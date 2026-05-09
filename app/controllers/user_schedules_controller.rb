@@ -1,12 +1,17 @@
 # frozen_string_literal: true
 
 class UserSchedulesController < ApplicationController
+  before_action :set_user_schedule, only: %i[edit update]
+
   def index
     @user_schedules = current_user.user_schedules.order(:scheduled_smoking_time, :id)
   end
 
   def new
     @user_schedule = current_user.user_schedules.build(is_active: true)
+  end
+
+  def edit
   end
 
   def create
@@ -18,7 +23,19 @@ class UserSchedulesController < ApplicationController
     end
   end
 
+  def update
+    if @user_schedule.update(user_schedule_params)
+      redirect_to user_schedules_path, notice: "スケジュールを更新しました。"
+    else
+      render :edit, status: :unprocessable_entity
+    end
+  end
+
   private
+
+  def set_user_schedule
+    @user_schedule = current_user.user_schedules.find(params[:id])
+  end
 
   def user_schedule_params
     params.require(:user_schedule).permit(
