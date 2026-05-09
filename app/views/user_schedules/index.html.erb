@@ -29,6 +29,10 @@
               <td class="px-4 py-3 text-gray-700"><%= schedule.is_active? ? "有効" : "停止中" %></td>
               <td class="px-4 py-3">
                 <%= link_to "編集", edit_user_schedule_path(schedule), class: "text-sm font-medium text-emerald-800 underline" %>
+                <%= button_to "削除", user_schedule_path(schedule), method: :delete,
+                      form: { class: "mt-2 inline-block" },
+                      class: "text-sm font-medium text-red-700 underline",
+                      data: { turbo_confirm: "このスケジュールを削除しますか？" } %>
               </td>
             </tr>
           <% end %>
