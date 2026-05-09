@@ -220,4 +220,48 @@ class UserSchedulesControllerTest < ActionDispatch::IntegrationTest
     assert_response :not_found
     assert UserSchedule.exists?(schedule.id)
   end
+
+  test "一覧から有効状態を切り替えられる" do
+    sign_in users(:one)
+    schedule = user_schedules(:morning)
+
+    get user_schedules_url
+
+    assert_response :success
+    assert_select "form[action=?]", toggle_user_schedule_path(schedule) do
+      assert_select "button", text: "停止する"
+    end
+  end
+
+  test "toggle は有効なスケジュールを停止して一覧へ戻る" do
+    sign_in users(:one)
+    schedule = user_schedules(:morning)
+    assert schedule.is_active
+
+    patch toggle_user_schedule_url(schedule)
+
+    assert_redirected_to user_schedules_url
+    assert_not schedule.reload.is_active
+  end
+
+  test "toggle は停止中のスケジュールを有効にして一覧へ戻る" do
+    sign_in users(:two)
+    schedule = user_schedules(:inactive)
+    assert_not schedule.is_active
+
+    patch toggle_user_schedule_url(schedule)
+
+    assert_redirected_to user_schedules_url
+    assert schedule.reload.is_active
+  end
+
+  test "toggle は他ユーザーのスケジュールなら 404 を返して切り替えない" do
+    sign_in users(:one)
+    schedule = user_schedules(:inactive)
+
+    patch toggle_user_schedule_url(schedule)
+
+    assert_response :not_found
+    assert_not schedule.reload.is_active
+  end
 end
