@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class UserSchedulesController < ApplicationController
-  before_action :set_user_schedule, only: %i[edit update destroy]
+  before_action :set_user_schedule, only: %i[edit update destroy toggle]
 
   def index
     @user_schedules = current_user.user_schedules.order(:scheduled_smoking_time, :id)
@@ -34,6 +34,11 @@ class UserSchedulesController < ApplicationController
   def destroy
     @user_schedule.destroy!
     redirect_to user_schedules_path, notice: "スケジュールを削除しました。"
+  end
+
+  def toggle
+    @user_schedule.update!(is_active: !@user_schedule.is_active?)
+    redirect_to user_schedules_path, notice: "スケジュールの状態を切り替えました。"
   end
 
   private

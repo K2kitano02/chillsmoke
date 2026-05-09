@@ -6,8 +6,10 @@ Rails.application.routes.draw do
   get "dashboard", to: "dashboard#index", as: :dashboard
   # ISSUE-40: 喫煙ログの月カレンダー閲覧
   get "calendar", to: "calendar#index", as: :calendar
-  # ISSUE-71/72/73/74: スケジュール一覧・作成・編集・削除
-  resources :user_schedules, only: %i[index new create edit update destroy]
+  # ISSUE-71/72/73/74/75: スケジュール一覧・作成・編集・削除・ON/OFF切替
+  resources :user_schedules, only: %i[index new create edit update destroy] do
+    patch :toggle, on: :member
+  end
   # ISSUE-32: 今日の喫煙本数 +1（当日行の create はこの保存操作でのみ）
   post "today_smoking_log/increment", to: "user_smoking_logs#increment_today", as: :increment_today_smoking_log
   # ISSUE-33: 日付指定の本数登録（当日・過去日）。new/edit の GET では行を作らない
