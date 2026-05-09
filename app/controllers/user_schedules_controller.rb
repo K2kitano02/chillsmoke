@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class UserSchedulesController < ApplicationController
-  before_action :set_user_schedule, only: %i[edit update]
+  before_action :set_user_schedule, only: %i[edit update destroy]
 
   def index
     @user_schedules = current_user.user_schedules.order(:scheduled_smoking_time, :id)
@@ -29,6 +29,11 @@ class UserSchedulesController < ApplicationController
     else
       render :edit, status: :unprocessable_entity
     end
+  end
+
+  def destroy
+    @user_schedule.destroy!
+    redirect_to user_schedules_path, notice: "スケジュールを削除しました。"
   end
 
   private

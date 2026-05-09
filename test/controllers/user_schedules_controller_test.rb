@@ -184,4 +184,40 @@ class UserSchedulesControllerTest < ActionDispatch::IntegrationTest
     assert_select "h1", text: "スケジュール編集"
     assert_select ".bg-red-50"
   end
+
+  test "一覧から削除できる" do
+    sign_in users(:one)
+    schedule = user_schedules(:morning)
+
+    get user_schedules_url
+
+    assert_response :success
+    assert_select "form[action=?]", user_schedule_path(schedule) do
+      assert_select "button", text: "削除"
+    end
+  end
+
+  test "destroy はログインユーザーのスケジュールを削除して一覧へ戻る" do
+    sign_in users(:one)
+    schedule = user_schedules(:morning)
+
+    assert_difference -> { users(:one).user_schedules.count }, -1 do
+      delete user_schedule_url(schedule)
+    end
+
+    assert_redirected_to user_schedules_url
+    assert_nil UserSchedule.find_by(id: schedule.id)
+  end
+
+  test "destroy は他ユーザーのスケジュールなら 404 を返して削除しない" do
+    sign_in users(:one)
+    schedule = user_schedules(:inactive)
+
+    assert_no_difference -> { UserSchedule.count } do
+      delete user_schedule_url(schedule)
+    end
+
+    assert_response :not_found
+    assert UserSchedule.exists?(schedule.id)
+  end
 end
