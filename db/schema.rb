@@ -10,9 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_05_05_073000) do
+ActiveRecord::Schema[7.2].define(version: 2026_05_11_090000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "user_schedule_reflections", force: :cascade do |t|
+    t.bigint "user_schedule_id", null: false
+    t.date "reflected_on", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_schedule_id", "reflected_on"], name: "idx_on_user_schedule_id_reflected_on_7cae552cb2", unique: true
+    t.index ["user_schedule_id"], name: "index_user_schedule_reflections_on_user_schedule_id"
+  end
 
   create_table "user_schedules", force: :cascade do |t|
     t.bigint "user_id", null: false
@@ -63,6 +72,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_05_05_073000) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "user_schedule_reflections", "user_schedules"
   add_foreign_key "user_schedules", "users"
   add_foreign_key "user_settings", "users"
   add_foreign_key "user_smoking_logs", "users"
