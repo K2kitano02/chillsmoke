@@ -1,0 +1,37 @@
+<div class="mx-auto max-w-3xl">
+  <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+    <div>
+      <h1 class="text-2xl font-semibold text-gray-900"><%= @user_wishlist.name %></h1>
+      <p class="mt-1 text-sm text-gray-600">欲しいものの詳細を確認できます。</p>
+    </div>
+    <div class="flex flex-wrap gap-3">
+      <%= link_to "一覧へ戻る", user_wishlists_path, class: "text-sm font-medium text-emerald-800 underline" %>
+      <%= link_to "ダッシュボードへ戻る", dashboard_path, class: "text-sm font-medium text-emerald-800 underline" %>
+    </div>
+  </div>
+
+  <section class="mt-6 rounded-lg border border-gray-200 bg-white p-5 shadow-sm">
+    <dl class="grid gap-4 text-sm sm:grid-cols-2">
+      <div>
+        <dt class="font-medium text-gray-600">価格</dt>
+        <dd class="mt-1 text-2xl font-semibold tabular-nums text-gray-900"><%= number_with_delimiter(@user_wishlist.price) %>円</dd>
+      </div>
+      <div>
+        <dt class="font-medium text-gray-600">状態</dt>
+        <dd class="mt-1 text-lg font-semibold text-gray-900"><%= @user_wishlist.is_purchased? ? "購入済み" : "未購入" %></dd>
+      </div>
+      <div class="sm:col-span-2">
+        <dt class="font-medium text-gray-600">メモ</dt>
+        <dd class="mt-1 whitespace-pre-wrap text-gray-800"><%= @user_wishlist.memo.presence || "未設定" %></dd>
+      </div>
+    </dl>
+
+    <% unless @user_wishlist.is_purchased? %>
+      <div class="mt-6">
+        <button type="button" class="inline-flex items-center rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800">
+          購入する
+        </button>
+      </div>
+    <% end %>
+  </section>
+</div>
