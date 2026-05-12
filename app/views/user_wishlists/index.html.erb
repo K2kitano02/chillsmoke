@@ -23,7 +23,9 @@
         <tbody class="divide-y divide-gray-100">
           <% @user_wishlists.each do |wishlist| %>
             <tr>
-              <td class="px-4 py-3 font-semibold text-gray-900"><%= wishlist.name %></td>
+              <td class="px-4 py-3 font-semibold text-gray-900">
+                <%= link_to wishlist.name, user_wishlist_path(wishlist), class: "text-emerald-800 underline" %>
+              </td>
               <td class="px-4 py-3 tabular-nums text-gray-700"><%= number_with_delimiter(wishlist.price) %>円</td>
               <td class="px-4 py-3 text-gray-700"><%= wishlist.memo.presence || "未設定" %></td>
               <td class="px-4 py-3 text-gray-700"><%= wishlist.is_purchased? ? "購入済み" : "未購入" %></td>
