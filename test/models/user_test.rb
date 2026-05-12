@@ -45,4 +45,24 @@ class UserTest < ActiveSupport::TestCase
       u.destroy
     end
   end
+
+  test "has_many user_wishlists" do
+    u = users(:one)
+
+    assert_includes u.user_wishlists, user_wishlists(:watch)
+  end
+
+  test "destroying user destroys dependent user_wishlists" do
+    u = User.create!(
+      email: "user_destroy_wishlist_#{SecureRandom.hex(4)}@example.test",
+      name: "Wishlist Owner",
+      password: "password123",
+      password_confirmation: "password123"
+    )
+    u.user_wishlists.create!(name: "ご褒美", price: 5000)
+
+    assert_difference "UserWishlist.count", -1 do
+      u.destroy
+    end
+  end
 end

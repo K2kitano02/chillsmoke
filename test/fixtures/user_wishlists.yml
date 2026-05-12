@@ -1,0 +1,13 @@
+watch:
+  user: one
+  name: 腕時計
+  price: 30000
+  memo: 仕事用
+  is_purchased: false
+
+purchased_bag:
+  user: two
+  name: バッグ
+  price: 12000
+  memo: 購入済みサンプル
+  is_purchased: true
