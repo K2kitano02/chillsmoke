@@ -36,6 +36,7 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
     assert_select "a[href=?]", user_schedules_path, text: "喫煙スケジュール"
     assert_select "form[action=?]", increment_today_smoking_log_path
     assert_select "form[action=?]", schedule_reflection_path
+    assert_select "a[href=?]", user_wishlists_path, text: "ウィッシュリスト"
   end
 
   test "ダッシュボード表示だけでは当日ログを作らない" do

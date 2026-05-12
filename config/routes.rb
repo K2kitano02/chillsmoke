@@ -10,6 +10,8 @@ Rails.application.routes.draw do
   resources :user_schedules, only: %i[index new create edit update destroy] do
     patch :toggle, on: :member
   end
+  # ISSUE-81: ウィッシュリスト一覧
+  resources :user_wishlists, only: :index
   # ISSUE-76: 有効な喫煙スケジュールを本日の喫煙ログへ反映
   resource :schedule_reflection, only: :create
   # ISSUE-32: 今日の喫煙本数 +1（当日行の create はこの保存操作でのみ）
