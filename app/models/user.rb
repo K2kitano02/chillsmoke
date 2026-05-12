@@ -9,6 +9,7 @@ class User < ApplicationRecord
   has_one :user_setting, dependent: :destroy
   has_many :user_smoking_logs, dependent: :destroy
   has_many :user_schedules, dependent: :destroy
+  has_many :user_wishlists, dependent: :destroy
 
   # 当日ログの表示用（行がなければ未保存の 0 本。GET 相当では create されない）
   def today_smoking_log_for_display
