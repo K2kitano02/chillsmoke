@@ -18,6 +18,15 @@ class UserScheduleTest < ActiveSupport::TestCase
     assert_equal users(:one), user_schedules(:morning).user
   end
 
+  test "destroys dependent reflections" do
+    schedule = user_schedules(:morning)
+    schedule.user_schedule_reflections.create!(reflected_on: Time.zone.today)
+
+    assert_difference -> { UserScheduleReflection.count }, -1 do
+      schedule.destroy!
+    end
+  end
+
   test "rejects blank scheduled_smoking_time" do
     schedule = users(:one).user_schedules.build(
       label: "時間なし",

@@ -24,6 +24,8 @@
     <div class="mt-4 flex flex-wrap items-center gap-3">
       <%= button_to "＋1で記録", increment_today_smoking_log_path, method: :post,
             class: "inline-flex items-center rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800" %>
+      <%= button_to "スケジュールを反映", schedule_reflection_path, method: :post,
+            class: "inline-flex items-center rounded-md bg-emerald-700 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-800" %>
       <%= link_to "日付を指定して本数を登録・修正", new_user_smoking_log_path, class: "text-sm text-emerald-800 underline" %>
     </div>
   </section>

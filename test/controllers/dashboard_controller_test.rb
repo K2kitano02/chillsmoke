@@ -32,8 +32,10 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "h1", text: "ダッシュボード"
     assert_match(/＋1で記録/, response.body)
+    assert_match(/スケジュールを反映/, response.body)
     assert_select "a[href=?]", user_schedules_path, text: "喫煙スケジュール"
     assert_select "form[action=?]", increment_today_smoking_log_path
+    assert_select "form[action=?]", schedule_reflection_path
   end
 
   test "ダッシュボード表示だけでは当日ログを作らない" do
