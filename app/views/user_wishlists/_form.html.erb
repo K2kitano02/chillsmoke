@@ -1,0 +1,23 @@
+<%= form_with model: user_wishlist, class: "mt-6 space-y-4" do |f| %>
+  <%= render "shared/form_errors", record: user_wishlist %>
+
+  <div>
+    <%= f.label :name, "名前", class: "block text-sm font-medium text-gray-700" %>
+    <%= f.text_field :name, placeholder: "例: 腕時計、イヤホン", class: "mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm" %>
+  </div>
+
+  <div>
+    <%= f.label :price, "価格", class: "block text-sm font-medium text-gray-700" %>
+    <%= f.number_field :price, min: 1, step: 1, class: "mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm" %>
+  </div>
+
+  <div>
+    <%= f.label :memo, "メモ", class: "block text-sm font-medium text-gray-700" %>
+    <%= f.text_area :memo, rows: 4, placeholder: "購入理由や候補メモ", class: "mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm" %>
+  </div>
+
+  <div class="flex flex-wrap items-center gap-3">
+    <%= f.submit submit_label, class: "inline-flex justify-center rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800" %>
+    <%= link_to "一覧へ戻る", user_wishlists_path, class: "text-sm text-emerald-800 underline" %>
+  </div>
+<% end %>
