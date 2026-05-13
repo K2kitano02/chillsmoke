@@ -51,6 +51,15 @@ class UserWishlistsControllerTest < ActionDispatch::IntegrationTest
     assert_select "a[href=?]", dashboard_path, text: "ダッシュボードへ戻る"
   end
 
+  test "一覧から新規登録画面へ進める" do
+    sign_in users(:one)
+
+    get user_wishlists_url
+
+    assert_response :success
+    assert_select "a[href=?]", new_user_wishlist_path, text: "新規登録"
+  end
+
   test "一覧から詳細画面へ進める" do
     sign_in users(:one)
     wishlist = user_wishlists(:watch)
@@ -92,5 +101,60 @@ class UserWishlistsControllerTest < ActionDispatch::IntegrationTest
     get user_wishlist_url(user_wishlists(:purchased_bag))
 
     assert_response :not_found
+  end
+
+  test "new はウィッシュリスト登録フォームを表示する" do
+    sign_in users(:one)
+
+    get new_user_wishlist_url
+
+    assert_response :success
+    assert_select "h1", text: "ウィッシュリスト登録"
+    assert_select "form[action=?]", user_wishlists_path
+    assert_select "input[name=?]", "user_wishlist[name]"
+    assert_select "input[name=?]", "user_wishlist[price]"
+    assert_select "textarea[name=?]", "user_wishlist[memo]"
+  end
+
+  test "create はログインユーザーに紐づくウィッシュリストを作成して詳細へ進む" do
+    sign_in users(:one)
+
+    assert_difference -> { users(:one).user_wishlists.count }, 1 do
+      post user_wishlists_url, params: {
+        user_wishlist: {
+          name: "イヤホン",
+          price: 15_000,
+          memo: "通勤用",
+          is_purchased: "1",
+          user_id: users(:two).id
+        }
+      }
+    end
+
+    wishlist = users(:one).user_wishlists.order(:created_at).last
+    assert_redirected_to user_wishlist_url(wishlist)
+    assert_equal "イヤホン", wishlist.name
+    assert_equal 15_000, wishlist.price
+    assert_equal "通勤用", wishlist.memo
+    assert_not wishlist.is_purchased
+    assert_equal users(:one), wishlist.user
+  end
+
+  test "create はバリデーションエラーなら 422 で new を再表示する" do
+    sign_in users(:one)
+
+    assert_no_difference -> { UserWishlist.count } do
+      post user_wishlists_url, params: {
+        user_wishlist: {
+          name: "",
+          price: 0,
+          memo: "不正"
+        }
+      }
+    end
+
+    assert_response :unprocessable_entity
+    assert_select "h1", text: "ウィッシュリスト登録"
+    assert_select ".bg-red-50"
   end
 end
