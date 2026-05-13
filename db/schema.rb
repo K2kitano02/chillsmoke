@@ -10,9 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_05_12_090000) do
+ActiveRecord::Schema[7.2].define(version: 2026_05_13_090000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "user_purchase_histories", force: :cascade do |t|
+    t.bigint "user_wishlist_id", null: false
+    t.integer "amount", null: false
+    t.datetime "purchased_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_wishlist_id"], name: "index_user_purchase_histories_on_user_wishlist_id", unique: true
+  end
 
   create_table "user_schedule_reflections", force: :cascade do |t|
     t.bigint "user_schedule_id", null: false
@@ -83,6 +92,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_05_12_090000) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "user_purchase_histories", "user_wishlists"
   add_foreign_key "user_schedule_reflections", "user_schedules"
   add_foreign_key "user_schedules", "users"
   add_foreign_key "user_settings", "users"

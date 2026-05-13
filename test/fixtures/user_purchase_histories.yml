@@ -1,0 +1,4 @@
+bag_purchase:
+  user_wishlist: purchased_bag
+  amount: 12000
+  purchased_at: <%= 1.day.ago %>

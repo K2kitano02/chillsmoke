@@ -18,6 +18,18 @@ class UserWishlistTest < ActiveSupport::TestCase
     assert_equal users(:one), user_wishlists(:watch).user
   end
 
+  test "has one user_purchase_history" do
+    assert_equal user_purchase_histories(:bag_purchase), user_wishlists(:purchased_bag).user_purchase_history
+  end
+
+  test "destroying wishlist destroys dependent purchase history" do
+    wishlist = user_wishlists(:purchased_bag)
+
+    assert_difference -> { UserPurchaseHistory.count }, -1 do
+      wishlist.destroy!
+    end
+  end
+
   test "rejects blank name" do
     wishlist = users(:one).user_wishlists.build(name: "", price: 1000)
 
