@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class UserWishlistsController < ApplicationController
-  before_action :set_user_wishlist, only: %i[show edit update]
+  before_action :set_user_wishlist, only: %i[show edit update destroy]
 
   def index
     @user_wishlists = current_user.user_wishlists.order(:is_purchased, :created_at, :id)
@@ -32,6 +32,12 @@ class UserWishlistsController < ApplicationController
     else
       render :edit, status: :unprocessable_entity
     end
+  end
+
+  def destroy
+    @user_wishlist.destroy!
+
+    redirect_to user_wishlists_path, notice: "ウィッシュリストを削除しました。"
   end
 
   private
