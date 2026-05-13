@@ -19,6 +19,7 @@
             <th scope="col" class="px-4 py-3 font-medium">価格</th>
             <th scope="col" class="px-4 py-3 font-medium">メモ</th>
             <th scope="col" class="px-4 py-3 font-medium">状態</th>
+            <th scope="col" class="px-4 py-3 font-medium">操作</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-100">
@@ -30,6 +31,12 @@
               <td class="px-4 py-3 tabular-nums text-gray-700"><%= number_with_delimiter(wishlist.price) %>円</td>
               <td class="px-4 py-3 text-gray-700"><%= wishlist.memo.presence || "未設定" %></td>
               <td class="px-4 py-3 text-gray-700"><%= wishlist.is_purchased? ? "購入済み" : "未購入" %></td>
+              <td class="px-4 py-3">
+                <%= button_to "削除", user_wishlist_path(wishlist), method: :delete,
+                      form: { class: "inline-block" },
+                      class: "text-sm font-medium text-red-700 underline",
+                      data: { turbo_confirm: "このウィッシュリストを削除しますか？" } %>
+              </td>
             </tr>
           <% end %>
         </tbody>

@@ -70,6 +70,18 @@ class UserWishlistsControllerTest < ActionDispatch::IntegrationTest
     assert_select "a[href=?]", user_wishlist_path(wishlist), text: "腕時計"
   end
 
+  test "一覧から削除できる" do
+    sign_in users(:one)
+    wishlist = user_wishlists(:watch)
+
+    get user_wishlists_url
+
+    assert_response :success
+    assert_select "form[action=?]", user_wishlist_path(wishlist) do
+      assert_select "button", text: "削除"
+    end
+  end
+
   test "show はログインユーザーのウィッシュリスト詳細を表示する" do
     sign_in users(:one)
 
@@ -240,5 +252,29 @@ class UserWishlistsControllerTest < ActionDispatch::IntegrationTest
     wishlist.reload
     assert_equal "腕時計", wishlist.name
     assert_equal 30_000, wishlist.price
+  end
+
+  test "destroy はログインユーザーのウィッシュリストを削除して一覧へ戻る" do
+    sign_in users(:one)
+    wishlist = user_wishlists(:watch)
+
+    assert_difference -> { users(:one).user_wishlists.count }, -1 do
+      delete user_wishlist_url(wishlist)
+    end
+
+    assert_redirected_to user_wishlists_url
+    assert_nil UserWishlist.find_by(id: wishlist.id)
+  end
+
+  test "destroy は他ユーザーのウィッシュリストなら 404 を返して削除しない" do
+    sign_in users(:one)
+    wishlist = user_wishlists(:purchased_bag)
+
+    assert_no_difference -> { UserWishlist.count } do
+      delete user_wishlist_url(wishlist)
+    end
+
+    assert_response :not_found
+    assert UserWishlist.exists?(wishlist.id)
   end
 end
