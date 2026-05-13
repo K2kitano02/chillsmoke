@@ -52,6 +52,12 @@ class UserTest < ActiveSupport::TestCase
     assert_includes u.user_wishlists, user_wishlists(:watch)
   end
 
+  test "has_many user_purchase_histories through user_wishlists" do
+    u = users(:two)
+
+    assert_includes u.user_purchase_histories, user_purchase_histories(:bag_purchase)
+  end
+
   test "destroying user destroys dependent user_wishlists" do
     u = User.create!(
       email: "user_destroy_wishlist_#{SecureRandom.hex(4)}@example.test",
