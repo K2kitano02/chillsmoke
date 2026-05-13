@@ -81,6 +81,7 @@ class UserWishlistsControllerTest < ActionDispatch::IntegrationTest
     assert_match(/仕事用/, response.body)
     assert_match(/未購入/, response.body)
     assert_select "button", text: "購入する"
+    assert_select "a[href=?]", edit_user_wishlist_path(user_wishlists(:watch)), text: "編集"
     assert_select "a[href=?]", user_wishlists_path, text: "一覧へ戻る"
   end
 
@@ -99,6 +100,28 @@ class UserWishlistsControllerTest < ActionDispatch::IntegrationTest
     sign_in users(:one)
 
     get user_wishlist_url(user_wishlists(:purchased_bag))
+
+    assert_response :not_found
+  end
+
+  test "edit はログインユーザーのウィッシュリスト編集フォームを表示する" do
+    sign_in users(:one)
+    wishlist = user_wishlists(:watch)
+
+    get edit_user_wishlist_url(wishlist)
+
+    assert_response :success
+    assert_select "h1", text: "ウィッシュリスト編集"
+    assert_select "form[action=?]", user_wishlist_path(wishlist)
+    assert_select "input[name=?][value=?]", "user_wishlist[name]", "腕時計"
+    assert_select "input[name=?][value=?]", "user_wishlist[price]", "30000"
+    assert_select "textarea[name=?]", "user_wishlist[memo]"
+  end
+
+  test "edit は他ユーザーのウィッシュリストなら 404 を返す" do
+    sign_in users(:one)
+
+    get edit_user_wishlist_url(user_wishlists(:purchased_bag))
 
     assert_response :not_found
   end
@@ -156,5 +179,66 @@ class UserWishlistsControllerTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
     assert_select "h1", text: "ウィッシュリスト登録"
     assert_select ".bg-red-50"
+  end
+
+  test "update はログインユーザーのウィッシュリストを更新して詳細へ戻る" do
+    sign_in users(:one)
+    wishlist = user_wishlists(:watch)
+
+    patch user_wishlist_url(wishlist), params: {
+      user_wishlist: {
+        name: "ワイヤレスイヤホン",
+        price: 18_000,
+        memo: "通勤と作業用",
+        is_purchased: "1",
+        user_id: users(:two).id
+      }
+    }
+
+    assert_redirected_to user_wishlist_url(wishlist)
+    wishlist.reload
+    assert_equal "ワイヤレスイヤホン", wishlist.name
+    assert_equal 18_000, wishlist.price
+    assert_equal "通勤と作業用", wishlist.memo
+    assert_not wishlist.is_purchased
+    assert_equal users(:one), wishlist.user
+  end
+
+  test "update は他ユーザーのウィッシュリストなら 404 を返して更新しない" do
+    sign_in users(:one)
+    wishlist = user_wishlists(:purchased_bag)
+
+    patch user_wishlist_url(wishlist), params: {
+      user_wishlist: {
+        name: "変更不可",
+        price: 1,
+        memo: "変更不可"
+      }
+    }
+
+    assert_response :not_found
+    wishlist.reload
+    assert_equal "バッグ", wishlist.name
+    assert_equal 12_000, wishlist.price
+  end
+
+  test "update はバリデーションエラーなら 422 で edit を再表示する" do
+    sign_in users(:one)
+    wishlist = user_wishlists(:watch)
+
+    patch user_wishlist_url(wishlist), params: {
+      user_wishlist: {
+        name: "",
+        price: 0,
+        memo: "不正"
+      }
+    }
+
+    assert_response :unprocessable_entity
+    assert_select "h1", text: "ウィッシュリスト編集"
+    assert_select ".bg-red-50"
+    wishlist.reload
+    assert_equal "腕時計", wishlist.name
+    assert_equal 30_000, wishlist.price
   end
 end
