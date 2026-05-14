@@ -40,7 +40,7 @@ class Purchase::CreateTest < ActiveSupport::TestCase
     create_log(
       user: wishlist.user,
       smoking_count: 0,
-      pack_price_snapshot: 20_000
+      pack_price_snapshot: 30_000
     )
 
     assert_no_difference -> { UserPurchaseHistory.count } do
@@ -48,6 +48,24 @@ class Purchase::CreateTest < ActiveSupport::TestCase
         Purchase::Create.call(user: wishlist.user, wishlist: wishlist)
       end
     end
+  end
+
+  test "does not create duplicate history even if purchased flag is stale" do
+    wishlist = user_wishlists(:purchased_bag)
+    wishlist.update!(is_purchased: false)
+    create_log(
+      user: wishlist.user,
+      smoking_count: 0,
+      pack_price_snapshot: 30_000
+    )
+
+    assert_no_difference -> { UserPurchaseHistory.count } do
+      assert_raises Purchase::Create::AlreadyPurchased do
+        Purchase::Create.call(user: wishlist.user, wishlist: wishlist)
+      end
+    end
+
+    assert_equal user_purchase_histories(:bag_purchase), wishlist.reload.user_purchase_history
   end
 
   test "subtracts existing purchase histories before checking balance" do

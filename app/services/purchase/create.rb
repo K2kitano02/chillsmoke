@@ -31,6 +31,10 @@ module Purchase
       end
 
       wishlist
+    rescue ActiveRecord::RecordInvalid => e
+      raise e unless e.record.errors.of_kind?(:user_wishlist_id, :taken)
+
+      raise AlreadyPurchased
     rescue ActiveRecord::RecordNotUnique
       raise AlreadyPurchased
     end

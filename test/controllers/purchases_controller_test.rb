@@ -65,6 +65,7 @@ class PurchasesControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_redirected_to user_wishlist_url(wishlist)
+    assert_equal "すでに購入済みです。", flash[:alert]
     assert wishlist.reload.is_purchased
   end
 
