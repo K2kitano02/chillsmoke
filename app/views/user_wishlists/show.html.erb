@@ -29,9 +29,9 @@
 
     <% unless @user_wishlist.is_purchased? %>
       <div class="mt-6">
-        <button type="button" class="inline-flex items-center rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800">
-          購入する
-        </button>
+        <%= button_to "購入する", purchase_user_wishlist_path(@user_wishlist), method: :post,
+              class: "inline-flex items-center rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800",
+              data: { turbo_confirm: "このウィッシュリストを購入しますか？" } %>
       </div>
     <% end %>
   </section>
