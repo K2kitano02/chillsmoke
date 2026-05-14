@@ -48,6 +48,9 @@ class PurchasesControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_redirected_to user_wishlist_url(wishlist)
+    assert_match(/使用可能金額が不足しています。/, flash[:alert])
+    assert_match(/あと29,750円必要です。/, flash[:alert])
+    assert_match(/現在の使用可能金額は250円です。/, flash[:alert])
     assert_not wishlist.reload.is_purchased
   end
 

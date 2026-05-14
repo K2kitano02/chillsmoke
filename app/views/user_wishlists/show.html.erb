@@ -21,6 +21,10 @@
         <dt class="font-medium text-gray-600">状態</dt>
         <dd class="mt-1 text-lg font-semibold text-gray-900"><%= @user_wishlist.is_purchased? ? "購入済み" : "未購入" %></dd>
       </div>
+      <div>
+        <dt class="font-medium text-gray-600">使用可能金額</dt>
+        <dd class="mt-1 text-lg font-semibold tabular-nums text-gray-900"><%= number_with_delimiter(@balance.usable_yen) %>円</dd>
+      </div>
       <div class="sm:col-span-2">
         <dt class="font-medium text-gray-600">メモ</dt>
         <dd class="mt-1 whitespace-pre-wrap text-gray-800"><%= @user_wishlist.memo.presence || "未設定" %></dd>
@@ -29,9 +33,18 @@
 
     <% unless @user_wishlist.is_purchased? %>
       <div class="mt-6">
-        <%= button_to "購入する", purchase_user_wishlist_path(@user_wishlist), method: :post,
-              class: "inline-flex items-center rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800",
-              data: { turbo_confirm: "このウィッシュリストを購入しますか？" } %>
+        <% if @balance.usable_yen >= @user_wishlist.price %>
+          <%= button_to "購入する", purchase_user_wishlist_path(@user_wishlist), method: :post,
+                class: "inline-flex items-center rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800",
+                data: { turbo_confirm: "このウィッシュリストを購入しますか？" } %>
+        <% else %>
+          <button type="button" disabled class="inline-flex items-center rounded-md bg-gray-300 px-4 py-2 text-sm font-medium text-gray-600">
+            購入する
+          </button>
+          <p class="mt-2 text-sm text-red-700">
+            使用可能金額が不足しています。あと<%= number_with_delimiter(@user_wishlist.price - @balance.usable_yen) %>円必要です。
+          </p>
+        <% end %>
       </div>
     <% end %>
   </section>

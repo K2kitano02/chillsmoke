@@ -84,6 +84,7 @@ class UserWishlistsControllerTest < ActionDispatch::IntegrationTest
 
   test "show はログインユーザーのウィッシュリスト詳細を表示する" do
     sign_in users(:one)
+    create_log(user: users(:one), smoking_count: 0, pack_price_snapshot: 30_000)
 
     get user_wishlist_url(user_wishlists(:watch))
 
@@ -97,6 +98,17 @@ class UserWishlistsControllerTest < ActionDispatch::IntegrationTest
     end
     assert_select "a[href=?]", edit_user_wishlist_path(user_wishlists(:watch)), text: "編集"
     assert_select "a[href=?]", user_wishlists_path, text: "一覧へ戻る"
+  end
+
+  test "show は残高不足なら理由を表示して購入ボタンを無効にする" do
+    sign_in users(:one)
+
+    get user_wishlist_url(user_wishlists(:watch))
+
+    assert_response :success
+    assert_match(/使用可能金額が不足しています。あと30,000円必要です。/, response.body)
+    assert_select "button[disabled]", text: "購入する"
+    assert_select "form[action=?]", purchase_user_wishlist_path(user_wishlists(:watch)), count: 0
   end
 
   test "show は購入済みなら購入ボタンを表示しない" do
@@ -278,5 +290,21 @@ class UserWishlistsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :not_found
     assert UserWishlist.exists?(wishlist.id)
+  end
+
+  private
+
+  def create_log(user:, smoking_count:, **snapshot_overrides)
+    user.user_smoking_logs.create!(
+      {
+        smoked_on: Time.zone.today - 1.day,
+        smoking_count: smoking_count,
+        target_daily_cigarette_count_snapshot: 5,
+        baseline_daily_cigarette_count_snapshot: 20,
+        pack_price_snapshot: 500,
+        cigarettes_per_pack_snapshot: 20,
+        is_oni_mode_snapshot: false
+      }.merge(snapshot_overrides)
+    )
   end
 end

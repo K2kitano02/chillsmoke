@@ -8,6 +8,7 @@ class UserWishlistsController < ApplicationController
   end
 
   def show
+    @balance = Money::BalanceQuery.call(current_user)
   end
 
   def edit
