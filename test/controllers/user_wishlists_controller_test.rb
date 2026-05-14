@@ -122,6 +122,27 @@ class UserWishlistsControllerTest < ActionDispatch::IntegrationTest
     assert_select "button", text: "購入する", count: 0
   end
 
+  test "show は購入済みなら購入履歴を表示する" do
+    sign_in users(:two)
+    purchase_history = user_purchase_histories(:bag_purchase)
+
+    get user_wishlist_url(user_wishlists(:purchased_bag))
+
+    assert_response :success
+    assert_select "h2", text: "購入履歴"
+    assert_match(/12,000円/, response.body)
+    assert_match(/#{purchase_history.purchased_at.strftime("%Y\/%m\/%d %H:%M")}/, response.body)
+  end
+
+  test "show は未購入なら購入履歴を表示しない" do
+    sign_in users(:one)
+
+    get user_wishlist_url(user_wishlists(:watch))
+
+    assert_response :success
+    assert_select "h2", text: "購入履歴", count: 0
+  end
+
   test "show は他ユーザーのウィッシュリストなら 404 を返す" do
     sign_in users(:one)
 

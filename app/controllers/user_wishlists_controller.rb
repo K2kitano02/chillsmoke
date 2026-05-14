@@ -9,6 +9,7 @@ class UserWishlistsController < ApplicationController
 
   def show
     @balance = Money::BalanceQuery.call(current_user)
+    @user_purchase_history = @user_wishlist.user_purchase_history
   end
 
   def edit
