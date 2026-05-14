@@ -92,7 +92,9 @@ class UserWishlistsControllerTest < ActionDispatch::IntegrationTest
     assert_match(/30,000円/, response.body)
     assert_match(/仕事用/, response.body)
     assert_match(/未購入/, response.body)
-    assert_select "button", text: "購入する"
+    assert_select "form[action=?]", purchase_user_wishlist_path(user_wishlists(:watch)) do
+      assert_select "button", text: "購入する"
+    end
     assert_select "a[href=?]", edit_user_wishlist_path(user_wishlists(:watch)), text: "編集"
     assert_select "a[href=?]", user_wishlists_path, text: "一覧へ戻る"
   end
