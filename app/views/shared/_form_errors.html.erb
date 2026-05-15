@@ -1,5 +1,6 @@
 <% if record.errors.any? %>
-  <div class="rounded-md bg-red-50 p-4 text-sm text-red-800">
+  <div class="rounded-md border border-red-200 bg-red-50 p-4 text-sm text-red-800" role="alert">
+    <p class="font-medium">入力内容を確認してください。</p>
     <ul class="list-inside list-disc">
       <% record.errors.full_messages.each do |msg| %>
         <li><%= msg %></li>
