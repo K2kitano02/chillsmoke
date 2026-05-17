@@ -1,1 +1,106 @@
 @import "tailwindcss";
+
+:root {
+  --smoke-bg: #0f0f0d;
+  --smoke-panel: #171716;
+  --smoke-panel-deep: #201f1c;
+  --smoke-amber: #d99120;
+}
+
+body {
+  background:
+    radial-gradient(circle at 50% 0%, rgba(231, 255, 241, 0.055) 0%, transparent 42rem),
+    radial-gradient(circle at -10% -18%, rgba(194, 239, 216, 0.09), transparent 36rem),
+    radial-gradient(circle at 105% 105%, rgba(250, 132, 108, 0.08), transparent 30rem),
+    linear-gradient(145deg, #08090a 0%, #0c0e10 45%, #111416 100%);
+}
+
+.atmosphere-layer {
+  background:
+    radial-gradient(ellipse at 50% 100%, rgba(15, 107, 62, 0.16) 0%, rgba(15, 107, 62, 0.06) 34%, transparent 70%),
+    linear-gradient(115deg, transparent 0 38%, rgba(231, 255, 241, 0.026) 38% 39%, transparent 39% 100%);
+  background-position: bottom center, center;
+  background-repeat: no-repeat, repeat;
+  background-size: 100% 58%, auto;
+  opacity: 0.58;
+  mask-image: linear-gradient(to bottom, black 0%, black 35%, rgba(0, 0, 0, 0.72) 100%);
+}
+
+.plant-haze {
+  background:
+    radial-gradient(ellipse at 18% 100%, rgba(194, 239, 216, 0.12), transparent 28rem),
+    radial-gradient(ellipse at 86% 96%, rgba(15, 107, 62, 0.25), transparent 26rem),
+    linear-gradient(to top, rgba(0, 0, 0, 0.42), transparent 78%);
+  filter: blur(18px);
+}
+
+.hemp-surface {
+  position: relative;
+  overflow: hidden;
+}
+
+.hemp-surface::before {
+  content: "";
+  position: absolute;
+  right: -3.5rem;
+  top: -4rem;
+  width: 18rem;
+  height: 18rem;
+  pointer-events: none;
+  opacity: 0.28;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 160'%3E%3Cg fill='none' stroke='%230f6b3e' stroke-width='5' stroke-linecap='round' stroke-linejoin='round' opacity='.95'%3E%3Cpath d='M80 82C72 54 74 30 80 10c6 20 8 44 0 72Z'/%3E%3Cpath d='M65 88C45 67 33 46 30 28c15 10 31 27 45 55'/%3E%3Cpath d='M95 88c20-21 32-42 35-60-15 10-31 27-45 55'/%3E%3Cpath d='M52 104C30 93 15 79 8 64c17 3 37 13 61 32'/%3E%3Cpath d='M108 104c22-11 37-25 44-40-17 3-37 13-61 32'/%3E%3Cpath d='M68 112c-9 13-17 24-28 34 15-3 27-12 38-28'/%3E%3Cpath d='M92 112c9 13 17 24 28 34-15-3-27-12-38-28'/%3E%3Cpath d='M80 82v62'/%3E%3C/g%3E%3C/svg%3E"),
+    radial-gradient(circle, rgba(15, 107, 62, 0.22), transparent 62%);
+  background-position: center, center;
+  background-repeat: no-repeat;
+  background-size: 15rem 15rem, 18rem 18rem;
+  transform: rotate(14deg);
+}
+
+.hemp-surface > * {
+  position: relative;
+  z-index: 1;
+}
+
+.smoke-stage {
+  filter: blur(0.15px);
+}
+
+.smoke-wisp {
+  position: absolute;
+  bottom: -9rem;
+  width: var(--smoke-size, 12rem);
+  height: var(--smoke-size, 12rem);
+  border-radius: 9999px;
+  background:
+    radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.26), transparent 38%),
+    radial-gradient(circle at 60% 56%, rgba(194, 239, 216, 0.14), transparent 46%),
+    radial-gradient(circle, rgba(255, 255, 255, 0.12), transparent 62%);
+  opacity: 0;
+  transform: translate3d(0, 0, 0) scale(0.55);
+  animation: smoke-rise var(--smoke-duration, 18s) ease-in infinite;
+  animation-delay: var(--smoke-delay, 0s);
+}
+
+@keyframes smoke-rise {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) scale(0.5) rotate(0deg);
+  }
+  14% {
+    opacity: 0.44;
+  }
+  55% {
+    opacity: 0.27;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--smoke-drift, 2rem), -105vh, 0) scale(1.35) rotate(24deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .smoke-wisp {
+    display: none;
+  }
+}

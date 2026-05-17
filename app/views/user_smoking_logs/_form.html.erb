@@ -1,24 +1,24 @@
-<div class="mx-auto max-w-md rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+<div class="mx-auto max-w-md rounded-xl border border-white/10 bg-[#171716] p-6 shadow-sm">
   <%= form_with model: @log, url: (@log.persisted? ? user_smoking_log_path(@log) : user_smoking_logs_path), method: (@log.persisted? ? :patch : :post), class: "space-y-4" do |f| %>
     <%= render "shared/form_errors", record: @log %>
 
     <div>
       <% if @log.persisted? %>
-        <span class="block text-sm font-medium text-slate-700">日付</span>
-        <p class="mt-1 text-slate-900 tabular-nums"><%= @log.smoked_on.strftime("%Y年%m月%d日") %></p>
+        <span class="ml-1 block text-xs font-bold uppercase tracking-wide text-stone-400">日付</span>
+        <p class="mt-2 text-stone-100 tabular-nums"><%= @log.smoked_on.strftime("%Y年%m月%d日") %></p>
       <% else %>
-        <%= f.label :smoked_on, "日付", class: "block text-sm font-medium text-slate-700" %>
-        <%= f.date_field :smoked_on, class: "mt-1 block w-full rounded border border-slate-300 px-3 py-2 text-slate-900" %>
+        <%= f.label :smoked_on, "日付", class: "ml-1 block text-xs font-bold uppercase tracking-wide text-stone-400" %>
+        <%= f.date_field :smoked_on, class: "mt-2 block w-full rounded-lg border-0 bg-[#292823] px-4 py-3 text-stone-100 ring-1 ring-white/10 focus:ring-2 focus:ring-amber-400" %>
       <% end %>
     </div>
 
     <div>
-      <%= f.label :smoking_count, "本数", class: "block text-sm font-medium text-slate-700" %>
-      <%= f.number_field :smoking_count, min: 0, step: 1, class: "mt-1 block w-full rounded border border-slate-300 px-3 py-2 text-slate-900" %>
+      <%= f.label :smoking_count, "本数", class: "ml-1 block text-xs font-bold uppercase tracking-wide text-stone-400" %>
+      <%= f.number_field :smoking_count, min: 0, step: 1, class: "mt-2 block w-full rounded-lg border-0 bg-[#292823] px-4 py-3 text-stone-100 ring-1 ring-white/10 focus:ring-2 focus:ring-amber-400" %>
     </div>
 
     <div class="pt-2">
-      <%= f.submit "保存", class: "inline-flex cursor-pointer rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800" %>
+      <%= f.submit "保存", class: "inline-flex cursor-pointer rounded-full bg-amber-600 px-5 py-3 text-sm font-bold text-black hover:bg-amber-500" %>
     </div>
   <% end %>
 </div>

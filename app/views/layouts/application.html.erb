@@ -19,25 +19,49 @@
     <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
   </head>
 
-  <body>
-    <header class="border-b border-slate-200 bg-white/80 px-5 py-3">
-      <nav class="container mx-auto flex flex-wrap items-center justify-end gap-3 text-sm">
+  <body class="relative isolate min-h-screen bg-[#0f0f0d] text-stone-100">
+    <div class="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden="true">
+      <%= image_tag "chillsmoke_background.png",
+            class: "h-full w-full object-cover opacity-18 mix-blend-screen" %>
+    </div>
+    <div class="atmosphere-layer pointer-events-none fixed inset-0 z-0"></div>
+    <div class="plant-haze pointer-events-none fixed inset-x-0 bottom-0 z-0 h-1/2 opacity-70 mix-blend-screen"></div>
+    <div data-smoke-stage class="smoke-stage pointer-events-none fixed inset-0 z-[5] overflow-hidden" aria-hidden="true"></div>
+    <header class="relative z-20 border-b border-white/10 bg-[#151513]/90 px-5 py-3 backdrop-blur">
+      <nav class="container mx-auto flex flex-wrap items-center justify-between gap-3 text-sm">
+        <%= link_to "ChillSmoke", (user_signed_in? ? dashboard_path : root_path), class: "text-lg font-bold tracking-tight text-amber-200" %>
         <% if user_signed_in? %>
-          <span class="text-slate-600"><%= current_user.name %></span>
+          <% if @header_balance && @header_streak_count %>
+            <div class="ml-auto flex items-center gap-2 text-xs sm:text-sm">
+              <div class="rounded-lg border border-white/10 bg-white/5 px-3 py-1.5">
+                <span class="text-stone-500">使用可能</span>
+                <span class="ml-1 font-bold tabular-nums text-stone-100"><%= number_with_delimiter(@header_balance.usable_yen) %>円</span>
+              </div>
+              <div class="rounded-lg border border-white/10 bg-white/5 px-3 py-1.5" title="昨日までの連続達成日数">
+                <span class="text-stone-500">継続日数</span>
+                <span class="ml-1 font-bold tabular-nums text-stone-100"><%= @header_streak_count %>日</span>
+              </div>
+            </div>
+          <% else %>
+            <span class="ml-auto"></span>
+          <% end %>
+          <span class="hidden text-stone-400 sm:inline"><%= current_user.name %></span>
           <%= button_to "ログアウト", destroy_user_session_path, method: :delete,
-                class: "rounded bg-slate-800 px-3 py-1.5 text-white hover:bg-slate-700" %>
+                class: "rounded-lg bg-white/5 px-4 py-2 font-medium text-stone-300 ring-1 ring-white/10 hover:bg-white/10" %>
         <% else %>
-          <%= link_to "ログイン", new_user_session_path, class: "text-emerald-700 hover:underline" %>
-          <%= link_to "新規登録", new_user_registration_path, class: "text-emerald-700 hover:underline" %>
+          <div class="ml-auto flex items-center gap-3">
+            <%= link_to "ログイン", new_user_session_path, class: "font-medium text-stone-300 hover:text-amber-200" %>
+            <%= link_to "新規登録", new_user_registration_path, class: "rounded-lg bg-amber-600 px-4 py-2 font-bold text-black hover:bg-amber-500" %>
+          </div>
         <% end %>
       </nav>
     </header>
-    <main class="container mx-auto mt-8 px-5 flex flex-col">
+    <main class="relative z-10 container mx-auto flex flex-col px-5 py-6 sm:py-8">
       <% if notice %>
-        <p class="notice mb-2 text-slate-700" role="status"><%= notice %></p>
+        <p class="notice mb-5 rounded-lg border border-amber-300/30 bg-amber-400/10 px-4 py-3 text-sm text-amber-200" role="status"><%= notice %></p>
       <% end %>
       <% if alert %>
-        <p class="alert mb-2 text-red-700" role="alert"><%= alert %></p>
+        <p class="alert mb-5 rounded-lg border border-red-400/30 bg-red-950/40 px-4 py-3 text-sm text-red-200" role="alert"><%= alert %></p>
       <% end %>
       <%= yield %>
     </main>

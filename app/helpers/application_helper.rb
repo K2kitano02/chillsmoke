@@ -4,11 +4,11 @@ module ApplicationHelper
     base = "block rounded-md p-1 text-left text-sm font-medium outline-none focus-visible:ring-2"
 
     if log.nil?
-      "#{base} text-gray-900 ring-emerald-600 hover:bg-gray-50"
+      "#{base} text-stone-300 ring-amber-400 hover:bg-[#292823]"
     elsif log.met_daily_target?
-      "#{base} border border-emerald-200 bg-emerald-50 text-emerald-900 ring-emerald-600 hover:bg-emerald-100"
+      "#{base} border border-emerald-200 border-emerald-300/20 bg-emerald-50 bg-emerald-400/10 text-emerald-200 ring-amber-400 hover:bg-emerald-400/15"
     else
-      "#{base} border border-red-200 bg-red-50 text-red-900 ring-red-600 hover:bg-red-100"
+      "#{base} border border-red-200 border-red-400/30 bg-red-50 bg-red-950/40 text-red-200 ring-red-300 hover:bg-red-950/60"
     end
   end
 end

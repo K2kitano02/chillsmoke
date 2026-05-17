@@ -1,10 +1,13 @@
-<div class="mx-auto max-w-lg px-4 py-8">
-  <h1 class="text-2xl font-semibold text-gray-900">設定の編集</h1>
-  <p class="mt-2 text-sm text-gray-600">目標本数・基準本数・価格・鬼モードを変更して保存できます。</p>
+<div class="mx-auto flex min-h-[calc(100vh-9rem)] w-full max-w-lg items-center py-4">
+  <div class="w-full rounded-xl border border-white/10 bg-[#171716] p-6 shadow-sm sm:p-8">
+    <p class="text-xs font-bold uppercase tracking-wide text-amber-300">Settings</p>
+    <h1 class="mt-1 text-3xl font-black tracking-tight text-stone-100">設定の編集</h1>
+    <p class="mt-2 text-sm text-stone-400">目標本数・基準本数・価格・鬼モードを変更して保存できます。</p>
 
-  <%= render "form", user_setting: @user_setting %>
+    <%= render "form", user_setting: @user_setting %>
 
-  <p class="mt-6 text-sm text-gray-600">
-    <%= link_to "ダッシュボードへ戻る", dashboard_path, class: "text-gray-900 underline hover:text-gray-700" %>
-  </p>
+    <p class="mt-6 text-sm text-stone-400">
+      <%= link_to "ダッシュボードへ戻る", dashboard_path, class: "font-semibold text-amber-300 underline underline-offset-4" %>
+    </p>
+  </div>
 </div>

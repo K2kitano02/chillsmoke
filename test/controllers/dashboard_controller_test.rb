@@ -70,7 +70,7 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
     assert_match(/3本/, response.body)
   end
 
-  test "節約と残高は昨日までの確定分と今日の見込みを分けて表示する" do
+  test "累計節約金額と今日の見込みを分けて表示する" do
     sign_in users(:one)
     users(:one).user_smoking_logs.create!(
       log_attrs(smoked_on: Time.zone.today - 1.day, smoking_count: 10)
@@ -82,11 +82,9 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
     get dashboard_url
 
     assert_response :success
-    assert_match(/累計節約（昨日まで）/, response.body)
-    assert_match(/250円/, response.body)
     assert_match(/今日の節約見込み/, response.body)
     assert_match(/500円/, response.body)
-    assert_match(/使用可能金額/, response.body)
+    assert_match(/累計節約金額.*?250円/m, response.body)
     assert_match(/今日の節約見込みは含めていません/, response.body)
   end
 
@@ -108,9 +106,8 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
     get dashboard_url
 
     assert_response :success
-    assert_match(/累計節約（昨日まで）.*?0円/m, response.body)
     assert_match(/今日の節約見込み.*?0円/m, response.body)
-    assert_match(/使用可能金額.*?0円/m, response.body)
+    assert_match(/累計節約金額.*?0円/m, response.body)
   end
 
   test "継続日数は当日を含めず昨日までを表示する" do

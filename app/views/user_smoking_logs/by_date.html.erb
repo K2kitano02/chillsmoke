@@ -1,46 +1,47 @@
-<div class="mx-auto max-w-2xl">
-  <h1 class="text-2xl font-semibold text-gray-900">
+<div class="mx-auto w-full max-w-2xl">
+  <p class="text-xs font-bold uppercase tracking-wide text-amber-300">Daily Detail</p>
+  <h1 class="mt-1 text-3xl font-black tracking-tight text-stone-100">
     <%= @date.year %>年<%= @date.month %>月<%= @date.day %>日
   </h1>
 
-  <section class="mt-6 space-y-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+  <section class="mt-6 space-y-4 rounded-xl border border-white/10 bg-[#171716] p-5 shadow-sm">
     <div>
-      <h2 class="text-sm font-medium text-gray-700">本数</h2>
+      <h2 class="text-sm font-medium text-stone-400">本数</h2>
       <% if @log %>
-        <p class="mt-1 text-2xl font-semibold tabular-nums text-gray-900"><%= @log.smoking_count %></p>
+        <p class="mt-1 text-3xl font-black tabular-nums text-stone-100"><%= @log.smoking_count %></p>
       <% else %>
-        <p class="mt-1 text-lg text-gray-600">未記録（0 本として表示）</p>
+        <p class="mt-1 text-lg text-stone-400">未記録（0 本として表示）</p>
       <% end %>
     </div>
 
     <div>
-      <h2 class="text-sm font-medium text-gray-700">目標（当日のスナップショット）</h2>
-      <p class="mt-1 tabular-nums text-gray-900">
+      <h2 class="text-sm font-medium text-stone-400">目標（当日のスナップショット）</h2>
+      <p class="mt-1 tabular-nums text-stone-100">
         <%= @log ? @log.target_daily_cigarette_count_snapshot : "―" %>
       </p>
     </div>
 
     <div>
-      <h2 class="text-sm font-medium text-gray-700">節約額</h2>
+      <h2 class="text-sm font-medium text-stone-400">節約額</h2>
       <% if @log %>
-        <p class="mt-1 tabular-nums text-gray-900"><%= number_to_currency(@log.saved_yen, unit: "¥", precision: 0) %></p>
+        <p class="mt-1 tabular-nums text-stone-100"><%= number_to_currency(@log.saved_yen, unit: "¥", precision: 0) %></p>
       <% else %>
-        <p class="mt-1 text-gray-600">―</p>
+        <p class="mt-1 text-stone-400">―</p>
       <% end %>
     </div>
 
     <div class="pt-2">
       <% if @log %>
         <%= link_to "本数を修正", edit_user_smoking_log_path(@log),
-              class: "inline-flex rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800" %>
+              class: "inline-flex rounded-full bg-amber-600 px-5 py-3 text-sm font-bold text-black hover:bg-amber-500" %>
       <% else %>
         <%= link_to "本数を登録", new_user_smoking_log_path(smoked_on: @date),
-              class: "inline-flex rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800" %>
+              class: "inline-flex rounded-full bg-amber-600 px-5 py-3 text-sm font-bold text-black hover:bg-amber-500" %>
       <% end %>
     </div>
   </section>
 
-  <p class="mt-6 text-sm text-gray-600">
-    <%= link_to "カレンダーへ戻る", calendar_path, class: "text-emerald-800 underline" %>
+  <p class="mt-6 text-sm text-stone-400">
+    <%= link_to "カレンダーへ戻る", calendar_path, class: "font-semibold text-amber-300 underline underline-offset-4" %>
   </p>
 </div>
