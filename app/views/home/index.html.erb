@@ -1,9 +1,65 @@
-<div class="max-w-prose">
-  <h1 class="text-3xl font-bold text-slate-800 mb-2">ChillSmoke</h1>
-  <p class="text-slate-600">
-    毎日の減煙を、本数と節約額で可視化するアプリです。アカウント登録のうえ、記録と目標づくりの導線へ進めます（機能は順次リリース予定）。
-  </p>
-  <p class="text-slate-500 text-sm mt-3">
-    未ログインでもこの画面を閲覧できます。上部の「ログイン」「新規登録」から始められます。
-  </p>
+<div class="mx-auto w-full max-w-6xl">
+  <section class="grid gap-8 py-4 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+    <div>
+      <p class="text-sm font-semibold uppercase tracking-wide text-amber-300">ChillSmoke</p>
+      <h1 class="mt-3 text-4xl font-bold tracking-tight text-stone-100 sm:text-5xl">
+        減らした本数を
+      </h1>
+      <h1 class="mt-3 text-4xl font-bold tracking-tight text-stone-100 sm:text-5xl">
+        静かに積み上げる。
+      </h1>
+      <p class="mt-5 max-w-2xl text-base leading-8 text-stone-300">
+        ChillSmoke は、毎日の喫煙本数、目標との差、節約できた金額を記録する減煙支援アプリです。
+        ただ我慢を数えるのではなく、減らせた分をお金や継続日数として見えます。
+      </p>
+      <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+        <%= link_to "新規登録して始める", new_user_registration_path, class: "inline-flex justify-center rounded-lg bg-amber-600 px-5 py-3 text-sm font-bold text-black hover:bg-amber-500" %>
+        <%= link_to "ログイン", new_user_session_path, class: "inline-flex justify-center rounded-lg border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-stone-200 hover:bg-white/10" %>
+      </div>
+    </div>
+
+    <div class="hemp-surface rounded-xl border border-white/10 bg-[#171716] p-5 shadow-sm">
+      <div class="relative flex items-center justify-between border-b border-white/10 pb-4">
+        <div>
+          <p class="text-xs text-stone-500">Today</p>
+          <p class="mt-1 text-lg font-bold text-stone-100">今日の記録</p>
+        </div>
+        <span class="rounded-lg bg-amber-400/10 px-3 py-2 text-sm font-bold text-amber-200">目標 10本</span>
+      </div>
+      <div class="relative py-8 text-center">
+        <p class="text-sm text-stone-500">今日の本数</p>
+        <p class="mt-3 text-7xl font-semibold tracking-tight text-stone-100">6本</p>
+        <p class="mt-3 text-sm text-stone-400">残り 4本</p>
+      </div>
+      <div class="relative grid gap-3 text-sm sm:grid-cols-3">
+        <div class="rounded-lg bg-[#201f1c] p-4">
+          <p class="text-stone-500">節約見込み</p>
+          <p class="mt-2 font-bold text-stone-100">120円</p>
+        </div>
+        <div class="rounded-lg bg-[#201f1c] p-4">
+          <p class="text-stone-500">累計節約</p>
+          <p class="mt-2 font-bold text-stone-100">4,820円</p>
+        </div>
+        <div class="rounded-lg bg-[#201f1c] p-4">
+          <p class="text-stone-500">継続</p>
+          <p class="mt-2 font-bold text-stone-100">16日</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="mt-10 grid gap-4 md:grid-cols-3">
+    <div class="rounded-xl border border-white/10 bg-[#171716] p-5">
+      <h2 class="text-lg font-bold text-stone-100">本数を記録</h2>
+      <p class="mt-3 text-sm leading-6 text-stone-400">今日の本数をすぐ記録、修正可能</p>
+    </div>
+    <div class="rounded-xl border border-white/10 bg-[#171716] p-5">
+      <h2 class="text-lg font-bold text-stone-100">節約額を確認</h2>
+      <p class="mt-3 text-sm leading-6 text-stone-400">減煙前の本数と価格から、昨日までの累計と今日の見込みを分けて表示</p>
+    </div>
+    <div class="rounded-xl border border-white/10 bg-[#171716] p-5">
+      <h2 class="text-lg font-bold text-stone-100">欲しいものにつなげる</h2>
+      <p class="mt-3 text-sm leading-6 text-stone-400">ウィッシュリストを登録し、貯まった金額で購入できるか確認</p>
+    </div>
+  </section>
 </div>

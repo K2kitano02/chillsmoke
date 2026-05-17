@@ -5,6 +5,5 @@ class DashboardController < ApplicationController
     @remaining_count = [ @daily_target_count - @today_smoking_log.smoking_count, 0 ].max
     @savings_summary = Money::SavingsCalculator.call(current_user)
     @balance = Money::BalanceQuery.call(current_user)
-    @streak_count = Streak::AchievementCounter.call(current_user)
   end
 end

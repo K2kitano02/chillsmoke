@@ -1,6 +1,7 @@
-<div class="mx-auto max-w-4xl">
-  <h1 class="text-2xl font-semibold text-gray-900">喫煙記録カレンダー</h1>
-  <p class="mt-1 text-sm text-gray-600">各日の本数を表示します。日付を開くと詳細・本数の登録・修正へ進めます。</p>
+<div class="mx-auto w-full max-w-5xl">
+  <p class="text-xs font-bold uppercase tracking-wide text-amber-300">Calendar</p>
+  <h1 class="mt-1 text-3xl font-black tracking-tight text-stone-100">喫煙記録カレンダー</h1>
+  <p class="mt-2 text-sm text-stone-400">各日の本数を表示します。日付を開くと詳細・本数の登録・修正へ進めます。</p>
 
   <%# simple_calendar: events を日付（smoked_on）でセルに振り分け。前後月ナビは params[:start_date] を付与 %>
   <%= month_calendar(events: @logs, attribute: :smoked_on, start_date: @start_date) do |date, logs| %>
@@ -11,17 +12,17 @@
               class: calendar_day_link_classes(log) do %>
           <span class="tabular-nums"><%= date.day %></span>
           <% if log %>
-            <% count_cls = log.met_daily_target? ? "text-emerald-800" : "text-red-800" %>
+            <% count_cls = log.met_daily_target? ? "text-amber-300" : "text-red-200" %>
             <span class="mt-0.5 block text-xs font-normal tabular-nums <%= count_cls %>"><%= log.smoking_count %> 本</span>
           <% end %>
         <% end %>
       <% else %>
-        <div class="p-1 text-sm text-gray-400 tabular-nums"><%= date.day %></div>
+        <div class="p-1 text-sm text-stone-400 tabular-nums"><%= date.day %></div>
       <% end %>
     </div>
   <% end %>
 
-  <p class="mt-4 text-sm text-gray-500">
-    <%= link_to "ダッシュボードへ戻る", dashboard_path, class: "text-emerald-800 underline" %>
+  <p class="mt-4 text-sm text-stone-400">
+    <%= link_to "ダッシュボードへ戻る", dashboard_path, class: "font-semibold text-amber-300 underline underline-offset-4" %>
   </p>
 </div>

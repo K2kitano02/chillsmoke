@@ -1,6 +1,9 @@
-<div class="mx-auto max-w-lg px-4 py-8">
-  <h1 class="text-2xl font-semibold text-gray-900">スケジュール登録</h1>
-  <p class="mt-2 text-sm text-gray-600">固定で喫煙しやすい時間とラベルを登録できます。</p>
+<div class="mx-auto flex min-h-[calc(100vh-9rem)] w-full max-w-lg items-center py-4">
+  <div class="w-full rounded-xl border border-white/10 bg-[#171716] p-6 shadow-sm sm:p-8">
+    <p class="text-xs font-bold uppercase tracking-wide text-amber-300">Schedule</p>
+    <h1 class="mt-1 text-3xl font-black tracking-tight text-stone-100">スケジュール登録</h1>
+    <p class="mt-2 text-sm text-stone-400">固定で喫煙しやすい時間とラベルを登録できます。</p>
 
-  <%= render "form", user_schedule: @user_schedule, submit_label: "登録する" %>
+    <%= render "form", user_schedule: @user_schedule, submit_label: "登録する" %>
+  </div>
 </div>

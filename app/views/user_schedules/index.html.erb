@@ -1,19 +1,20 @@
-<div class="mx-auto max-w-3xl">
+<div class="mx-auto w-full max-w-5xl">
   <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
     <div>
-      <h1 class="text-2xl font-semibold text-gray-900">喫煙スケジュール</h1>
-      <p class="mt-1 text-sm text-gray-600">登録済みの固定時間を確認できます。</p>
+      <p class="text-xs font-bold uppercase tracking-wide text-amber-300">Schedule</p>
+      <h1 class="mt-1 text-3xl font-black tracking-tight text-stone-100">喫煙スケジュール</h1>
+      <p class="mt-2 text-sm text-stone-400">登録済みの固定時間を確認できます。</p>
     </div>
     <div class="flex flex-wrap gap-3">
-      <%= link_to "新規登録", new_user_schedule_path, class: "text-sm font-medium text-emerald-800 underline" %>
-      <%= link_to "ダッシュボードへ戻る", dashboard_path, class: "text-sm font-medium text-emerald-800 underline" %>
+      <%= link_to "新規登録", new_user_schedule_path, class: "rounded-full bg-amber-600 px-4 py-2 text-sm font-bold text-black hover:bg-amber-500" %>
+      <%= link_to "ダッシュボードへ戻る", dashboard_path, class: "rounded-full bg-[#292823] px-4 py-2 text-sm font-semibold text-stone-100 ring-1 ring-white/10 hover:bg-[#343229]" %>
     </div>
   </div>
 
   <% if @user_schedules.any? %>
-    <div class="mt-6 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
-      <table class="min-w-full divide-y divide-gray-200 text-sm">
-        <thead class="bg-gray-50 text-left text-gray-700">
+    <div class="mt-6 overflow-x-auto rounded-xl border border-white/10 bg-[#171716] shadow-sm">
+      <table class="min-w-full divide-y divide-white/10 text-sm">
+        <thead class="bg-[#201f1c] text-left text-stone-300">
           <tr>
             <th scope="col" class="px-4 py-3 font-medium">時刻</th>
             <th scope="col" class="px-4 py-3 font-medium">ラベル</th>
@@ -21,25 +22,27 @@
             <th scope="col" class="px-4 py-3 font-medium">操作</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-gray-100">
+        <tbody class="divide-y divide-white/10">
           <% @user_schedules.each do |schedule| %>
-            <tr>
-              <td class="px-4 py-3 font-semibold tabular-nums text-gray-900"><%= schedule.scheduled_smoking_time.strftime("%H:%M") %></td>
-              <td class="px-4 py-3 text-gray-700"><%= schedule.label.presence || "未設定" %></td>
-              <td class="px-4 py-3 text-gray-700"><%= schedule.is_active? ? "有効" : "停止中" %></td>
+            <tr class="hover:bg-[#201f1c]">
+              <td class="px-4 py-4 font-semibold tabular-nums text-stone-100"><%= schedule.scheduled_smoking_time.strftime("%H:%M") %></td>
+              <td class="px-4 py-4 text-stone-300"><%= schedule.label.presence || "未設定" %></td>
+              <td class="px-4 py-4 text-stone-300">
+                <span class="rounded-full px-3 py-1 text-xs font-bold <%= schedule.is_active? ? "bg-amber-600 text-black" : "bg-[#292823] text-stone-300" %>"><%= schedule.is_active? ? "有効" : "停止中" %></span>
+              </td>
               <td class="px-4 py-3">
-                <%= link_to "編集", edit_user_schedule_path(schedule), class: "text-sm font-medium text-emerald-800 underline" %>
+                <%= link_to "編集", edit_user_schedule_path(schedule), class: "text-sm font-semibold text-amber-300 underline underline-offset-4" %>
                 <%= button_to toggle_user_schedule_path(schedule), method: :patch,
                       form: { class: "mt-2 inline-block align-middle" },
-                      class: "inline-flex h-6 w-11 items-center rounded-full p-0.5 transition #{schedule.is_active? ? "bg-emerald-600" : "bg-gray-300"}",
+                      class: "inline-flex h-6 w-11 items-center rounded-full p-0.5 transition #{schedule.is_active? ? "bg-amber-500" : "bg-[#343229]"}",
                       title: schedule.is_active? ? "停止する" : "有効にする",
                       aria: { label: schedule.is_active? ? "停止する" : "有効にする" } do %>
                   <span class="sr-only"><%= schedule.is_active? ? "停止する" : "有効にする" %></span>
-                  <span class="h-5 w-5 rounded-full bg-white shadow-sm transition <%= schedule.is_active? ? "translate-x-5" : "translate-x-0" %>"></span>
+                  <span class="h-5 w-5 rounded-full bg-[#171716] shadow-sm transition <%= schedule.is_active? ? "translate-x-5" : "translate-x-0" %>"></span>
                 <% end %>
                 <%= button_to "削除", user_schedule_path(schedule), method: :delete,
                       form: { class: "mt-2 inline-block" },
-                      class: "text-sm font-medium text-red-700 underline",
+                      class: "text-sm font-semibold text-red-200 underline underline-offset-4",
                       data: { turbo_confirm: "このスケジュールを削除しますか？" } %>
               </td>
             </tr>
@@ -48,7 +51,7 @@
       </table>
     </div>
   <% else %>
-    <div class="mt-6 rounded-lg border border-dashed border-gray-300 bg-white p-6 text-sm text-gray-600">
+    <div class="mt-6 rounded-xl border border-dashed border-white/10 bg-[#201f1c] p-6 text-sm text-stone-400">
       まだスケジュールは登録されていません。
     </div>
   <% end %>

@@ -6,6 +6,7 @@ class ApplicationController < ActionController::Base
   before_action :authenticate_user!, unless: :devise_controller?
   # ISSUE-21: ログイン済みで UserSetting が無いときは初期設定へ（Devise 画面では動かさない）
   before_action :ensure_user_setting_exists, unless: :devise_controller?
+  before_action :set_header_metrics, unless: :devise_controller?
   rescue_from ActiveRecord::RecordNotFound, with: :not_found
   allow_browser versions: :modern
 
@@ -36,6 +37,14 @@ class ApplicationController < ActionController::Base
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:sign_up, keys: [ :name ])
     devise_parameter_sanitizer.permit(:account_update, keys: [ :name ])
+  end
+
+  def set_header_metrics
+    return unless user_signed_in?
+    return if current_user.user_setting.blank?
+
+    @header_balance = Money::BalanceQuery.call(current_user)
+    @header_streak_count = Streak::AchievementCounter.call(current_user)
   end
 
   def not_found

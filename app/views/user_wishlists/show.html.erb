@@ -1,33 +1,34 @@
-<div class="mx-auto max-w-3xl">
+<div class="mx-auto w-full max-w-4xl">
   <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
     <div>
-      <h1 class="text-2xl font-semibold text-gray-900"><%= @user_wishlist.name %></h1>
-      <p class="mt-1 text-sm text-gray-600">欲しいものの詳細を確認できます。</p>
+      <p class="text-xs font-bold uppercase tracking-wide text-amber-300">Wishlist Detail</p>
+      <h1 class="mt-1 text-3xl font-black tracking-tight text-stone-100"><%= @user_wishlist.name %></h1>
+      <p class="mt-2 text-sm text-stone-400">欲しいものの詳細を確認できます。</p>
     </div>
     <div class="flex flex-wrap gap-3">
-      <%= link_to "編集", edit_user_wishlist_path(@user_wishlist), class: "text-sm font-medium text-emerald-800 underline" %>
-      <%= link_to "一覧へ戻る", user_wishlists_path, class: "text-sm font-medium text-emerald-800 underline" %>
-      <%= link_to "ダッシュボードへ戻る", dashboard_path, class: "text-sm font-medium text-emerald-800 underline" %>
+      <%= link_to "編集", edit_user_wishlist_path(@user_wishlist), class: "rounded-full bg-amber-600 px-4 py-2 text-sm font-bold text-black hover:bg-amber-500" %>
+      <%= link_to "一覧へ戻る", user_wishlists_path, class: "rounded-full bg-[#292823] px-4 py-2 text-sm font-semibold text-stone-100 ring-1 ring-white/10 hover:bg-[#343229]" %>
+      <%= link_to "ダッシュボードへ戻る", dashboard_path, class: "rounded-full bg-[#292823] px-4 py-2 text-sm font-semibold text-stone-100 ring-1 ring-white/10 hover:bg-[#343229]" %>
     </div>
   </div>
 
-  <section class="mt-6 rounded-lg border border-gray-200 bg-white p-5 shadow-sm">
+  <section class="mt-6 rounded-xl border border-white/10 bg-[#171716] p-5 shadow-sm">
     <dl class="grid gap-4 text-sm sm:grid-cols-2">
       <div>
-        <dt class="font-medium text-gray-600">価格</dt>
-        <dd class="mt-1 text-2xl font-semibold tabular-nums text-gray-900"><%= number_with_delimiter(@user_wishlist.price) %>円</dd>
+        <dt class="font-medium text-stone-400">価格</dt>
+        <dd class="mt-1 text-3xl font-black tabular-nums text-stone-100"><%= number_with_delimiter(@user_wishlist.price) %>円</dd>
       </div>
       <div>
-        <dt class="font-medium text-gray-600">状態</dt>
-        <dd class="mt-1 text-lg font-semibold text-gray-900"><%= @user_wishlist.is_purchased? ? "購入済み" : "未購入" %></dd>
+        <dt class="font-medium text-stone-400">状態</dt>
+        <dd class="mt-2"><span class="rounded-full px-3 py-1 text-xs font-bold <%= @user_wishlist.is_purchased? ? "bg-amber-600 text-black" : "bg-[#292823] text-stone-300" %>"><%= @user_wishlist.is_purchased? ? "購入済み" : "未購入" %></span></dd>
       </div>
       <div>
-        <dt class="font-medium text-gray-600">使用可能金額</dt>
-        <dd class="mt-1 text-lg font-semibold tabular-nums text-gray-900"><%= number_with_delimiter(@balance.usable_yen) %>円</dd>
+        <dt class="font-medium text-stone-400">使用可能金額</dt>
+        <dd class="mt-1 text-lg font-semibold tabular-nums text-stone-100"><%= number_with_delimiter(@balance.usable_yen) %>円</dd>
       </div>
       <div class="sm:col-span-2">
-        <dt class="font-medium text-gray-600">メモ</dt>
-        <dd class="mt-1 whitespace-pre-wrap text-gray-800"><%= @user_wishlist.memo.presence || "未設定" %></dd>
+        <dt class="font-medium text-stone-400">メモ</dt>
+        <dd class="mt-1 whitespace-pre-wrap text-stone-300"><%= @user_wishlist.memo.presence || "未設定" %></dd>
       </div>
     </dl>
 
@@ -35,13 +36,13 @@
       <div class="mt-6">
         <% if @balance.usable_yen >= @user_wishlist.price %>
           <%= button_to "購入する", purchase_user_wishlist_path(@user_wishlist), method: :post,
-                class: "inline-flex items-center rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800",
+                class: "inline-flex items-center rounded-full bg-amber-600 px-5 py-3 text-sm font-bold text-black hover:bg-amber-500",
                 data: { turbo_confirm: "このウィッシュリストを購入しますか？" } %>
         <% else %>
-          <button type="button" disabled class="inline-flex items-center rounded-md bg-gray-300 px-4 py-2 text-sm font-medium text-gray-600">
+          <button type="button" disabled class="inline-flex items-center rounded-full bg-[#292823] px-5 py-3 text-sm font-semibold text-stone-500">
             購入する
           </button>
-          <p class="mt-2 text-sm text-red-700">
+          <p class="mt-2 text-sm text-red-200">
             使用可能金額が不足しています。あと<%= number_with_delimiter(@user_wishlist.price - @balance.usable_yen) %>円必要です。
           </p>
         <% end %>
@@ -50,16 +51,16 @@
   </section>
 
   <% if @user_purchase_history.present? %>
-    <section class="mt-6 rounded-lg border border-gray-200 bg-white p-5 shadow-sm">
-      <h2 class="text-lg font-semibold text-gray-900">購入履歴</h2>
+    <section class="mt-6 rounded-xl border border-white/10 bg-[#171716] p-5 shadow-sm">
+      <h2 class="text-lg font-semibold text-stone-100">購入履歴</h2>
       <dl class="mt-4 grid gap-4 text-sm sm:grid-cols-2">
         <div>
-          <dt class="font-medium text-gray-600">購入金額</dt>
-          <dd class="mt-1 text-2xl font-semibold tabular-nums text-gray-900"><%= number_with_delimiter(@user_purchase_history.amount) %>円</dd>
+          <dt class="font-medium text-stone-400">購入金額</dt>
+          <dd class="mt-1 text-3xl font-black tabular-nums text-stone-100"><%= number_with_delimiter(@user_purchase_history.amount) %>円</dd>
         </div>
         <div>
-          <dt class="font-medium text-gray-600">購入日時</dt>
-          <dd class="mt-1 text-lg font-semibold text-gray-900"><%= @user_purchase_history.purchased_at.strftime("%Y/%m/%d %H:%M") %></dd>
+          <dt class="font-medium text-stone-400">購入日時</dt>
+          <dd class="mt-1 text-lg font-semibold text-stone-100"><%= @user_purchase_history.purchased_at.strftime("%Y/%m/%d %H:%M") %></dd>
         </div>
       </dl>
     </section>
