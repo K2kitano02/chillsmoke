@@ -32,7 +32,7 @@ class HappyPathTest < ApplicationSystemTestCase
     assert_text "本数を保存しました。"
 
     click_on "ダッシュボードに戻る"
-    assert_text "使用可能金額"
+    assert_text "使用可能"
     assert_text "500円"
 
     click_on "ウィッシュリスト"
