@@ -12,17 +12,20 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "Homeにfooter導線と利用規約POPUPの内容を表示する" do
+  test "Homeにfooter導線と規約系POPUPの内容を表示する" do
     get root_url
 
     assert_response :success
     assert_select "footer nav[aria-label='フッター']"
     assert_select "button", text: "利用規約"
-    assert_select "span", text: "プライバシーポリシー"
+    assert_select "button", text: "プライバシーポリシー"
     assert_select "span", text: "お問い合わせ"
     assert_select "[role='dialog'][aria-labelledby='terms-title']"
     assert_select "#terms-title", text: "利用規約"
     assert_match(/医療行為、禁煙治療、専門的な健康指導を提供するものではありません/, response.body)
+    assert_select "[role='dialog'][aria-labelledby='privacy-title']"
+    assert_select "#privacy-title", text: "プライバシーポリシー"
+    assert_match(/名前、メールアドレス、喫煙記録、設定値、ウィッシュリスト、購入履歴、お問い合わせ内容/, response.body)
   end
 
   test "UserSetting 未作成なら root でも初期設定へリダイレクト（ISSUE-21）" do
