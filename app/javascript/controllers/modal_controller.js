@@ -2,9 +2,20 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   static targets = ["overlay"]
+  static values = { initialOpen: String }
+
+  connect() {
+    if (this.initialOpenValue) {
+      this.openByName(this.initialOpenValue)
+    }
+  }
 
   open(event) {
-    const overlay = this.findOverlay(event.params.name)
+    this.openByName(event.params.name)
+  }
+
+  openByName(name) {
+    const overlay = this.findOverlay(name)
 
     if (!overlay) return
 
