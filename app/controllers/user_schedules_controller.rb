@@ -4,7 +4,7 @@ class UserSchedulesController < ApplicationController
   before_action :set_user_schedule, only: %i[edit update destroy toggle]
 
   def index
-    @user_schedules = current_user.user_schedules.order(:scheduled_smoking_time, :id)
+    @user_schedules = current_user.user_schedules.order(:scheduled_smoking_minutes, :id)
   end
 
   def new

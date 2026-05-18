@@ -12,6 +12,8 @@ class UserScheduleTest < ActiveSupport::TestCase
 
     assert schedule.save
     assert schedule.persisted?
+    assert_equal 750, schedule.scheduled_smoking_minutes
+    assert_equal "12:30", schedule.scheduled_smoking_time
   end
 
   test "belongs_to user" do
@@ -43,5 +45,16 @@ class UserScheduleTest < ActiveSupport::TestCase
     )
 
     assert schedule.is_active
+  end
+
+  test "rejects invalid scheduled_smoking_time format" do
+    schedule = users(:one).user_schedules.build(
+      scheduled_smoking_time: "25:99",
+      label: "不正な時刻",
+      is_active: true
+    )
+
+    assert_not schedule.save
+    assert schedule.errors.key?(:scheduled_smoking_time)
   end
 end
