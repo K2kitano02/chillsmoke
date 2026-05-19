@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_05_13_090000) do
+ActiveRecord::Schema[7.2].define(version: 2026_05_18_130000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -34,12 +34,13 @@ ActiveRecord::Schema[7.2].define(version: 2026_05_13_090000) do
 
   create_table "user_schedules", force: :cascade do |t|
     t.bigint "user_id", null: false
-    t.time "scheduled_smoking_time", null: false
     t.string "label"
     t.boolean "is_active", default: true, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "scheduled_smoking_minutes", null: false
     t.index ["user_id"], name: "index_user_schedules_on_user_id"
+    t.check_constraint "scheduled_smoking_minutes >= 0 AND scheduled_smoking_minutes < 1440", name: "chk_user_schedules_minutes_range"
   end
 
   create_table "user_settings", force: :cascade do |t|

@@ -38,7 +38,7 @@ class ScheduleReflection::Today
       user.user_schedules
           .where(is_active: true)
           .where.not(id: UserScheduleReflection.where(reflected_on: today).select(:user_schedule_id))
-          .order(:scheduled_smoking_time, :id)
+          .order(:scheduled_smoking_minutes, :id)
     end
 
     def create_reflection_once(schedule, today)

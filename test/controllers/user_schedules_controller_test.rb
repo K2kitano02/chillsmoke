@@ -31,6 +31,16 @@ class UserSchedulesControllerTest < ActionDispatch::IntegrationTest
     assert_no_match(/夜/, response.body)
   end
 
+  test "一覧は画面表示時刻の早い順で表示する" do
+    sign_in users(:one)
+    users(:one).user_schedules.create!(scheduled_smoking_time: "21:30", label: "夜", is_active: true)
+
+    get user_schedules_url
+
+    assert_response :success
+    assert_operator response.body.index("08:00"), :<, response.body.index("21:30")
+  end
+
   test "一覧から新規登録画面へ進める" do
     sign_in users(:one)
 
@@ -146,6 +156,7 @@ class UserSchedulesControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to user_schedules_url
     schedule.reload
     assert_equal "午前休憩", schedule.label
+    assert_equal 555, schedule.scheduled_smoking_minutes
     assert_not schedule.is_active
     assert_equal users(:one), schedule.user
   end
