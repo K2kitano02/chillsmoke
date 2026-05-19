@@ -1,7 +1,6 @@
 <div class="mx-auto w-full max-w-6xl"
      data-controller="modal"
-     data-action="keydown@window->modal#closeOnEscape"
-     data-modal-initial-open-value="<%= "contact" if @open_contact_modal %>">
+     data-action="keydown@window->modal#closeOnEscape">
   <section class="grid gap-8 py-4 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
     <div>
       <p class="text-sm font-semibold uppercase tracking-wide text-amber-300">ChillSmoke</p>
@@ -178,14 +177,14 @@
         <section>
           <h3 class="font-bold text-stone-100">1. 取得する情報</h3>
           <p class="mt-2">
-            ChillSmoke は、アカウント管理とサービス提供のため、名前、メールアドレス、喫煙記録、設定値、ウィッシュリスト、購入履歴、お問い合わせ内容を取得する場合があります。
+            ChillSmoke は、アカウント管理とサービス提供のため、名前、メールアドレス、喫煙記録、設定値、ウィッシュリスト、購入履歴を取得する場合があります。
           </p>
         </section>
 
         <section>
           <h3 class="font-bold text-stone-100">2. 利用目的</h3>
           <p class="mt-2">
-            取得した情報は、アカウント管理、記録表示、節約額・残高・継続日数の計算、お問い合わせ対応、サービス改善のために利用します。
+            取得した情報は、アカウント管理、記録表示、節約額・残高・継続日数の計算、サービス改善のために利用します。
           </p>
         </section>
 
@@ -242,43 +241,18 @@
         </button>
       </div>
 
-      <%= form_with model: @contact_form, url: contact_path, method: :post, data: { turbo: false }, class: "mt-6 space-y-5" do |form| %>
-        <%= render "shared/form_errors", record: @contact_form %>
+      <div class="mt-6 space-y-5 text-sm leading-7 text-stone-300">
+        <p>
+          不具合・ご要望・ご相談は X（旧Twitter）までご連絡ください。
+        </p>
 
-        <div>
-          <%= form.label :name, "名前", class: "block text-sm font-semibold text-stone-200" %>
-          <%= form.text_field :name,
-                autocomplete: "name",
-                class: "mt-2 w-full rounded-lg border border-white/10 bg-black/30 px-4 py-3 text-sm text-stone-100 outline-none ring-amber-300/40 placeholder:text-stone-600 focus:border-amber-300/50 focus:ring",
-                placeholder: "山田 太郎" %>
-        </div>
-
-        <div>
-          <%= form.label :email, "メールアドレス", class: "block text-sm font-semibold text-stone-200" %>
-          <%= form.email_field :email,
-                autocomplete: "email",
-                class: "mt-2 w-full rounded-lg border border-white/10 bg-black/30 px-4 py-3 text-sm text-stone-100 outline-none ring-amber-300/40 placeholder:text-stone-600 focus:border-amber-300/50 focus:ring",
-                placeholder: "you@example.com" %>
-        </div>
-
-        <div>
-          <%= form.label :message, "内容", class: "block text-sm font-semibold text-stone-200" %>
-          <%= form.text_area :message,
-                rows: 6,
-                class: "mt-2 w-full resize-y rounded-lg border border-white/10 bg-black/30 px-4 py-3 text-sm leading-6 text-stone-100 outline-none ring-amber-300/40 placeholder:text-stone-600 focus:border-amber-300/50 focus:ring",
-                placeholder: "不具合、要望、アカウントやデータに関する相談などを入力してください。" %>
-        </div>
-
-        <div class="flex flex-col gap-3 border-t border-white/10 pt-5 sm:flex-row sm:items-center sm:justify-end">
-          <button type="button"
-                  class="rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-stone-300 hover:bg-white/10"
-                  data-action="modal#close">
-            キャンセル
-          </button>
-          <%= form.submit "送信する",
-                class: "rounded-lg bg-amber-600 px-5 py-3 text-sm font-bold text-black hover:bg-amber-500" %>
-        </div>
-      <% end %>
+        <a href="https://x.com/K2kitano02"
+           target="_blank"
+           rel="noopener"
+           class="inline-flex w-full items-center justify-center rounded-lg bg-amber-600 px-5 py-3 text-sm font-bold text-black transition hover:bg-amber-500 sm:w-auto">
+          @K2kitano02
+        </a>
+      </div>
     </section>
   </div>
 </div>
