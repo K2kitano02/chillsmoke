@@ -9,3 +9,6 @@ application.register("hello", HelloController)
 
 import ModalController from "./modal_controller"
 application.register("modal", ModalController)
+
+import PasswordRevealController from "./password_reveal_controller"
+application.register("password-reveal", PasswordRevealController)

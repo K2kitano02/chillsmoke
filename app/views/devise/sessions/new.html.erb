@@ -11,10 +11,12 @@
         <%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: "email@example.com", class: "mt-2 block w-full rounded-lg border-0 bg-[#292823] px-4 py-3 text-stone-100 placeholder:text-stone-500 ring-1 ring-white/10 focus:ring-2 focus:ring-amber-400" %>
       </div>
 
-      <div>
-        <%= f.label :password, "パスワード", class: "ml-1 block text-xs font-bold uppercase tracking-wide text-stone-400" %>
-        <%= f.password_field :password, autocomplete: "current-password", placeholder: "••••••••", class: "mt-2 block w-full rounded-lg border-0 bg-[#292823] px-4 py-3 text-stone-100 placeholder:text-stone-500 ring-1 ring-white/10 focus:ring-2 focus:ring-amber-400" %>
-      </div>
+      <%= render "devise/shared/password_field_with_reveal",
+            form: f,
+            field: :password,
+            label_text: "パスワード",
+            autocomplete: "current-password",
+            placeholder: "••••••••" %>
 
       <% if devise_mapping.rememberable? %>
         <div class="flex items-center gap-2 text-sm text-stone-300">
