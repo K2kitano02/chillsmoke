@@ -18,18 +18,20 @@
         <%= f.email_field :email, autocomplete: "email", placeholder: "email@example.com", class: "mt-2 block w-full rounded-lg border-0 bg-[#292823] px-4 py-3 text-stone-100 placeholder:text-stone-500 ring-1 ring-white/10 focus:ring-2 focus:ring-amber-400" %>
       </div>
 
-      <div>
-        <%= f.label :password, "パスワード", class: "ml-1 block text-xs font-bold uppercase tracking-wide text-stone-400" %>
-        <% if @minimum_password_length %>
-          <p class="ml-1 mt-1 text-xs text-stone-500">（<%= @minimum_password_length %>文字以上）</p>
-        <% end %>
-        <%= f.password_field :password, autocomplete: "new-password", placeholder: "••••••••", class: "mt-2 block w-full rounded-lg border-0 bg-[#292823] px-4 py-3 text-stone-100 placeholder:text-stone-500 ring-1 ring-white/10 focus:ring-2 focus:ring-amber-400" %>
-      </div>
+      <%= render "devise/shared/password_field_with_reveal",
+            form: f,
+            field: :password,
+            label_text: "パスワード",
+            autocomplete: "new-password",
+            placeholder: "••••••••",
+            hint: (@minimum_password_length ? "（#{@minimum_password_length}文字以上）" : nil) %>
 
-      <div>
-        <%= f.label :password_confirmation, "パスワード（確認）", class: "ml-1 block text-xs font-bold uppercase tracking-wide text-stone-400" %>
-        <%= f.password_field :password_confirmation, autocomplete: "new-password", placeholder: "••••••••", class: "mt-2 block w-full rounded-lg border-0 bg-[#292823] px-4 py-3 text-stone-100 placeholder:text-stone-500 ring-1 ring-white/10 focus:ring-2 focus:ring-amber-400" %>
-      </div>
+      <%= render "devise/shared/password_field_with_reveal",
+            form: f,
+            field: :password_confirmation,
+            label_text: "パスワード（確認）",
+            autocomplete: "new-password",
+            placeholder: "••••••••" %>
 
       <%= f.submit "登録する", class: "w-full cursor-pointer rounded-full bg-amber-600 px-5 py-3 font-bold text-black hover:bg-amber-500" %>
     <% end %>
