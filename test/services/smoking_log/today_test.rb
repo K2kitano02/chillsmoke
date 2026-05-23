@@ -85,6 +85,37 @@ class SmokingLog::TodayTest < ActiveSupport::TestCase
     end
   end
 
+  test "record_zero_persisted! creates today row with zero count and snapshots" do
+    assert_difference -> { UserSmokingLog.count }, 1 do
+      log = SmokingLog::Today.record_zero_persisted!(@user)
+      assert log.persisted?
+      assert_equal Time.zone.today, log.smoked_on
+      assert_equal 0, log.smoking_count
+      assert_equal 5, log.target_daily_cigarette_count_snapshot
+      assert_equal 20, log.baseline_daily_cigarette_count_snapshot
+      assert_equal 500, log.pack_price_snapshot
+      assert_equal 20, log.cigarettes_per_pack_snapshot
+      assert_equal false, log.is_oni_mode_snapshot
+    end
+  end
+
+  test "record_zero_persisted! returns existing row without changing count or snapshots" do
+    existing = @user.user_smoking_logs.create!(
+      smoked_on: Time.zone.today,
+      smoking_count: 3,
+      **snapshot_attrs(5, 20, 500, 20, false)
+    )
+    @user.user_setting.update!(target_daily_cigarette_count: 8, pack_price: 700)
+
+    assert_no_difference -> { UserSmokingLog.count } do
+      log = SmokingLog::Today.record_zero_persisted!(@user)
+      assert_equal existing.id, log.id
+      assert_equal 3, log.smoking_count
+      assert_equal 5, log.target_daily_cigarette_count_snapshot
+      assert_equal 500, log.pack_price_snapshot
+    end
+  end
+
   test "repeated for_display does not create rows" do
     3.times { assert_not SmokingLog::Today.for_display(@user).persisted? }
     assert_equal 0, @user.user_smoking_logs.count

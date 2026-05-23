@@ -18,6 +18,8 @@ Rails.application.routes.draw do
   resource :schedule_reflection, only: :create
   # ISSUE-32: 今日の喫煙本数 +1（当日行の create はこの保存操作でのみ）
   post "today_smoking_log/increment", to: "user_smoking_logs#increment_today", as: :increment_today_smoking_log
+  # ISSUE-105: 今日の喫煙本数を 0 本として記録（当日行が無い場合のみ create）
+  post "today_smoking_log/zero", to: "user_smoking_logs#record_zero_today", as: :zero_today_smoking_log
   # ISSUE-33: 日付指定の本数登録（当日・過去日）。new/edit の GET では行を作らない
   # ISSUE-42（一部）: 日付ベース詳細（カレンダーからのみ ID への遷移を避けるため collection に定義）
   resources :user_smoking_logs, only: %i[new create edit update] do

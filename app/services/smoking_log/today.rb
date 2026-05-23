@@ -16,6 +16,11 @@ class SmokingLog::Today
       UserSmokingLog.find_or_create_for_user_by_date!(user, smoked_on: Time.zone.today)
     end
 
+    # ISSUE-105: 当日行が無ければ 0 本として create する。既存行の本数・snapshot は変更しない。
+    def record_zero_persisted!(user)
+      find_or_create_persisted!(user)
+    end
+
     # ISSUE-32: 当日行が無ければ snapshot 付きで create し、smoking_count を原子性のある加算で +1 する。
     # find_or_create と with_lock を同一トランザクションにまとめ、連打・並行リクエストでも加算漏れを防ぐ。
     def increment_persisted!(user)

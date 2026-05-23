@@ -7,6 +7,12 @@ class UserSmokingLogsController < ApplicationController
     redirect_to dashboard_path, notice: "1本記録しました。"
   end
 
+  # ISSUE-105: 今日を 0 本として記録（保存操作。既存行は上書きしない）
+  def record_zero_today
+    SmokingLog::Today.record_zero_persisted!(current_user)
+    redirect_to dashboard_path, notice: "0本として記録しました。"
+  end
+
   # GET: 日付指定。該当ログが既にあれば edit へ。未記録なら行は作らない（@log は新規 or 非永続のまま表示）
   def new
     smoked_on = parse_smoked_on_query
