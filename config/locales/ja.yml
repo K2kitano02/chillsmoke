@@ -1,0 +1,85 @@
+ja:
+  errors:
+    format: "%{attribute}%{message}"
+    messages:
+      blank: "を入力してください"
+      required: "を入力してください"
+      taken: "はすでに使用されています"
+      invalid: "は不正な値です"
+      not_a_number: "は数値で入力してください"
+      not_an_integer: "は整数で入力してください"
+      greater_than: "は%{count}より大きい値にしてください"
+      greater_than_or_equal_to: "は%{count}以上の値にしてください"
+      less_than: "は%{count}より小さい値にしてください"
+      less_than_or_equal_to: "は%{count}以下の値にしてください"
+      inclusion: "は一覧にありません"
+      confirmation: "と%{attribute}の入力が一致しません"
+      too_short: "は%{count}文字以上で入力してください"
+      too_long: "は%{count}文字以内で入力してください"
+      wrong_length: "は%{count}文字で入力してください"
+      record_invalid: "バリデーションに失敗しました: %{errors}"
+
+  activerecord:
+    models:
+      user: "ユーザー"
+      user_setting: "ユーザー設定"
+      user_smoking_log: "喫煙ログ"
+      user_schedule: "喫煙スケジュール"
+      user_schedule_reflection: "スケジュール反映履歴"
+      user_wishlist: "ウィッシュリスト"
+      user_purchase_history: "購入履歴"
+    attributes:
+      user:
+        name: "名前"
+        email: "メールアドレス"
+        password: "パスワード"
+        password_confirmation: "パスワード（確認）"
+        current_password: "現在のパスワード"
+        remember_me: "ログイン状態を保持する"
+      user_setting:
+        user: "ユーザー"
+        user_id: "ユーザー"
+        target_daily_cigarette_count: "目標本数"
+        baseline_daily_cigarette_count: "基準本数"
+        pack_price: "1箱の価格"
+        cigarettes_per_pack: "1箱あたりの本数"
+        is_oni_mode: "鬼モード"
+      user_smoking_log:
+        user: "ユーザー"
+        user_id: "ユーザー"
+        smoked_on: "日付"
+        smoking_count: "喫煙本数"
+        target_daily_cigarette_count_snapshot: "記録時点の目標本数"
+        baseline_daily_cigarette_count_snapshot: "記録時点の基準本数"
+        pack_price_snapshot: "記録時点の1箱の価格"
+        cigarettes_per_pack_snapshot: "記録時点の1箱あたりの本数"
+        is_oni_mode_snapshot: "記録時点の鬼モード"
+      user_schedule:
+        user: "ユーザー"
+        user_id: "ユーザー"
+        scheduled_smoking_time: "喫煙予定時刻"
+        scheduled_smoking_minutes: "喫煙予定時刻"
+        label: "ラベル"
+        is_active: "状態"
+      user_schedule_reflection:
+        user_schedule: "喫煙スケジュール"
+        user_schedule_id: "喫煙スケジュール"
+        reflected_on: "反映日"
+      user_wishlist:
+        user: "ユーザー"
+        user_id: "ユーザー"
+        name: "欲しいもの名"
+        price: "価格"
+        note: "メモ"
+        is_purchased: "購入状態"
+      user_purchase_history:
+        user_wishlist: "ウィッシュリスト"
+        user_wishlist_id: "ウィッシュリスト"
+        amount: "購入金額"
+        purchased_at: "購入日時"
+
+  helpers:
+    submit:
+      create: "登録する"
+      update: "更新する"
+      submit: "保存する"

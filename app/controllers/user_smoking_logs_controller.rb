@@ -49,8 +49,8 @@ class UserSmokingLogsController < ApplicationController
 
     @log = current_user.user_smoking_logs.find_or_initialize_by(smoked_on: smoked_on)
 
-    if count_result == :invalid
-      prepare_log_after_invalid_count!
+    if invalid_smoking_count?(count_result)
+      prepare_log_after_invalid_count!(count_result)
       return render @log.new_record? ? :new : :edit, status: :unprocessable_entity
     end
 
@@ -82,8 +82,8 @@ class UserSmokingLogsController < ApplicationController
     p = safe_update_param_hash
     count_result = parse_smoking_count_input(p[:smoking_count])
 
-    if count_result == :invalid
-      @log.errors.add(:smoking_count, :not_a_number)
+    if invalid_smoking_count?(count_result)
+      add_smoking_count_error(@log, count_result)
       return render :edit, status: :unprocessable_entity
     end
 
@@ -124,9 +124,9 @@ class UserSmokingLogsController < ApplicationController
 
   private
 
-  def prepare_log_after_invalid_count!
+  def prepare_log_after_invalid_count!(count_result)
     @log.apply_snapshot_from_user_setting(current_user.user_setting) if @log.new_record?
-    @log.errors.add(:smoking_count, :not_a_number)
+    add_smoking_count_error(@log, count_result)
   end
 
   def assign_smoking_count_after_race!(log, count_result)
@@ -174,14 +174,27 @@ class UserSmokingLogsController < ApplicationController
     { smoked_on: nil, smoking_count: :blank }
   end
 
-  # @return [Integer, :blank, :invalid]  空欄 → :blank, 数値化不可 (abc, 1.2 等) → :invalid
+  # @return [Integer, :blank, :invalid, :too_large]  空欄 → :blank, 数値化不可 (abc, 1.2 等) → :invalid
   def parse_smoking_count_input(raw)
     return :blank if raw.nil? || (raw.is_a?(String) && raw.strip.empty?)
 
     n = Integer(raw, exception: false)
     return :invalid if n.nil?
+    return :too_large if n > UserSmokingLog::MAX_SMOKING_COUNT
 
     n
+  end
+
+  def invalid_smoking_count?(count_result)
+    count_result == :invalid || count_result == :too_large
+  end
+
+  def add_smoking_count_error(log, count_result)
+    if count_result == :too_large
+      log.errors.add(:smoking_count, :less_than_or_equal_to, count: UserSmokingLog::MAX_SMOKING_COUNT)
+    else
+      log.errors.add(:smoking_count, :not_a_number)
+    end
   end
 
   def parse_date_param(value)

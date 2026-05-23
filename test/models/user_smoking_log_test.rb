@@ -45,6 +45,12 @@ class UserSmokingLogTest < ActiveSupport::TestCase
     assert log.errors.key?(:smoking_count)
   end
 
+  test "rejects unrealistically large smoking_count" do
+    log = build_log(smoking_count: UserSmokingLog::MAX_SMOKING_COUNT + 1)
+    assert_not log.save
+    assert log.errors.key?(:smoking_count)
+  end
+
   test "rejects non-integer smoking_count" do
     log = build_log
     log.smoking_count = 1.5
