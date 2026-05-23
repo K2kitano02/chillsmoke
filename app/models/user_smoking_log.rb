@@ -1,10 +1,14 @@
 # frozen_string_literal: true
 
 class UserSmokingLog < ApplicationRecord
+  MAX_SMOKING_COUNT = 200
+
   belongs_to :user
 
   validates :smoked_on, presence: true, uniqueness: { scope: :user_id }
-  validates :smoking_count, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+  validates :smoking_count,
+            presence: true,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: MAX_SMOKING_COUNT }
   validate :smoked_on_not_in_future
 
   # 保存系でログを新規作成するとき、user_setting から 5 項目をコピーする（新規行のみ。既存行の snapshot は更新しない）

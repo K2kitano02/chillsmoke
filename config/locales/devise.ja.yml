@@ -7,10 +7,10 @@ ja:
     failure:
       already_authenticated: "すでにログインしています。"
       inactive: "アカウントはまだ有効化されていません。"
-      invalid: "%{authentication_keys} またはパスワードが正しくありません。"
+      invalid: "メールアドレスまたはパスワードが正しくありません。"
       locked: "アカウントはロックされています。"
       last_attempt: "アカウントがロックされるまであと1回です。"
-      not_found_in_database: "%{authentication_keys} またはパスワードが正しくありません。"
+      not_found_in_database: "メールアドレスまたはパスワードが正しくありません。"
       timeout: "セッションの有効期限が切れました。もう一度ログインしてください。"
       unauthenticated: "続行するにはログインまたは新規登録してください。"
       unconfirmed: "続行する前にメールアドレスを確認してください。"

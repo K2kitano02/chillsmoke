@@ -220,6 +220,20 @@ class UserSmokingLogsControllerTest < ActionDispatch::IntegrationTest
     assert_equal 3, log.reload.smoking_count
   end
 
+  test "create はDB範囲外の巨大な本数でも500にせず422で返す" do
+    sign_in users(:one)
+    day = Time.zone.today - 13.days
+
+    assert_no_difference -> { UserSmokingLog.count } do
+      post user_smoking_logs_url, params: {
+        user_smoking_log: { smoked_on: day.to_s, smoking_count: "10000000000" }
+      }
+    end
+
+    assert_response :unprocessable_entity
+    assert_match(/喫煙本数は#{UserSmokingLog::MAX_SMOKING_COUNT}以下の値にしてください/, response.body)
+  end
+
   test "create は本数が空欄のとき 422 かつ新規行を作らない" do
     sign_in users(:one)
     day = Time.zone.today - 12.days
@@ -238,6 +252,19 @@ class UserSmokingLogsControllerTest < ActionDispatch::IntegrationTest
     before = log.reload.smoking_count
     patch user_smoking_log_url(log), params: { user_smoking_log: { smoking_count: "nope" } }
     assert_response :unprocessable_entity
+    assert_equal before, log.reload.smoking_count
+  end
+
+  test "update はDB範囲外の巨大な本数でも500にせず422で返す" do
+    sign_in users(:one)
+    day = Time.zone.today - 6.days
+    log = users(:one).user_smoking_logs.create!(log_attrs.merge(smoked_on: day, smoking_count: 7))
+    before = log.reload.smoking_count
+
+    patch user_smoking_log_url(log), params: { user_smoking_log: { smoking_count: "10000000000" } }
+
+    assert_response :unprocessable_entity
+    assert_match(/喫煙本数は#{UserSmokingLog::MAX_SMOKING_COUNT}以下の値にしてください/, response.body)
     assert_equal before, log.reload.smoking_count
   end
 
