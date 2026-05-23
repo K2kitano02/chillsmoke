@@ -17,6 +17,11 @@ class UserSmokingLogsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to new_user_session_url
   end
 
+  test "0本記録も未ログインはサインインへリダイレクトされる" do
+    post zero_today_smoking_log_url
+    assert_redirected_to new_user_session_url
+  end
+
   test "本数フォーム (new) も未ログインはサインインへ" do
     get new_user_smoking_log_url
     assert_redirected_to new_user_session_url
@@ -54,6 +59,46 @@ class UserSmokingLogsControllerTest < ActionDispatch::IntegrationTest
 
     log = users(:one).user_smoking_logs.find_by!(smoked_on: Time.zone.today)
     assert_equal 4, log.smoking_count
+  end
+
+  test "record_zero_today は当日行を0本で作成する" do
+    sign_in users(:one)
+    users(:one).user_smoking_logs.where(smoked_on: Time.zone.today).destroy_all
+
+    assert_difference -> { UserSmokingLog.count }, 1 do
+      post zero_today_smoking_log_url
+    end
+    assert_redirected_to dashboard_url
+    assert_match(/0本として記録しました/, flash[:notice].to_s)
+
+    log = users(:one).user_smoking_logs.find_by!(smoked_on: Time.zone.today)
+    assert_equal 0, log.smoking_count
+    assert_equal users(:one).user_setting.target_daily_cigarette_count, log.target_daily_cigarette_count_snapshot
+    assert_equal users(:one).user_setting.pack_price, log.pack_price_snapshot
+  end
+
+  test "record_zero_today は既存行の本数とsnapshotを上書きしない" do
+    sign_in users(:one)
+    users(:one).user_smoking_logs.create!(
+      smoked_on: Time.zone.today,
+      smoking_count: 3,
+      target_daily_cigarette_count_snapshot: 5,
+      baseline_daily_cigarette_count_snapshot: 20,
+      pack_price_snapshot: 500,
+      cigarettes_per_pack_snapshot: 20,
+      is_oni_mode_snapshot: false
+    )
+    users(:one).user_setting.update!(target_daily_cigarette_count: 8, pack_price: 700)
+
+    assert_no_difference -> { UserSmokingLog.count } do
+      post zero_today_smoking_log_url
+    end
+    assert_redirected_to dashboard_url
+
+    log = users(:one).user_smoking_logs.find_by!(smoked_on: Time.zone.today)
+    assert_equal 3, log.smoking_count
+    assert_equal 5, log.target_daily_cigarette_count_snapshot
+    assert_equal 500, log.pack_price_snapshot
   end
 
   test "連続 POST でカウントが積み上がる" do

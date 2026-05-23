@@ -28,13 +28,17 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
 
   test "設定済みユーザーはダッシュボードを表示できる" do
     sign_in users(:one)
+    users(:one).user_smoking_logs.where(smoked_on: Time.zone.today).destroy_all
+
     get dashboard_url
     assert_response :success
     assert_select "h1", text: "ダッシュボード"
     assert_match(/＋1で記録/, response.body)
+    assert_match(/0本として記録/, response.body)
     assert_match(/スケジュールを反映/, response.body)
     assert_select "a[href=?]", user_schedules_path, text: "喫煙スケジュール"
     assert_select "form[action=?]", increment_today_smoking_log_path
+    assert_select "form[action=?]", zero_today_smoking_log_path
     assert_select "form[action=?]", schedule_reflection_path
     assert_select "a[href=?]", user_wishlists_path, text: "ウィッシュリスト"
   end
