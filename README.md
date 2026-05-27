@@ -51,25 +51,17 @@ ChillSmoke は、完全禁煙を前提にせず「まずは本数を減らす」
 
 ## 画面イメージ
 
-### ダッシュボード
+| ダッシュボード | 喫煙スケジュール |
+| --- | --- |
+| [![ダッシュボード](https://i.gyazo.com/ef65ad57b0d75cc4b09e8a8cd8261f73.jpg)](https://gyazo.com/ef65ad57b0d75cc4b09e8a8cd8261f73) | [![喫煙スケジュール](https://i.gyazo.com/2ebfbb67eefdeac9543a7179894e737e.jpg)](https://gyazo.com/2ebfbb67eefdeac9543a7179894e737e) |
 
-[ダッシュボード](https://gyazo.com/ef65ad57b0d75cc4b09e8a8cd8261f73)
+| 喫煙カレンダー | ウィッシュリスト |
+| --- | --- |
+| [![喫煙カレンダー](https://i.gyazo.com/5c86701001dc51f404d8f59d1655a909.jpg)](https://gyazo.com/5c86701001dc51f404d8f59d1655a909) | [![ウィッシュリスト](https://i.gyazo.com/b7729cf75ece83c4d859018fb68f535a.jpg)](https://gyazo.com/b7729cf75ece83c4d859018fb68f535a) |
 
-### 喫煙スケジュール
-
-[喫煙スケジュール](https://gyazo.com/2ebfbb67eefdeac9543a7179894e737e)
-
-### 喫煙カレンダー
-
-[喫煙カレンダー](https://gyazo.com/5c86701001dc51f404d8f59d1655a909)
-
-### ウィッシュリスト
-
-[ウィッシュリスト](https://gyazo.com/b7729cf75ece83c4d859018fb68f535a)
-
-### ユーザー設定
-
-[ユーザー設定](https://gyazo.com/a08e010be5d11fc3f0c7d6578091ae1a)
+| ユーザー設定 |
+| --- |
+| [![ユーザー設定](https://i.gyazo.com/a08e010be5d11fc3f0c7d6578091ae1a.jpg)](https://gyazo.com/a08e010be5d11fc3f0c7d6578091ae1a) |
 
 ## 工夫した点
 
@@ -139,7 +131,7 @@ Tailwind CSS は、画面ごとに細かく余白や色を調整しながら、B
 
 ## ER図
 
-[ER図](https://gyazo.com/ed0972c58884862df63c438136d57b5e)
+[![ER図](https://i.gyazo.com/ed0972c58884862df63c438136d57b5e.png)](https://gyazo.com/ed0972c58884862df63c438136d57b5e)
 
 主要テーブルの関係は以下です。
 
