@@ -1,5 +1,6 @@
 <div class="mx-auto w-full max-w-6xl"
      data-controller="modal"
+     data-modal-initial-open-value="<%= @open_modal %>"
      data-action="keydown@window->modal#closeOnEscape">
   <section class="grid gap-8 py-4 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
     <div>
@@ -241,18 +242,43 @@
         </button>
       </div>
 
-      <div class="mt-6 space-y-5 text-sm leading-7 text-stone-300">
-        <p>
-          不具合・ご要望・ご相談は X（旧Twitter）までご連絡ください。
-        </p>
+      <%= form_with model: (@contact_form || ContactForm.new), url: contact_path, data: { turbo: false }, class: "mt-6 space-y-5 text-sm" do |f| %>
+        <% if f.object.errors.any? %>
+          <div class="rounded-lg border border-red-400/30 bg-red-950/40 px-4 py-3 text-red-200" role="alert">
+            <p class="font-bold">入力内容を確認してください。</p>
+            <ul class="mt-2 list-disc space-y-1 pl-5">
+              <% f.object.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
 
-        <a href="https://x.com/K2kitano02"
-           target="_blank"
-           rel="noopener"
-           class="inline-flex w-full items-center justify-center rounded-lg bg-amber-600 px-5 py-3 text-sm font-bold text-black transition hover:bg-amber-500 sm:w-auto">
-          @K2kitano02
-        </a>
-      </div>
+        <div>
+          <%= f.label :name, "名前", class: "ml-1 block text-xs font-bold uppercase tracking-wide text-stone-400" %>
+          <%= f.text_field :name, autocomplete: "name", placeholder: "例: ChillUser", class: "mt-2 block w-full rounded-lg border-0 bg-[#292823] px-4 py-3 text-stone-100 placeholder:text-stone-500 ring-1 ring-white/10 focus:ring-2 focus:ring-amber-400" %>
+        </div>
+
+        <div>
+          <%= f.label :email, "メールアドレス", class: "ml-1 block text-xs font-bold uppercase tracking-wide text-stone-400" %>
+          <%= f.email_field :email, autocomplete: "email", placeholder: "email@example.com", class: "mt-2 block w-full rounded-lg border-0 bg-[#292823] px-4 py-3 text-stone-100 placeholder:text-stone-500 ring-1 ring-white/10 focus:ring-2 focus:ring-amber-400" %>
+        </div>
+
+        <div>
+          <%= f.label :message, "お問い合わせ内容", class: "ml-1 block text-xs font-bold uppercase tracking-wide text-stone-400" %>
+          <%= f.text_area :message, rows: 6, placeholder: "不具合・ご要望・ご相談内容を入力してください", class: "mt-2 block w-full rounded-lg border-0 bg-[#292823] px-4 py-3 text-stone-100 placeholder:text-stone-500 ring-1 ring-white/10 focus:ring-2 focus:ring-amber-400" %>
+        </div>
+
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <%= f.submit "送信する", class: "inline-flex w-full cursor-pointer justify-center rounded-lg bg-amber-600 px-5 py-3 text-sm font-bold text-black transition hover:bg-amber-500 sm:w-auto" %>
+          <a href="https://x.com/K2kitano02"
+             target="_blank"
+             rel="noopener"
+             class="inline-flex w-full justify-center rounded-lg border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-stone-300 transition hover:bg-white/10 sm:w-auto">
+            Xで連絡する
+          </a>
+        </div>
+      <% end %>
     </section>
   </div>
 </div>

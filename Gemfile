@@ -40,6 +40,8 @@ gem "tailwindcss-rails"
 
 gem "devise"
 
+gem "resend"
+
 gem "simple_calendar"
 
 group :development, :test do

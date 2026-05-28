@@ -78,6 +78,15 @@ ja:
         amount: "購入金額"
         purchased_at: "購入日時"
 
+  activemodel:
+    models:
+      contact_form: "お問い合わせ"
+    attributes:
+      contact_form:
+        name: "名前"
+        email: "メールアドレス"
+        message: "お問い合わせ内容"
+
   helpers:
     submit:
       create: "登録する"

@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
-  devise_for :users, skip: :passwords
+  devise_for :users
+  resource :contact, only: :create
   # ISSUE-21/22/23: 1ユーザー1設定。初期設定 new/create、編集 edit/update
   resource :user_setting, only: %i[new create edit update]
   # Plan.md: ログイン後の本画面。表示の中身は ISSUE-53 以降で拡張

@@ -1,0 +1,12 @@
+<h1>ChillSmoke にお問い合わせがありました。</h1>
+
+<dl>
+  <dt>名前</dt>
+  <dd><%= @contact_form.name %></dd>
+
+  <dt>メールアドレス</dt>
+  <dd><%= @contact_form.email %></dd>
+
+  <dt>内容</dt>
+  <dd><%= simple_format(@contact_form.message) %></dd>
+</dl>
