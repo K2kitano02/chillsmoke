@@ -110,6 +110,7 @@ MVPとして公開するにあたり、以下も対応しました。
 | バックエンド  | Ruby 3.3.6 / Ruby on Rails 7.2.1              |
 | フロントエンド | ERB / Tailwind CSS / Hotwire Turbo / Stimulus |
 | 認証      | Devise                                        |
+| メール送信  | Resend                                        |
 | データベース  | PostgreSQL 17                                 |
 | カレンダー   | simple_calendar                               |
 | テスト     | Minitest / Capybara / Selenium                |
@@ -170,6 +171,18 @@ RuboCop と Brakeman を実行します。
 ```bash
 docker compose run --rm web bundle exec rubocop
 docker compose run --rm web bin/brakeman --no-pager
+```
+
+### 本番環境で必要な環境変数
+
+Render では、問い合わせメールとパスワード再設定メールを Resend 経由で送信するため、以下の環境変数を設定します。
+
+```text
+RESEND_API_KEY=Resendで発行したAPIキー
+CONTACT_MAIL_TO=問い合わせを受け取るメールアドレス
+CONTACT_MAIL_FROM=Resendで認証済みドメインの送信元メールアドレス
+DEVISE_MAILER_FROM=Resendで認証済みドメインのパスワード再設定メール送信元
+APP_HOST=chillsmoke.onrender.com
 ```
 
 ## 今後実装予定の機能

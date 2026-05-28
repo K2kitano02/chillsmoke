@@ -28,8 +28,11 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     assert_match(/名前、メールアドレス、喫煙記録、設定値、ウィッシュリスト、購入履歴/, response.body)
     assert_select "[role='dialog'][aria-labelledby='contact-title']"
     assert_select "#contact-title", text: "お問い合わせ"
-    assert_select "a[href='https://x.com/K2kitano02']", text: "@K2kitano02"
-    assert_select "form[action]", false
+    assert_select "form[action='#{contact_path}']"
+    assert_select "input[name='contact_form[name]']"
+    assert_select "input[name='contact_form[email]']"
+    assert_select "textarea[name='contact_form[message]']"
+    assert_select "a[href='https://x.com/K2kitano02']", text: "Xで連絡する"
   end
 
   test "UserSetting 未作成なら root でも初期設定へリダイレクト（ISSUE-21）" do
