@@ -41,3 +41,8 @@
 
 .DS_Store
 /vendor/bundle
+
+# Codex local instructions and workspace notes.
+# Keep them available locally, but do not publish them to GitHub.
+/AGENTS.md
+/.codex/
