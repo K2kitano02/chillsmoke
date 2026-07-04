@@ -61,6 +61,24 @@ class UserSmokingLogsControllerTest < ActionDispatch::IntegrationTest
     assert_equal 4, log.smoking_count
   end
 
+  test "increment_today は Turbo Stream で関連表示を差し替える" do
+    sign_in users(:one)
+
+    assert_difference -> { UserSmokingLog.count }, 1 do
+      post increment_today_smoking_log_url, as: :turbo_stream
+    end
+
+    assert_response :success
+    assert_equal "text/vnd.turbo-stream.html", response.media_type
+    assert_includes response.body, %(target="dashboard_today_status")
+    assert_includes response.body, %(target="dashboard_record_summary")
+    assert_includes response.body, %(target="flash")
+    assert_includes response.body, "1本記録しました。"
+
+    log = users(:one).user_smoking_logs.find_by!(smoked_on: Time.zone.today)
+    assert_equal 1, log.smoking_count
+  end
+
   test "record_zero_today は当日行を0本で作成する" do
     sign_in users(:one)
     users(:one).user_smoking_logs.where(smoked_on: Time.zone.today).destroy_all

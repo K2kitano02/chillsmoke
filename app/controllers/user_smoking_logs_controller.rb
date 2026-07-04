@@ -4,7 +4,13 @@ class UserSmokingLogsController < ApplicationController
   # ISSUE-32: 今日の +1 記録（保存操作。GET では当日行を作らない）
   def increment_today
     SmokingLog::Today.increment_persisted!(current_user)
-    redirect_to dashboard_path, notice: "1本記録しました。"
+    prepare_dashboard_summary
+    flash.now[:notice] = "1本記録しました。"
+
+    respond_to do |format|
+      format.turbo_stream
+      format.html { redirect_to dashboard_path, notice: "1本記録しました。" }
+    end
   end
 
   # ISSUE-105: 今日を 0 本として記録（保存操作。既存行は上書きしない）
@@ -123,6 +129,13 @@ class UserSmokingLogsController < ApplicationController
   end
 
   private
+
+  def prepare_dashboard_summary
+    @today_smoking_log = SmokingLog::Today.for_display(current_user)
+    @daily_target_count = @today_smoking_log.target_daily_cigarette_count_snapshot
+    @remaining_count = [ @daily_target_count - @today_smoking_log.smoking_count, 0 ].max
+    @savings_summary = Money::SavingsCalculator.call(current_user)
+  end
 
   def prepare_log_after_invalid_count!(count_result)
     @log.apply_snapshot_from_user_setting(current_user.user_setting) if @log.new_record?
