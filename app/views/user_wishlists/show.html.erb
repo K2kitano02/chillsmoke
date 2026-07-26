@@ -12,57 +12,14 @@
     </div>
   </div>
 
-  <section class="mt-6 rounded-xl border border-white/10 bg-[#171716] p-5 shadow-sm">
-    <dl class="grid gap-4 text-sm sm:grid-cols-2">
-      <div>
-        <dt class="font-medium text-stone-400">価格</dt>
-        <dd class="mt-1 text-3xl font-black tabular-nums text-stone-100"><%= number_with_delimiter(@user_wishlist.price) %>円</dd>
-      </div>
-      <div>
-        <dt class="font-medium text-stone-400">状態</dt>
-        <dd class="mt-2"><span class="rounded-full px-3 py-1 text-xs font-bold <%= @user_wishlist.is_purchased? ? "bg-amber-600 text-black" : "bg-[#292823] text-stone-300" %>"><%= @user_wishlist.is_purchased? ? "購入済み" : "未購入" %></span></dd>
-      </div>
-      <div>
-        <dt class="font-medium text-stone-400">使用可能金額</dt>
-        <dd class="mt-1 text-lg font-semibold tabular-nums text-stone-100"><%= number_with_delimiter(@balance.usable_yen) %>円</dd>
-      </div>
-      <div class="sm:col-span-2">
-        <dt class="font-medium text-stone-400">メモ</dt>
-        <dd class="mt-1 whitespace-pre-wrap text-stone-300"><%= @user_wishlist.memo.presence || "未設定" %></dd>
-      </div>
-    </dl>
+  <div id="wishlist_detail_panel">
+    <%= render "user_wishlists/detail_panel",
+          user_wishlist: @user_wishlist,
+          balance: @balance %>
+  </div>
 
-    <% unless @user_wishlist.is_purchased? %>
-      <div class="mt-6">
-        <% if @balance.usable_yen >= @user_wishlist.price %>
-          <%= button_to "購入する", purchase_user_wishlist_path(@user_wishlist), method: :post,
-                class: "inline-flex items-center rounded-full bg-amber-600 px-5 py-3 text-sm font-bold text-black hover:bg-amber-500",
-                data: { turbo_confirm: "このウィッシュリストを購入しますか？" } %>
-        <% else %>
-          <button type="button" disabled class="inline-flex items-center rounded-full bg-[#292823] px-5 py-3 text-sm font-semibold text-stone-500">
-            購入する
-          </button>
-          <p class="mt-2 text-sm text-red-200">
-            使用可能金額が不足しています。あと<%= number_with_delimiter(@user_wishlist.price - @balance.usable_yen) %>円必要です。
-          </p>
-        <% end %>
-      </div>
-    <% end %>
-  </section>
-
-  <% if @user_purchase_history.present? %>
-    <section class="mt-6 rounded-xl border border-white/10 bg-[#171716] p-5 shadow-sm">
-      <h2 class="text-lg font-semibold text-stone-100">購入履歴</h2>
-      <dl class="mt-4 grid gap-4 text-sm sm:grid-cols-2">
-        <div>
-          <dt class="font-medium text-stone-400">購入金額</dt>
-          <dd class="mt-1 text-3xl font-black tabular-nums text-stone-100"><%= number_with_delimiter(@user_purchase_history.amount) %>円</dd>
-        </div>
-        <div>
-          <dt class="font-medium text-stone-400">購入日時</dt>
-          <dd class="mt-1 text-lg font-semibold text-stone-100"><%= @user_purchase_history.purchased_at.strftime("%Y/%m/%d %H:%M") %></dd>
-        </div>
-      </dl>
-    </section>
-  <% end %>
+  <div id="wishlist_purchase_history">
+    <%= render "user_wishlists/purchase_history",
+          user_purchase_history: @user_purchase_history %>
+  </div>
 </div>

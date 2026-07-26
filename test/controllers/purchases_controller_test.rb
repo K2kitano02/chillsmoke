@@ -26,6 +26,28 @@ class PurchasesControllerTest < ActionDispatch::IntegrationTest
     assert_equal wishlist, wishlist.user_purchase_history.user_wishlist
   end
 
+  test "create は Turbo Stream で購入結果を差し替える" do
+    user = users(:one)
+    sign_in user
+    wishlist = user.user_wishlists.create!(name: "イヤホン", price: 250)
+    create_log(user: user, smoking_count: 10)
+
+    assert_difference -> { UserPurchaseHistory.count }, 1 do
+      post purchase_user_wishlist_url(wishlist), as: :turbo_stream
+    end
+
+    assert_response :success
+    assert_equal "text/vnd.turbo-stream.html", response.media_type
+    assert_includes response.body, 'target="wishlist_detail_panel"'
+    assert_includes response.body, 'target="wishlist_purchase_history"'
+    assert_includes response.body, 'target="header_metrics"'
+    assert_includes response.body, 'target="flash"'
+    assert_includes response.body, "購入済み"
+    assert_includes response.body, "購入履歴"
+    assert_includes response.body, "購入しました。"
+    assert wishlist.reload.is_purchased
+  end
+
   test "create は他ユーザーの wishlist なら 404 を返して購入しない" do
     sign_in users(:one)
     wishlist = user_wishlists(:purchased_bag)
@@ -54,6 +76,25 @@ class PurchasesControllerTest < ActionDispatch::IntegrationTest
     assert_not wishlist.reload.is_purchased
   end
 
+  test "create は Turbo Stream でも残高不足を日本語で表示する" do
+    user = users(:one)
+    sign_in user
+    wishlist = user.user_wishlists.create!(name: "高額品", price: 30_000)
+    create_log(user: user, smoking_count: 10)
+
+    assert_no_difference -> { UserPurchaseHistory.count } do
+      post purchase_user_wishlist_url(wishlist), as: :turbo_stream
+    end
+
+    assert_response :unprocessable_entity
+    assert_equal "text/vnd.turbo-stream.html", response.media_type
+    assert_includes response.body, 'target="wishlist_detail_panel"'
+    assert_includes response.body, 'target="flash"'
+    assert_includes response.body, "使用可能金額が不足しています。"
+    assert_includes response.body, "あと29,750円必要です。"
+    assert_not wishlist.reload.is_purchased
+  end
+
   test "create は購入済みなら購入しない" do
     user = users(:two)
     sign_in user
@@ -66,6 +107,24 @@ class PurchasesControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to user_wishlist_url(wishlist)
     assert_equal "すでに購入済みです。", flash[:alert]
+    assert wishlist.reload.is_purchased
+  end
+
+  test "create は Turbo Stream でも購入済みエラーを表示する" do
+    user = users(:two)
+    sign_in user
+    wishlist = user_wishlists(:purchased_bag)
+    create_log(user: user, smoking_count: 0, pack_price_snapshot: 20_000)
+
+    assert_no_difference -> { UserPurchaseHistory.count } do
+      post purchase_user_wishlist_url(wishlist), as: :turbo_stream
+    end
+
+    assert_response :unprocessable_entity
+    assert_equal "text/vnd.turbo-stream.html", response.media_type
+    assert_includes response.body, 'target="wishlist_detail_panel"'
+    assert_includes response.body, 'target="flash"'
+    assert_includes response.body, "すでに購入済みです。"
     assert wishlist.reload.is_purchased
   end
 

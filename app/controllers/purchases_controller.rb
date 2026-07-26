@@ -6,14 +6,38 @@ class PurchasesController < ApplicationController
 
     Purchase::Create.call(user: current_user, wishlist: wishlist)
 
-    redirect_to user_wishlist_path(wishlist), notice: "購入しました。"
+    respond_to_purchase(wishlist, notice: "購入しました。")
   rescue Purchase::Create::AlreadyPurchased
-    redirect_to user_wishlist_path(wishlist), alert: "すでに購入済みです。"
+    respond_to_purchase(wishlist, alert: "すでに購入済みです。", status: :unprocessable_entity)
   rescue Purchase::Create::InsufficientBalance
-    redirect_to user_wishlist_path(wishlist), alert: insufficient_balance_message(wishlist)
+    respond_to_purchase(wishlist, alert: insufficient_balance_message(wishlist), status: :unprocessable_entity)
   end
 
   private
+
+  def respond_to_purchase(wishlist, notice: nil, alert: nil, status: :ok)
+    prepare_wishlist_detail(wishlist)
+
+    respond_to do |format|
+      format.turbo_stream do
+        flash.now[:notice] = notice if notice
+        flash.now[:alert] = alert if alert
+
+        render status: status
+      end
+      format.html do
+        redirect_to user_wishlist_path(wishlist), notice: notice, alert: alert
+      end
+    end
+  end
+
+  def prepare_wishlist_detail(wishlist)
+    @user_wishlist = wishlist.reload
+    @balance = Money::BalanceQuery.call(current_user)
+    @user_purchase_history = @user_wishlist.user_purchase_history
+    @header_balance = @balance
+    @header_streak_count = Streak::AchievementCounter.call(current_user)
+  end
 
   def insufficient_balance_message(wishlist)
     balance = Money::BalanceQuery.call(current_user)

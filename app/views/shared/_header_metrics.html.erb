@@ -1,0 +1,14 @@
+<% if header_balance && header_streak_count %>
+  <div class="ml-auto flex items-center gap-2 text-xs sm:text-sm">
+    <div class="rounded-lg border border-white/10 bg-white/5 px-3 py-1.5">
+      <span class="text-stone-500">使用可能</span>
+      <span class="ml-1 font-bold tabular-nums text-stone-100"><%= number_with_delimiter(header_balance.usable_yen) %>円</span>
+    </div>
+    <div class="rounded-lg border border-white/10 bg-white/5 px-3 py-1.5" title="昨日までの連続達成日数">
+      <span class="text-stone-500">継続日数</span>
+      <span class="ml-1 font-bold tabular-nums text-stone-100"><%= header_streak_count %>日</span>
+    </div>
+  </div>
+<% else %>
+  <span class="ml-auto"></span>
+<% end %>
