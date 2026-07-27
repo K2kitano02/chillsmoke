@@ -1,0 +1,11 @@
+<%= turbo_stream.replace "user_schedule_#{@user_schedule.id}_card" do %>
+  <%= render "user_schedules/schedule_card", schedule: @user_schedule %>
+<% end %>
+
+<%= turbo_stream.replace "user_schedule_#{@user_schedule.id}_row" do %>
+  <%= render "user_schedules/schedule_row", schedule: @user_schedule %>
+<% end %>
+
+<%= turbo_stream.update "flash" do %>
+  <%= render "shared/flash" %>
+<% end %>

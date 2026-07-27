@@ -37,11 +37,32 @@ class UserSchedulesController < ApplicationController
   end
 
   def toggle
-    @user_schedule.update!(is_active: !@user_schedule.is_active?)
-    redirect_to user_schedules_path, notice: "スケジュールの状態を切り替えました。"
+    @user_schedule.is_active = !@user_schedule.is_active?
+
+    if @user_schedule.save
+      respond_to_toggle(notice: "スケジュールの状態を切り替えました。")
+    else
+      respond_to_toggle(alert: @user_schedule.errors.full_messages.to_sentence, status: :unprocessable_entity)
+    end
   end
 
   private
+
+  def respond_to_toggle(notice: nil, alert: nil, status: :ok)
+    @user_schedule.reload if @user_schedule.persisted?
+
+    respond_to do |format|
+      format.turbo_stream do
+        flash.now[:notice] = notice if notice
+        flash.now[:alert] = alert if alert
+
+        render status: status
+      end
+      format.html do
+        redirect_to user_schedules_path, notice: notice, alert: alert
+      end
+    end
+  end
 
   def set_user_schedule
     @user_schedule = current_user.user_schedules.find(params[:id])
