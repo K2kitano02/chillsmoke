@@ -255,6 +255,24 @@ class UserSchedulesControllerTest < ActionDispatch::IntegrationTest
     assert_not schedule.reload.is_active
   end
 
+  test "toggle は Turbo Stream で有効なスケジュールを停止して対象表示を差し替える" do
+    sign_in users(:one)
+    schedule = user_schedules(:morning)
+    assert schedule.is_active
+
+    patch toggle_user_schedule_url(schedule), as: :turbo_stream
+
+    assert_response :success
+    assert_equal "text/vnd.turbo-stream.html", response.media_type
+    assert_includes response.body, %(target="user_schedule_#{schedule.id}_card")
+    assert_includes response.body, %(target="user_schedule_#{schedule.id}_row")
+    assert_includes response.body, %(target="flash")
+    assert_includes response.body, "停止中"
+    assert_includes response.body, "有効にする"
+    assert_includes response.body, "スケジュールの状態を切り替えました。"
+    assert_not schedule.reload.is_active
+  end
+
   test "toggle は停止中のスケジュールを有効にして一覧へ戻る" do
     sign_in users(:two)
     schedule = user_schedules(:inactive)
@@ -263,6 +281,23 @@ class UserSchedulesControllerTest < ActionDispatch::IntegrationTest
     patch toggle_user_schedule_url(schedule)
 
     assert_redirected_to user_schedules_url
+    assert schedule.reload.is_active
+  end
+
+  test "toggle は Turbo Stream で停止中のスケジュールを有効にして対象表示を差し替える" do
+    sign_in users(:two)
+    schedule = user_schedules(:inactive)
+    assert_not schedule.is_active
+
+    patch toggle_user_schedule_url(schedule), as: :turbo_stream
+
+    assert_response :success
+    assert_equal "text/vnd.turbo-stream.html", response.media_type
+    assert_includes response.body, %(target="user_schedule_#{schedule.id}_card")
+    assert_includes response.body, %(target="user_schedule_#{schedule.id}_row")
+    assert_includes response.body, %(target="flash")
+    assert_includes response.body, "有効"
+    assert_includes response.body, "停止する"
     assert schedule.reload.is_active
   end
 
