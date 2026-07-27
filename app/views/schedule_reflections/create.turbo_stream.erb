@@ -1,0 +1,20 @@
+<%= turbo_stream.update "dashboard_today_status" do %>
+  <%= render "dashboard/today_status",
+        today_smoking_log: @today_smoking_log,
+        daily_target_count: @daily_target_count,
+        remaining_count: @remaining_count %>
+<% end %>
+
+<%= turbo_stream.update "dashboard_record_summary" do %>
+  <%= render "dashboard/record_summary", savings_summary: @savings_summary %>
+<% end %>
+
+<%= turbo_stream.update "header_metrics" do %>
+  <%= render "shared/header_metrics",
+        header_balance: @header_balance,
+        header_streak_count: @header_streak_count %>
+<% end %>
+
+<%= turbo_stream.update "flash" do %>
+  <%= render "shared/flash" %>
+<% end %>
