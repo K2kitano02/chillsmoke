@@ -2472,20 +2472,29 @@
 ## やること(コードレベル)
 
 - **変更点（ファイル）**: `Gemfile` / `Gemfile.lock` / `config/environments/development.rb` / N+1が検出された`app/controllers/*`・`app/services/*`・`app/views/*` / 必要に応じて`test/*` / `.codex/rules/TODO.md`
-- [ ] Bulletをdevelopment groupへ追加し、Docker経由で依存関係を更新する
-- [ ] `config/environments/development.rb`でBulletを有効化する
-  - [ ] N+1 queryの検出を有効にする
-  - [ ] unused eager loadingの検出を有効にする
-  - [ ] counter cache候補の検出を有効にする
-  - [ ] ブラウザまたはログで警告内容を確認できるようにする
-- [ ] 複数件データを使い、主要GET画面を一通り操作してBulletの警告を確認する
-- [ ] 検出箇所ごとに、呼び出し元と発生しているSQLを整理する
-- [ ] 検出されたN+1を、既存の取得スコープを崩さない最小差分で解消する
-- [ ] 修正後に同じ操作を行い、BulletのN+1警告が解消されていることを確認する
-- [ ] unused eager loadingの警告が出ていないことを確認する
-- [ ] 修正前後のクエリ数またはBullet検出結果をIssueまたはPRへ記録する
-- [ ] Docker経由でテスト、RuboCop、Brakemanを実行する
+- [x] Bulletをdevelopment groupへ追加し、Docker経由で依存関係を更新する
+- [x] `config/environments/development.rb`でBulletを有効化する
+  - [x] N+1 queryの検出を有効にする
+  - [x] unused eager loadingの検出を有効にする
+  - [x] counter cache候補の検出を有効にする
+  - [x] ブラウザまたはログで警告内容を確認できるようにする
+- [x] 複数件データを使い、主要GET画面を一通り操作してBulletの警告を確認する
+- [x] 検出箇所ごとに、呼び出し元と発生しているSQLを整理する
+- [x] 検出されたN+1を、既存の取得スコープを崩さない最小差分で解消する
+- [x] 修正後に同じ操作を行い、BulletのN+1警告が解消されていることを確認する
+- [x] unused eager loadingの警告が出ていないことを確認する
+- [x] 修正前後のクエリ数またはBullet検出結果をIssueまたはPRへ記録する
+- [x] Docker経由でテスト、RuboCop、Brakemanを実行する
 - [ ] Playwright/MCPで主要画面を確認し、表示崩れ、操作上の退行、console errorがないことを確認する
+
+## 検証結果
+
+- ダッシュボード、喫煙記録カレンダー、喫煙スケジュール一覧、ウィッシュリスト一覧、ウィッシュリスト詳細を複数件データで確認し、既存実装からBullet警告は検出されなかった
+- ウィッシュリスト一覧で購入履歴をループ内参照する一時コードを使い、`UserWishlist => [:user_purchase_history]`のN+1警告を再現した
+- `includes(:user_purchase_history)`によって警告が解消されることを確認後、一時コードと不要な先読みは削除した
+- ブラウザの開発者コンソールにBullet警告がないことを手動確認した
+- Docker経由の全テストは、model/controller等が227 runs・919 assertions、system testが1 run・12 assertionsで、failure・errorともに0件だった
+- RuboCopは94ファイルで違反0件、BrakemanはSecurity Warnings 0件だった
 
 ## 変更してはいけないこと
 
@@ -2498,8 +2507,8 @@
 
 ## ゴール
 
-- [ ] 開発環境でBulletを使ってN+1と不要なeager loadingを継続的に検出できる
-- [ ] 主要GET画面の調査結果が記録され、N+1が検出された箇所は解消されている
-- [ ] データ件数が増えても、関連取得によるSQLが1件ずつ追加発行されない
-- [ ] 既存の画面表示、認証、記録、金額計算、購入処理が変更前と同じように動作する
-- [ ] Docker経由のテスト、RuboCop、Brakemanが通る
+- [x] 開発環境でBulletを使ってN+1と不要なeager loadingを継続的に検出できる
+- [x] 主要GET画面の調査結果が記録され、N+1が検出された箇所は解消されている
+- [x] データ件数が増えても、関連取得によるSQLが1件ずつ追加発行されない
+- [x] 既存の画面表示、認証、記録、金額計算、購入処理が変更前と同じように動作する
+- [x] Docker経由のテスト、RuboCop、Brakemanが通る
