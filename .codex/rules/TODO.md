@@ -2572,6 +2572,7 @@
 ## やること(コードレベル)
 
 - **変更候補（ファイル）**: `Gemfile`または`package.json` / lockfile / `config/routes.rb` / `app/controllers/*reports*` / `app/services/*`または`app/queries/*` / `app/views/*reports*` / `app/javascript/controllers/*` / `test/*` / `.codex/rules/TODO.md` / 必要に応じて`README.md`
+<!-- 実装クリア: ISSUE-119
 - [x] グラフライブラリを比較し、選定理由をPRへ記録する
   - [x] Rails 7.2、esbuild、Stimulusとの統合方法を確認する
   - [x] 欠損値、複数系列、レスポンシブ表示へ対応できることを確認する
@@ -2599,6 +2600,7 @@
 - [x] BulletでN+1、unused eager loadingの警告がないことを確認する
 - [x] Docker経由でテスト、RuboCop、Brakemanを実行する
 - [x] Playwright/MCPでタブ切り替え、データなし、PC幅、スマホ幅、console errorなしを確認する
+-->
 
 ## 検証結果
 
@@ -2615,6 +2617,7 @@
 
 ## 変更してはいけないこと
 
+<!-- 実装クリア: ISSUE-119
 - [ ] 未記録日を0本または0円として補完しない
 - [ ] 過去ログを現在の`UserSetting`で再計算しない
 - [ ] 今日の節約見込みを確定済みの日別節約額へ混ぜない
@@ -2623,9 +2626,11 @@
 - [ ] グラフ表示のためにDBカラムや保存済み集計値を追加しない
 - [ ] 期間切り替え、平均、将来予測を本Issueへ含めない
 - [ ] グラフ機能と無関係な計算仕様や画面を変更しない
+-->
 
 ## ゴール
 
+<!-- 実装クリア: ISSUE-119
 - [x] 減煙レポート画面で、直近30日の喫煙本数とsnapshot目標を確認できる
 - [x] 同じ画面で、昨日までの日別節約額と今日の節約見込みを確認できる
 - [x] 2種類のグラフをページ再読み込みなしで切り替えられる
@@ -2633,6 +2638,7 @@
 - [x] PC幅・スマホ幅でグラフを操作・閲覧できる
 - [x] GET表示だけではDBデータが増えない
 - [x] Docker経由のテスト、RuboCop、Brakemanが通る
+-->
 
 ---
 
