@@ -86,6 +86,14 @@ class Money::SavingsCalculatorTest < ActiveSupport::TestCase
     end
   end
 
+  test "今日の節約見込みだけを取得してもログを作らない" do
+    assert_no_difference -> { UserSmokingLog.count } do
+      estimated_yen = Money::SavingsCalculator.today_estimated_saved_yen(@user)
+
+      assert_equal 500, estimated_yen
+    end
+  end
+
   test "今日の節約見込みは累計節約へ混入しない" do
     summary = Money::SavingsCalculator.call(@user)
 

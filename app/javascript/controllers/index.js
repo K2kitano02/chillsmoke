@@ -12,3 +12,6 @@ application.register("modal", ModalController)
 
 import PasswordRevealController from "./password_reveal_controller"
 application.register("password-reveal", PasswordRevealController)
+
+import ReportTabsController from "./report_tabs_controller"
+application.register("report-tabs", ReportTabsController)

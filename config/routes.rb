@@ -7,6 +7,8 @@ Rails.application.routes.draw do
   get "dashboard", to: "dashboard#index", as: :dashboard
   # ISSUE-40: 喫煙ログの月カレンダー閲覧
   get "calendar", to: "calendar#index", as: :calendar
+  # ISSUE-119: 直近30日の喫煙本数・目標・日別節約額を表示する減煙レポート
+  get "report", to: "reports#show", as: :report
   # ISSUE-71/72/73/74/75: スケジュール一覧・作成・編集・削除・ON/OFF切替
   resources :user_schedules, only: %i[index new create edit update destroy] do
     patch :toggle, on: :member
