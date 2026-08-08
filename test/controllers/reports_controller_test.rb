@@ -58,4 +58,77 @@ class ReportsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "a[href=?]", report_path, text: "減煙レポート"
   end
+
+  test "昨日までの7日分が揃うと平均と目標以内のペースを表示する" do
+    user = users(:one)
+    sign_in user
+    user.user_smoking_logs.delete_all
+    create_pace_logs(user, smoking_count: 3, target: 5)
+
+    get report_url
+
+    assert_response :success
+    assert_select "h2", text: "直近7日間のペース"
+    assert_match(/1日平均/, response.body)
+    assert_select "p", text: /約\s*3\s*本/
+    assert_match(/7日間では目標より14本少なく記録できました/, response.body)
+    assert_match(/1日平均節約額/, response.body)
+    assert_select "p", text: /425\s*円/
+    assert_match(/30日間の節約ペース/, response.body)
+    assert_select "p", text: /12,750\s*円/
+    assert_match(/将来の成果を保証するものではありません/, response.body)
+  end
+
+  test "7日分の実績合計が目標合計を超えた場合のメッセージを表示する" do
+    user = users(:one)
+    sign_in user
+    user.user_smoking_logs.delete_all
+    create_pace_logs(user, smoking_count: 6, target: 5)
+
+    get report_url
+
+    assert_response :success
+    assert_match(/7日間では目標より7本多い記録でした/, response.body)
+  end
+
+  test "7日分の実績合計と目標合計が同じ場合のメッセージを表示する" do
+    user = users(:one)
+    sign_in user
+    user.user_smoking_logs.delete_all
+    create_pace_logs(user, smoking_count: 5, target: 5)
+
+    get report_url
+
+    assert_response :success
+    assert_match(/7日間では目標どおりの記録でした/, response.body)
+  end
+
+  test "昨日までの記録が不足している場合は必要な残り記録日数を表示する" do
+    user = users(:one)
+    sign_in user
+    user.user_smoking_logs.delete_all
+    create_pace_logs(user, smoking_count: 3, target: 5, days: 5)
+
+    get report_url
+
+    assert_response :success
+    assert_match(/ペースを確認するまであと2日/, response.body)
+    assert_no_match(/30日間の節約ペース/, response.body)
+  end
+
+  private
+
+  def create_pace_logs(user, smoking_count:, target:, days: 7)
+    days.times do |index|
+      user.user_smoking_logs.create!(
+        smoked_on: Time.zone.today - (index + 1).days,
+        smoking_count: smoking_count,
+        target_daily_cigarette_count_snapshot: target,
+        baseline_daily_cigarette_count_snapshot: 20,
+        pack_price_snapshot: 500,
+        cigarettes_per_pack_snapshot: 20,
+        is_oni_mode_snapshot: false
+      )
+    end
+  end
 end
