@@ -8,6 +8,10 @@ module Money
       new(user, today: today).call
     end
 
+    def self.today_estimated_saved_yen(user, today: Time.zone.today)
+      new(user, today: today).today_estimated_saved_yen
+    end
+
     def initialize(user, today:)
       @user = user
       @today = today
@@ -20,16 +24,16 @@ module Money
       )
     end
 
+    def today_estimated_saved_yen
+      today_log_for_display.saved_yen
+    end
+
     private
 
     attr_reader :user, :today
 
     def cumulative_saved_yen
       user.user_smoking_logs.where("smoked_on < ?", today).sum(&:saved_yen)
-    end
-
-    def today_estimated_saved_yen
-      today_log_for_display.saved_yen
     end
 
     def today_log_for_display
