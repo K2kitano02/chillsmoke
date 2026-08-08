@@ -185,7 +185,7 @@ export default class extends Controller {
           borderWidth: 1,
           padding: 12,
           callbacks: {
-            label: (context) => `${context.dataset.label}: ${context.parsed.y}${unit}`,
+            label: (context) => this.tooltipLabel(context, unit),
             afterBody: (items) => smokingChart ? this.smokingComparison(items) : []
           }
         }
@@ -209,6 +209,12 @@ export default class extends Controller {
         }
       }
     }
+  }
+
+  tooltipLabel(context, unit) {
+    if (context.raw === null) return `${context.dataset.label}: 未記録`
+
+    return `${context.dataset.label}: ${context.parsed.y}${unit}`
   }
 
   smokingComparison(items) {

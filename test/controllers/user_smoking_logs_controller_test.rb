@@ -206,6 +206,19 @@ class UserSmokingLogsControllerTest < ActionDispatch::IntegrationTest
     assert_equal 5, log.target_daily_cigarette_count_snapshot
   end
 
+  test "edit から記録月のカレンダーとダッシュボードへ戻れる" do
+    sign_in users(:one)
+    day = Time.zone.today - 1.month
+    log = users(:one).user_smoking_logs.create!(log_attrs.merge(smoked_on: day, smoking_count: 1))
+
+    get edit_user_smoking_log_url(log)
+
+    assert_response :success
+    assert_select "a[href=?]", calendar_path(start_date: day.to_s), text: "カレンダーへ戻る"
+    assert_select "a[href=?]", dashboard_path, text: "ダッシュボードに戻る"
+    assert_no_match(/snapshot は変わりません/, response.body)
+  end
+
   test "他人のログ id の edit は 404" do
     sign_in users(:one)
     other_log = users(:two).user_smoking_logs.create!(log_attrs.merge(smoked_on: Time.zone.today - 1.day, smoking_count: 1))
@@ -316,6 +329,7 @@ class UserSmokingLogsControllerTest < ActionDispatch::IntegrationTest
     get by_date_user_smoking_logs_url(date: with_log.strftime("%Y-%m-%d"))
     assert_response :success
     assert_match(/3/, response.body)
+    assert_select "a[href=?]", calendar_path(start_date: with_log.to_s), text: "カレンダーへ戻る"
 
     blank_day = Time.zone.today - 9.days
     get by_date_user_smoking_logs_url(date: blank_day.strftime("%Y-%m-%d"))

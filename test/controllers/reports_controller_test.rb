@@ -50,6 +50,22 @@ class ReportsControllerTest < ActionDispatch::IntegrationTest
     assert_match(/今日分は上の「今日の節約見込み」に表示しています/, response.body)
   end
 
+  test "節約額と目標達成で比較する本数の違いを表示する" do
+    user = users(:one)
+    sign_in user
+
+    get report_url
+
+    assert_response :success
+    assert_match(/節約額の計算基準（現在の設定）/, response.body)
+    assert_match(/基準本数/, response.body)
+    assert_select "[data-report-current-baseline]", text: /#{user.user_setting.baseline_daily_cigarette_count}\s*本/
+    assert_match(/現在の目標/, response.body)
+    assert_select "[data-report-current-target]", text: /#{user.user_setting.target_daily_cigarette_count}\s*本/
+    assert_match(/目標を超えても、基準本数より少なければ節約額は増えます/, response.body)
+    assert_match(/過去日は、それぞれの記録時に保存した設定で計算します/, response.body)
+  end
+
   test "ダッシュボードから減煙レポートへ移動できる" do
     sign_in users(:one)
 
