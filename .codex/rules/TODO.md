@@ -2715,3 +2715,118 @@
 - [x] 表示が目安であることと計算対象期間が分かる
 - [x] Docker経由のテスト、RuboCop、Brakemanが通る
 -->
+
+---
+
+# ISSUE-122 Rails 7.2からRails 8.1へアップグレードする
+
+## なぜ必要か
+
+- 現在使用しているRails 7.2系は2026年8月9日にセキュリティサポートが終了し、Brakemanの`EOLRails`警告でCIが失敗する状態になったため
+- EOL後にRails本体の脆弱性が見つかった場合、7.2系へ公式のセキュリティ修正版が提供されない可能性があるため
+- 認証、メール送信、ユーザーデータを扱う本番公開アプリとして、サポート中のRails系列へ移行するため
+
+## 必要なこと(簡易的に)
+
+- Rails公式のアップグレードガイドに従い、現在系列の最新パッチ、Rails 8.0、Rails 8.1の順で1段階ずつ更新・検証する
+- Ruby 3.3.6、Devise、PostgreSQL、Sprockets、jsbundling、Hotwire、Tailwind、simple_calendar、Resend等の互換性を確認する
+- Rails更新前のテスト結果と、既知のBrakeman `EOLRails`失敗を記録し、更新後の回帰判定に使う
+- Docker、CI、本番環境のすべてで既存機能が維持されることを確認する
+
+## 仕様（確定）
+
+### 更新対象
+
+- 最終的な更新先はRails 8.1系の最新セキュリティパッチとする（Issue作成時点ではRails 8.1.3.1）
+- Rubyは現在の3.3.6を維持し、Rails更新とRuby更新を同じIssueへ混ぜない
+- `Gemfile`のRails制約と`Gemfile.lock`内のRails関連Gemを同じ系列へ揃える
+- Rails 7.2から8.1へ一度に更新せず、以下の順序で各段階の依存解決・起動・テストを確認する
+  1. Rails 7.2系の最新パッチ
+  2. Rails 8.0系の最新パッチ
+  3. Rails 8.1系の最新セキュリティパッチ
+
+### Rails設定と既存構成
+
+- Rails本体の8.1化を先に完了し、`config.load_defaults 7.2`は本Issueでは維持する
+- `bin/rails app:update`は差分確認のために使い、既存の`config/application.rb`、環境別設定、Dockerfile等を確認せず一括上書きしない
+- Rails 8で新規アプリの標準となるPropshaft、Solid Queue、Solid Cache、Solid Cable、Kamal、Thruster、認証ジェネレーターへの移行は本Issueに含めない
+- 現在のSprockets、jsbundling-rails、Turbo、Stimulus、Tailwind、Render、NeonDB、Resend構成を維持する
+- Rails更新だけを理由にDBテーブル、カラム、業務ロジック、画面仕様を変更しない
+- `config/brakeman.ignore`の期限前`EOLRails`エントリは、Rails 8.1で警告が解消したことを確認してから削除する
+- MVPではActive Storageを使用しないため、画像variant処理と標準のupload・representationルートを無効化する
+
+### 互換性と回帰確認
+
+- Deviseのユーザー登録、ログイン、ログアウト、パスワードリセット画面が動作する
+- 初期設定、`+1`、0本記録、日付指定登録・修正、カレンダー、スケジュール反映が更新前と同じように動作する
+- snapshot、継続日数、節約額、使用可能金額、鬼モードの計算結果が変わらない
+- ウィッシュリストCRUD、購入、残高不足、重複購入防止が更新前と同じように動作する
+- 減煙レポートのグラフ、タブ、直近7日のペース表示が動作する
+- 問い合わせとDeviseメールの設定が読み込め、Resendを使う本番設定が壊れない
+- asset precompile、Zeitwerk、DB migration、Dockerイメージのビルドが成功する
+- READMEのRailsバージョン表記を実際のバージョンへ合わせる
+
+## やること(コードレベル)
+
+- **変更候補（ファイル）**: `Gemfile` / `Gemfile.lock` / `config/application.rb` / `config/environments/*` / `config/initializers/*` / `config/brakeman.ignore` / `Dockerfile` / `README.md` / `.codex/rules/TODO.md` / 互換性修正が必要な既存コード・テスト
+<!-- 実装クリア: ISSUE-122
+- [x] 更新前のDockerテスト、RuboCop、Brakeman結果を記録する
+  - [x] BrakemanはRails 7.2 EOL警告だけで失敗していることを確認する
+- [x] Rails公式ガイド、Rails 8.0/8.1の変更点、主要Gemの対応状況を確認する
+- [x] Rails 7.2系の最新パッチへ更新し、依存解決、Rails起動、テストを確認する
+- [x] Rails 8.0系の最新パッチへ更新し、依存解決、Rails起動、テストを確認する
+- [x] Rails 8.1系の最新セキュリティパッチへ更新し、依存解決、Rails起動、テストを確認する
+- [x] `bin/rails app:update`の差分を確認し、必要な設定だけを既存ファイルへ反映する
+- [x] `config.load_defaults 7.2`が維持され、未検証のRails 8新既定値が一括適用されていないことを確認する
+- [x] 未使用のActive Storageについて、画像variant処理と標準ルートを無効化する
+- [x] 不要になった`config/brakeman.ignore`の`EOLRails`エントリを削除する
+- [x] READMEのRailsバージョン表記を更新する
+- [x] Docker経由で`bin/rails zeitwerk:check`とasset precompileを実行する
+- [x] Docker経由でDB準備、通常テスト、system test、RuboCop、Brakemanを実行する
+- [x] 本番用Dockerイメージをビルドできることを確認する
+- [x] Playwright/MCPで認証、記録、カレンダー、スケジュール、ウィッシュリスト購入、減煙レポートを確認する
+- [x] PC幅と390px程度のスマホ幅で主要画面を確認し、console error・warningがないことを確認する
+- [ ] Renderへデプロイ後、`GET /up`と主要導線を本番環境で確認する
+- [ ] CIのtest、lint、scan_rubyがすべて成功することを確認する
+-->
+
+## 検証結果
+
+- 更新前のRails 7.2.3では、通常テスト251 runs / 1037 assertions、system test 1 run / 12 assertions、RuboCop 100 filesが成功した
+- 更新前のBrakemanは`EOLRails` 1件だけで終了コード3となり、他のSecurity Warningsはなかった
+- Rails 7.2.3.2、Rails 8.0.5.1、Rails 8.1.3.1の順に更新し、各段階でRails起動と通常テスト251件が成功した
+- Rails 8.0.5.1では`to_time`のRails 8.1向け非推奨警告を確認し、Rails 8.1.3.1では同設定が廃止され常にreceiver timezoneを保持する仕様であることを公式リリースノートで確認した
+- `app:update`は一時コピーへ適用し、Solid Queue、既存環境設定の上書き、Active Storage migration等は現在の構成に不要なため反映しなかった
+- `config.load_defaults 7.2`を維持し、Rails 8.1の新既定値は`new_framework_defaults_8_1.rb`ですべてコメント状態にした
+- Active Storage添付機能と専用テーブルを使用していないことを確認し、CVE-2026-66066への多層防御として画像variant processorと標準ルートを無効化した
+- 最終確認は通常テスト251 runs / 1037 assertions、system test 1 run / 12 assertions、RuboCop 101 files / no offenses、Brakeman Security Warnings 0、Zeitwerk成功だった
+- production環境のasset precompileと`chillsmoke:rails-8.1-upgrade`本番用Dockerイメージのビルドが成功した
+- Playwrightで新規登録、初期設定、ログイン、ログアウト、パスワード再設定画面、`+1`、日付修正、カレンダー、スケジュール登録・反映、ウィッシュリスト登録・残高不足・購入、減煙レポート両タブを確認した
+- 390px幅の減煙レポートで横スクロールがなく、生成物を整理したクリーンな開発環境でconsole error・warningが0件であることを確認した
+- 本番Docker buildでNode.js 20.20.2のEOL警告を確認したが、Rails更新へ混ぜず別Issue候補とする
+- Render確認とGitHub Actions確認は、ブランチのpush・PR作成後に実施する
+
+## 変更してはいけないこと
+
+<!-- 実装クリア: ISSUE-122
+- [x] Brakemanを通す目的だけで新しい`EOLRails`警告をignoreしない
+- [x] Rails 8.0または8.1の新規アプリ構成へ既存基盤を無条件に置き換えない
+- [x] `bin/rails app:update`で既存設定を確認せず上書きしない
+- [x] Ruby、Node.js、PostgreSQLのメジャー・マイナーバージョン更新を同時に行わない
+- [x] Rails更新と無関係な機能追加、UI変更、リファクタリングを混ぜない
+- [x] snapshot、金額、継続日数、購入、同時実行の仕様を変更しない
+- [x] secret、credential、ローカル環境ファイルをコミットしない
+-->
+
+## ゴール
+
+<!-- 実装クリア: ISSUE-122
+- [x] Rails 8.1系のサポート中バージョンでアプリが起動する
+- [x] Rails 7.2 EOL警告をignoreせずBrakemanが成功する
+- [x] 既存の認証、記録、集計、購入、メール、レポート機能に回帰がない
+- [x] asset precompile、Zeitwerk、DB準備、本番用Dockerビルドが成功する
+- [x] PC幅・スマホ幅で主要導線を操作でき、console error・warningがない
+- [x] Docker経由の通常テスト、system test、RuboCop、Brakemanが通る
+- [ ] GitHub Actionsのtest、lint、scan_rubyがすべて成功する
+- [ ] Render本番環境のヘルスチェックと主要導線が正常に動作する
+-->
