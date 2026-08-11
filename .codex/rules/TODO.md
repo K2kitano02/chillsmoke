@@ -2769,6 +2769,7 @@
 ## やること(コードレベル)
 
 - **変更候補（ファイル）**: `Gemfile` / `Gemfile.lock` / `config/application.rb` / `config/environments/*` / `config/initializers/*` / `config/brakeman.ignore` / `Dockerfile` / `README.md` / `.codex/rules/TODO.md` / 互換性修正が必要な既存コード・テスト
+<!-- 実装クリア: ISSUE-122
 - [x] 更新前のDockerテスト、RuboCop、Brakeman結果を記録する
   - [x] BrakemanはRails 7.2 EOL警告だけで失敗していることを確認する
 - [x] Rails公式ガイド、Rails 8.0/8.1の変更点、主要Gemの対応状況を確認する
@@ -2787,6 +2788,7 @@
 - [x] PC幅と390px程度のスマホ幅で主要画面を確認し、console error・warningがないことを確認する
 - [ ] Renderへデプロイ後、`GET /up`と主要導線を本番環境で確認する
 - [ ] CIのtest、lint、scan_rubyがすべて成功することを確認する
+-->
 
 ## 検証結果
 
@@ -2806,6 +2808,7 @@
 
 ## 変更してはいけないこと
 
+<!-- 実装クリア: ISSUE-122
 - [x] Brakemanを通す目的だけで新しい`EOLRails`警告をignoreしない
 - [x] Rails 8.0または8.1の新規アプリ構成へ既存基盤を無条件に置き換えない
 - [x] `bin/rails app:update`で既存設定を確認せず上書きしない
@@ -2813,9 +2816,11 @@
 - [x] Rails更新と無関係な機能追加、UI変更、リファクタリングを混ぜない
 - [x] snapshot、金額、継続日数、購入、同時実行の仕様を変更しない
 - [x] secret、credential、ローカル環境ファイルをコミットしない
+-->
 
 ## ゴール
 
+<!-- 実装クリア: ISSUE-122
 - [x] Rails 8.1系のサポート中バージョンでアプリが起動する
 - [x] Rails 7.2 EOL警告をignoreせずBrakemanが成功する
 - [x] 既存の認証、記録、集計、購入、メール、レポート機能に回帰がない
@@ -2824,3 +2829,4 @@
 - [x] Docker経由の通常テスト、system test、RuboCop、Brakemanが通る
 - [ ] GitHub Actionsのtest、lint、scan_rubyがすべて成功する
 - [ ] Render本番環境のヘルスチェックと主要導線が正常に動作する
+-->
