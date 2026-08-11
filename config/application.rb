@@ -24,5 +24,9 @@ module Myapp
     # config.eager_load_paths << Rails.root.join("extras")
     config.time_zone = "Tokyo"
     config.i18n.default_locale = :ja
+
+    # Active Storage is not used in the MVP. Keep its upload and variant endpoints unavailable.
+    config.active_storage.variant_processor = :disabled
+    config.active_storage.draw_routes = false
   end
 end
