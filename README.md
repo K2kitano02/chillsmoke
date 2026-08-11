@@ -78,15 +78,15 @@ ChillSmokeでは、完全禁煙ではなく減煙を前提にすることで、�
 
 | ダッシュボード | 喫煙スケジュール |
 | --- | --- |
-| <a href="https://gyazo.com/ef65ad57b0d75cc4b09e8a8cd8261f73"><img src="https://i.gyazo.com/ef65ad57b0d75cc4b09e8a8cd8261f73.jpg" alt="ダッシュボード" width="100%"></a> | <a href="https://gyazo.com/2ebfbb67eefdeac9543a7179894e737e"><img src="https://i.gyazo.com/2ebfbb67eefdeac9543a7179894e737e.jpg" alt="喫煙スケジュール" width="100%"></a> |
+| <a href="https://gyazo.com/ef65ad57b0d75cc4b09e8a8cd8261f73"><img src="https://i.gyazo.com/ef65ad57b0d75cc4b09e8a8cd8261f73.jpg" alt="ダッシュボード" width="800"></a> | <a href="https://gyazo.com/2ebfbb67eefdeac9543a7179894e737e"><img src="https://i.gyazo.com/2ebfbb67eefdeac9543a7179894e737e.jpg" alt="喫煙スケジュール" width="800"></a> |
 
 | 喫煙カレンダー | ウィッシュリスト |
 | --- | --- |
-| <a href="https://gyazo.com/5c86701001dc51f404d8f59d1655a909"><img src="https://i.gyazo.com/5c86701001dc51f404d8f59d1655a909.jpg" alt="喫煙カレンダー" width="100%"></a> | <a href="https://gyazo.com/b7729cf75ece83c4d859018fb68f535a"><img src="https://i.gyazo.com/b7729cf75ece83c4d859018fb68f535a.jpg" alt="ウィッシュリスト" width="100%"></a> |
+| <a href="https://gyazo.com/5c86701001dc51f404d8f59d1655a909"><img src="https://i.gyazo.com/5c86701001dc51f404d8f59d1655a909.jpg" alt="喫煙カレンダー" width="800"></a> | <a href="https://gyazo.com/b7729cf75ece83c4d859018fb68f535a"><img src="https://i.gyazo.com/b7729cf75ece83c4d859018fb68f535a.jpg" alt="ウィッシュリスト" width="800"></a> |
 
 | ユーザー設定 | 減煙レポート |
 | --- | --- |
-| <a href="https://gyazo.com/a08e010be5d11fc3f0c7d6578091ae1a"><img src="https://i.gyazo.com/a08e010be5d11fc3f0c7d6578091ae1a.jpg" alt="ユーザー設定" width="100%"></a> | <a href="https://gyazo.com/83d11033182e967eb7bc37e7009566db"><img src="https://i.gyazo.com/83d11033182e967eb7bc37e7009566db.png" alt="減煙レポート" width="100%"></a> |
+| <a href="https://gyazo.com/a08e010be5d11fc3f0c7d6578091ae1a"><img src="https://i.gyazo.com/a08e010be5d11fc3f0c7d6578091ae1a.jpg" alt="ユーザー設定" width="800"></a> | <a href="https://gyazo.com/83d11033182e967eb7bc37e7009566db"><img src="https://i.gyazo.com/83d11033182e967eb7bc37e7009566db.png" alt="減煙レポート" width="800"></a> |
 
 ## 設計・実装で工夫した点
 
