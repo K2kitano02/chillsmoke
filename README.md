@@ -159,6 +159,7 @@ ChillSmokeの開発で直面した問題と、実装時に考えたことをQiit
 
 - [【Rails】設定変更で過去データを変えないためのsnapshot設計入門](https://qiita.com/K2kitano02/items/5fc902bd08771430c3f9)
 - [【Rails】「未記録」と「0本」は別物。画面表示だけでレコードを作らない設計](https://qiita.com/K2kitano02/items/a3f6d4760a37c4eda8d0)
+- [【Rails】片方だけ保存されるのを防ぐ。transactionで複数のDB更新をまとめる](https://qiita.com/K2kitano02/items/ab3644af3f87a67fba30)
 
 ## 技術スタック
 
